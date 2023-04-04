@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "ds.milkingParlourService";
+option java_outer_classname = "MilkingParlourServiceImpl";
+
+package milkingParlourService;
+
+service MilkingParlourService {
+
+  rpc SetMachineDetails(stream MachineDetail) returns (SetMachineDetailsReply) {}
+
+  rpc GetMilkReports(stream MachineId) returns (stream MilkReport) {}
+
+  rpc GetMilkVolume(MachineTimeSpan) returns (MilkQuantity) {}
+
+}
+
+message MachineId {
+  int32 id = 1;
+}
+
+message MachineDetail {
+  MachineId machineID = 1;
+  string dateInstalled = 2;
+  string dateNextService = 3;
+}
+
+message SetMachineDetailsReply {
+  string setMachineDetailsReply = 1;
+}
+
+message MachineTimeSpan {
+  string startDate = 1;
+  string endDate = 2;
+}
+
+message MilkQuantity {
+  float volumeLitres = 1;
+}
+
+message MilkReport {
+  string reportDate = 1;
+  MachineTimeSpan reportTimeSpan =2;
+  float volumeLitres = 3;
+  float heatedTemperature = 4;
+  float heatedDuration = 5;
+  float chilledTemperature = 6;
+
+}
