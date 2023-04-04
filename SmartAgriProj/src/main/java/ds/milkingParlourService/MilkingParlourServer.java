@@ -35,7 +35,7 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 
 	@Override
 	public StreamObserver<MachineDetail> setMachineDetails(StreamObserver<SetMachineDetailsReply> responseObserver) {
-		//Client streaming: The client will supply a stream details for multiple milking machines
+		//Client streaming: The client will supply a stream of details for multiple milking machines
 		return new StreamObserver<MachineDetail> () {
 			
 			@Override
@@ -69,7 +69,8 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 
 	@Override
 	public StreamObserver<MachineId> getMilkReports(StreamObserver<MilkReport> responseObserver) {
-		// TODO Auto-generated method stub
+		// Bi-directional streaming: Client streams in a series of machine ID's and the service streams
+		// back some milk reports for each machine
 		return super.getMilkReports(responseObserver);
 	}
 
