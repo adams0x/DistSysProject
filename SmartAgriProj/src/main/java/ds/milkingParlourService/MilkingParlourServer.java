@@ -2,8 +2,10 @@ package ds.milkingParlourService;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 import ds.milkingParlourService.MilkingParlourServiceGrpc.MilkingParlourServiceImplBase;
 import io.grpc.Server;
@@ -38,8 +40,14 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 			
 			@Override
 			public void onNext(MachineDetail machine) {
-				Machine mc = new Machine(machine.getMachineID().getId(), machine.getDateInstalled(), machine.getDateNextService());
-				machines.add(mc);	
+				Machine mc;
+				try {
+					mc = new Machine(machine.getMachineID().getId(), machine.getDateInstalled(), machine.getDateNextService());
+					machines.add(mc);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
 			}
 			
 			@Override
@@ -78,7 +86,7 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 		Date dateNextService;
 		
 		
-		public Machine(int id, String dateInstalled, String dateNextService) {
+		public Machine(int id, String dateInstalled, String dateNextService) throws ParseException {
 			this.id = id;
 			DateFormat df = DateFormat.getDateInstance();
 			this.dateInstalled = df.parse(dateInstalled);
