@@ -1,11 +1,10 @@
 package ds.milkingParlourService;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 
 import ds.milkingParlourService.MilkingParlourServiceGrpc.MilkingParlourServiceImplBase;
 import io.grpc.Server;
@@ -33,6 +32,10 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 		
 	}
 
+	
+	
+	
+	
 	@Override
 	public StreamObserver<MachineDetail> setMachineDetails(StreamObserver<SetMachineDetailsReply> responseObserver) {
 		//Client streaming: The client will supply a stream of details for multiple milking machines
@@ -40,19 +43,12 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 			
 			@Override
 			public void onNext(MachineDetail machine) {
-				Machine mc;
-				try {
-					mc = new Machine(machine.getMachineID().getId(), machine.getDateInstalled(), machine.getDateNextService());
-					machines.add(mc);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
+				Machine mc = new Machine(machine.getMachineID().getId(), machine.getDateInstalled(), machine.getDateNextService());
+				machines.add(mc);
 			}
 			
 			@Override
 			public void onError(Throwable t) {
-				
 			}
 
 			@Override
@@ -62,11 +58,14 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 				responseObserver.onNext(reply);
 				responseObserver.onCompleted();
 			}
-			
-			
 		};
 	}
 
+
+	
+	
+	
+	
 	@Override
 	public StreamObserver<MachineId> getMilkReports(StreamObserver<MilkReport> responseObserver) {
 		// Bi-directional streaming: Client streams in a series of machine ID's and the service streams
@@ -74,6 +73,11 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 		return super.getMilkReports(responseObserver);
 	}
 
+
+	
+	
+	
+	
 	@Override
 	public void getMilkVolume(MachineTimeSpan request, StreamObserver<MilkQuantity> responseObserver) {
 		// TODO Auto-generated method stub
@@ -81,28 +85,33 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	}
 	
 	
+
+	
+	
+	
+	
 	private class Machine{
 		int id;
-		Date dateInstalled;
-		Date dateNextService;
+		LocalDate dateInstalled;
+		LocalDate dateNextService;
 		
 		
-		public Machine(int id, String dateInstalled, String dateNextService) throws ParseException {
+		public Machine(int id, String dateInstalled, String dateNextService) {
 			this.id = id;
-			DateFormat df = DateFormat.getDateInstance();
-			this.dateInstalled = df.parse(dateInstalled);
-			this.dateNextService = df.parse(dateNextService);
+			DateTimeFormatter df = DateTimeFormatter.ofPattern("d/MM/yyyy");
+			this.dateInstalled = LocalDate.parse(dateInstalled, df);
+			this.dateNextService = LocalDate.parse(dateNextService, df);
 		}
 		
 		public int getId() {
 			return id;
 		}
 		
-		public Date getInstallationDate() {
+		public LocalDate getInstallationDate() {
 			return dateInstalled;
 		}
 
-		public Date getNextServiceDate() {
+		public LocalDate getNextServiceDate() {
 			return dateNextService;
 		}
 	
