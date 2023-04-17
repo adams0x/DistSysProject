@@ -59,24 +59,26 @@ public final class MilkingParlourServiceImpl {
       "ingParlourService.MachineId\022\025\n\rdateInsta" +
       "lled\030\002 \001(\t\022\027\n\017dateNextService\030\003 \001(\t\"8\n\026S" +
       "etMachineDetailsReply\022\036\n\026setMachineDetai" +
-      "lsReply\030\001 \001(\t\"5\n\017MachineTimeSpan\022\021\n\tstar" +
-      "tDate\030\001 \001(\t\022\017\n\007endDate\030\002 \001(\t\"$\n\014MilkQuan" +
-      "tity\022\024\n\014volumeLitres\030\001 \001(\002\"\305\001\n\nMilkRepor" +
-      "t\022\022\n\nreportDate\030\001 \001(\t\022>\n\016reportTimeSpan\030" +
-      "\002 \001(\0132&.milkingParlourService.MachineTim" +
-      "eSpan\022\024\n\014volumeLitres\030\003 \001(\002\022\031\n\021heatedTem" +
-      "perature\030\004 \001(\002\022\026\n\016heatedDuration\030\005 \001(\002\022\032" +
-      "\n\022chilledTemperature\030\006 \001(\0022\302\002\n\025MilkingPa" +
-      "rlourService\022l\n\021SetMachineDetails\022$.milk" +
-      "ingParlourService.MachineDetail\032-.milkin" +
-      "gParlourService.SetMachineDetailsReply\"\000" +
-      "(\001\022[\n\016GetMilkReports\022 .milkingParlourSer" +
-      "vice.MachineId\032!.milkingParlourService.M" +
-      "ilkReport\"\000(\0010\001\022^\n\rGetMilkVolume\022&.milki" +
-      "ngParlourService.MachineTimeSpan\032#.milki" +
-      "ngParlourService.MilkQuantity\"\000B7\n\030ds.mi" +
-      "lkingParlourServiceB\031MilkingParlourServi" +
-      "ceImplP\001b\006proto3"
+      "lsReply\030\001 \001(\t\"j\n\017MachineTimeSpan\022\021\n\tstar" +
+      "tDate\030\001 \001(\t\022\017\n\007endDate\030\002 \001(\t\0223\n\tmachineI" +
+      "D\030\003 \001(\0132 .milkingParlourService.MachineI" +
+      "d\"$\n\014MilkQuantity\022\024\n\014volumeLitres\030\001 \001(\002\"" +
+      "\336\001\n\nMilkReport\022\022\n\nreportDate\030\001 \001(\t\022>\n\016re" +
+      "portTimeSpan\030\002 \001(\0132&.milkingParlourServi" +
+      "ce.MachineTimeSpan\022\024\n\014volumeLitres\030\003 \001(\002" +
+      "\022\031\n\021heatedTemperature\030\004 \001(\002\022\026\n\016heatedDur" +
+      "ation\030\005 \001(\002\022\032\n\022chilledTemperature\030\006 \001(\002\022" +
+      "\027\n\017dateNextService\030\007 \001(\t2\302\002\n\025MilkingParl" +
+      "ourService\022l\n\021SetMachineDetails\022$.milkin" +
+      "gParlourService.MachineDetail\032-.milkingP" +
+      "arlourService.SetMachineDetailsReply\"\000(\001" +
+      "\022[\n\016GetMilkReports\022 .milkingParlourServi" +
+      "ce.MachineId\032!.milkingParlourService.Mil" +
+      "kReport\"\000(\0010\001\022^\n\rGetMilkVolume\022&.milking" +
+      "ParlourService.MachineTimeSpan\032#.milking" +
+      "ParlourService.MilkQuantity\"\000B7\n\030ds.milk" +
+      "ingParlourServiceB\031MilkingParlourService" +
+      "ImplP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -113,7 +115,7 @@ public final class MilkingParlourServiceImpl {
     internal_static_milkingParlourService_MachineTimeSpan_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_milkingParlourService_MachineTimeSpan_descriptor,
-        new java.lang.String[] { "StartDate", "EndDate", });
+        new java.lang.String[] { "StartDate", "EndDate", "MachineID", });
     internal_static_milkingParlourService_MilkQuantity_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_milkingParlourService_MilkQuantity_fieldAccessorTable = new
@@ -125,7 +127,7 @@ public final class MilkingParlourServiceImpl {
     internal_static_milkingParlourService_MilkReport_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_milkingParlourService_MilkReport_descriptor,
-        new java.lang.String[] { "ReportDate", "ReportTimeSpan", "VolumeLitres", "HeatedTemperature", "HeatedDuration", "ChilledTemperature", });
+        new java.lang.String[] { "ReportDate", "ReportTimeSpan", "VolumeLitres", "HeatedTemperature", "HeatedDuration", "ChilledTemperature", "DateNextService", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

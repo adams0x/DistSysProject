@@ -56,6 +56,19 @@ private static final long serialVersionUID = 0L;
             endDate_ = s;
             break;
           }
+          case 26: {
+            ds.milkingParlourService.MachineId.Builder subBuilder = null;
+            if (machineID_ != null) {
+              subBuilder = machineID_.toBuilder();
+            }
+            machineID_ = input.readMessage(ds.milkingParlourService.MachineId.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(machineID_);
+              machineID_ = subBuilder.buildPartial();
+            }
+
+            break;
+          }
           default: {
             if (!parseUnknownFieldProto3(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -156,6 +169,27 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int MACHINEID_FIELD_NUMBER = 3;
+  private ds.milkingParlourService.MachineId machineID_;
+  /**
+   * <code>.milkingParlourService.MachineId machineID = 3;</code>
+   */
+  public boolean hasMachineID() {
+    return machineID_ != null;
+  }
+  /**
+   * <code>.milkingParlourService.MachineId machineID = 3;</code>
+   */
+  public ds.milkingParlourService.MachineId getMachineID() {
+    return machineID_ == null ? ds.milkingParlourService.MachineId.getDefaultInstance() : machineID_;
+  }
+  /**
+   * <code>.milkingParlourService.MachineId machineID = 3;</code>
+   */
+  public ds.milkingParlourService.MachineIdOrBuilder getMachineIDOrBuilder() {
+    return getMachineID();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -176,6 +210,9 @@ private static final long serialVersionUID = 0L;
     if (!getEndDateBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, endDate_);
     }
+    if (machineID_ != null) {
+      output.writeMessage(3, getMachineID());
+    }
     unknownFields.writeTo(output);
   }
 
@@ -190,6 +227,10 @@ private static final long serialVersionUID = 0L;
     }
     if (!getEndDateBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, endDate_);
+    }
+    if (machineID_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getMachineID());
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -211,6 +252,11 @@ private static final long serialVersionUID = 0L;
         .equals(other.getStartDate());
     result = result && getEndDate()
         .equals(other.getEndDate());
+    result = result && (hasMachineID() == other.hasMachineID());
+    if (hasMachineID()) {
+      result = result && getMachineID()
+          .equals(other.getMachineID());
+    }
     result = result && unknownFields.equals(other.unknownFields);
     return result;
   }
@@ -226,6 +272,10 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getStartDate().hashCode();
     hash = (37 * hash) + ENDDATE_FIELD_NUMBER;
     hash = (53 * hash) + getEndDate().hashCode();
+    if (hasMachineID()) {
+      hash = (37 * hash) + MACHINEID_FIELD_NUMBER;
+      hash = (53 * hash) + getMachineID().hashCode();
+    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -363,6 +413,12 @@ private static final long serialVersionUID = 0L;
 
       endDate_ = "";
 
+      if (machineIDBuilder_ == null) {
+        machineID_ = null;
+      } else {
+        machineID_ = null;
+        machineIDBuilder_ = null;
+      }
       return this;
     }
 
@@ -391,6 +447,11 @@ private static final long serialVersionUID = 0L;
       ds.milkingParlourService.MachineTimeSpan result = new ds.milkingParlourService.MachineTimeSpan(this);
       result.startDate_ = startDate_;
       result.endDate_ = endDate_;
+      if (machineIDBuilder_ == null) {
+        result.machineID_ = machineID_;
+      } else {
+        result.machineID_ = machineIDBuilder_.build();
+      }
       onBuilt();
       return result;
     }
@@ -446,6 +507,9 @@ private static final long serialVersionUID = 0L;
       if (!other.getEndDate().isEmpty()) {
         endDate_ = other.endDate_;
         onChanged();
+      }
+      if (other.hasMachineID()) {
+        mergeMachineID(other.getMachineID());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -612,6 +676,123 @@ private static final long serialVersionUID = 0L;
       endDate_ = value;
       onChanged();
       return this;
+    }
+
+    private ds.milkingParlourService.MachineId machineID_ = null;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        ds.milkingParlourService.MachineId, ds.milkingParlourService.MachineId.Builder, ds.milkingParlourService.MachineIdOrBuilder> machineIDBuilder_;
+    /**
+     * <code>.milkingParlourService.MachineId machineID = 3;</code>
+     */
+    public boolean hasMachineID() {
+      return machineIDBuilder_ != null || machineID_ != null;
+    }
+    /**
+     * <code>.milkingParlourService.MachineId machineID = 3;</code>
+     */
+    public ds.milkingParlourService.MachineId getMachineID() {
+      if (machineIDBuilder_ == null) {
+        return machineID_ == null ? ds.milkingParlourService.MachineId.getDefaultInstance() : machineID_;
+      } else {
+        return machineIDBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.milkingParlourService.MachineId machineID = 3;</code>
+     */
+    public Builder setMachineID(ds.milkingParlourService.MachineId value) {
+      if (machineIDBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        machineID_ = value;
+        onChanged();
+      } else {
+        machineIDBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.milkingParlourService.MachineId machineID = 3;</code>
+     */
+    public Builder setMachineID(
+        ds.milkingParlourService.MachineId.Builder builderForValue) {
+      if (machineIDBuilder_ == null) {
+        machineID_ = builderForValue.build();
+        onChanged();
+      } else {
+        machineIDBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.milkingParlourService.MachineId machineID = 3;</code>
+     */
+    public Builder mergeMachineID(ds.milkingParlourService.MachineId value) {
+      if (machineIDBuilder_ == null) {
+        if (machineID_ != null) {
+          machineID_ =
+            ds.milkingParlourService.MachineId.newBuilder(machineID_).mergeFrom(value).buildPartial();
+        } else {
+          machineID_ = value;
+        }
+        onChanged();
+      } else {
+        machineIDBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.milkingParlourService.MachineId machineID = 3;</code>
+     */
+    public Builder clearMachineID() {
+      if (machineIDBuilder_ == null) {
+        machineID_ = null;
+        onChanged();
+      } else {
+        machineID_ = null;
+        machineIDBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.milkingParlourService.MachineId machineID = 3;</code>
+     */
+    public ds.milkingParlourService.MachineId.Builder getMachineIDBuilder() {
+      
+      onChanged();
+      return getMachineIDFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.milkingParlourService.MachineId machineID = 3;</code>
+     */
+    public ds.milkingParlourService.MachineIdOrBuilder getMachineIDOrBuilder() {
+      if (machineIDBuilder_ != null) {
+        return machineIDBuilder_.getMessageOrBuilder();
+      } else {
+        return machineID_ == null ?
+            ds.milkingParlourService.MachineId.getDefaultInstance() : machineID_;
+      }
+    }
+    /**
+     * <code>.milkingParlourService.MachineId machineID = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        ds.milkingParlourService.MachineId, ds.milkingParlourService.MachineId.Builder, ds.milkingParlourService.MachineIdOrBuilder> 
+        getMachineIDFieldBuilder() {
+      if (machineIDBuilder_ == null) {
+        machineIDBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            ds.milkingParlourService.MachineId, ds.milkingParlourService.MachineId.Builder, ds.milkingParlourService.MachineIdOrBuilder>(
+                getMachineID(),
+                getParentForChildren(),
+                isClean());
+        machineID_ = null;
+      }
+      return machineIDBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

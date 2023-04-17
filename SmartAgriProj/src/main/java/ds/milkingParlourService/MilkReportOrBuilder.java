@@ -49,4 +49,14 @@ public interface MilkReportOrBuilder extends
    * <code>float chilledTemperature = 6;</code>
    */
   float getChilledTemperature();
+
+  /**
+   * <code>string dateNextService = 7;</code>
+   */
+  java.lang.String getDateNextService();
+  /**
+   * <code>string dateNextService = 7;</code>
+   */
+  com.google.protobuf.ByteString
+      getDateNextServiceBytes();
 }

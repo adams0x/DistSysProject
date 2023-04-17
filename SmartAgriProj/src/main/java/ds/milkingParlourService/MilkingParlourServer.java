@@ -1,6 +1,7 @@
 package ds.milkingParlourService;
 
 import java.io.IOException;
+import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
 import java.time.*;
@@ -80,8 +81,17 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	
 	@Override
 	public void getMilkVolume(MachineTimeSpan request, StreamObserver<MilkQuantity> responseObserver) {
-		// TODO Auto-generated method stub
-		super.getMilkVolume(request, responseObserver);
+		int mcId = request.getMachineID().getId();
+		
+		for(Machine m : machines) {
+			if(m.getId() == mcId) {
+				float milkVolume = m.getMilkProduced(request.getStartDate(), request.getEndDate());
+				MilkQuantity Reply = MilkQuantity.newBuilder().setVolumeLitres(milkVolume).buildPartial();
+				responseObserver.onNext(Reply);
+				responseObserver.onCompleted();
+				return;
+			}
+		}
 	}
 	
 	
@@ -92,6 +102,7 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	
 	private class Machine{
 		int id;
+		float milkProductionRate; // Litres per day
 		LocalDate dateInstalled;
 		LocalDate dateNextService;
 		
@@ -101,6 +112,8 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 			DateTimeFormatter df = DateTimeFormatter.ofPattern("d/MM/yyyy");
 			this.dateInstalled = LocalDate.parse(dateInstalled, df);
 			this.dateNextService = LocalDate.parse(dateNextService, df);
+			Random rand = new Random();
+			milkProductionRate = rand.nextFloat() * 1000;
 		}
 		
 		public int getId() {
@@ -113,6 +126,13 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 
 		public LocalDate getNextServiceDate() {
 			return dateNextService;
+		}
+		
+		public float getMilkProduced(String dateFrom, String dateTo) {
+			DateTimeFormatter df = DateTimeFormatter.ofPattern("d/MM/yyyy");
+			LocalDate from = LocalDate.parse(dateFrom, df);
+			LocalDate to = LocalDate.parse(dateTo, df);
+			return milkProductionRate * Duration.between(from, to).toDays();
 		}
 	
 	

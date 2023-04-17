@@ -21,6 +21,7 @@ private static final long serialVersionUID = 0L;
     heatedTemperature_ = 0F;
     heatedDuration_ = 0F;
     chilledTemperature_ = 0F;
+    dateNextService_ = "";
   }
 
   @java.lang.Override
@@ -84,6 +85,12 @@ private static final long serialVersionUID = 0L;
           case 53: {
 
             chilledTemperature_ = input.readFloat();
+            break;
+          }
+          case 58: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            dateNextService_ = s;
             break;
           }
           default: {
@@ -209,6 +216,40 @@ private static final long serialVersionUID = 0L;
     return chilledTemperature_;
   }
 
+  public static final int DATENEXTSERVICE_FIELD_NUMBER = 7;
+  private volatile java.lang.Object dateNextService_;
+  /**
+   * <code>string dateNextService = 7;</code>
+   */
+  public java.lang.String getDateNextService() {
+    java.lang.Object ref = dateNextService_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      dateNextService_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string dateNextService = 7;</code>
+   */
+  public com.google.protobuf.ByteString
+      getDateNextServiceBytes() {
+    java.lang.Object ref = dateNextService_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      dateNextService_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -241,6 +282,9 @@ private static final long serialVersionUID = 0L;
     if (chilledTemperature_ != 0F) {
       output.writeFloat(6, chilledTemperature_);
     }
+    if (!getDateNextServiceBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 7, dateNextService_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -272,6 +316,9 @@ private static final long serialVersionUID = 0L;
     if (chilledTemperature_ != 0F) {
       size += com.google.protobuf.CodedOutputStream
         .computeFloatSize(6, chilledTemperature_);
+    }
+    if (!getDateNextServiceBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, dateNextService_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -312,6 +359,8 @@ private static final long serialVersionUID = 0L;
         java.lang.Float.floatToIntBits(getChilledTemperature())
         == java.lang.Float.floatToIntBits(
             other.getChilledTemperature()));
+    result = result && getDateNextService()
+        .equals(other.getDateNextService());
     result = result && unknownFields.equals(other.unknownFields);
     return result;
   }
@@ -341,6 +390,8 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + CHILLEDTEMPERATURE_FIELD_NUMBER;
     hash = (53 * hash) + java.lang.Float.floatToIntBits(
         getChilledTemperature());
+    hash = (37 * hash) + DATENEXTSERVICE_FIELD_NUMBER;
+    hash = (53 * hash) + getDateNextService().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -490,6 +541,8 @@ private static final long serialVersionUID = 0L;
 
       chilledTemperature_ = 0F;
 
+      dateNextService_ = "";
+
       return this;
     }
 
@@ -526,6 +579,7 @@ private static final long serialVersionUID = 0L;
       result.heatedTemperature_ = heatedTemperature_;
       result.heatedDuration_ = heatedDuration_;
       result.chilledTemperature_ = chilledTemperature_;
+      result.dateNextService_ = dateNextService_;
       onBuilt();
       return result;
     }
@@ -592,6 +646,10 @@ private static final long serialVersionUID = 0L;
       }
       if (other.getChilledTemperature() != 0F) {
         setChilledTemperature(other.getChilledTemperature());
+      }
+      if (!other.getDateNextService().isEmpty()) {
+        dateNextService_ = other.dateNextService_;
+        onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -908,6 +966,75 @@ private static final long serialVersionUID = 0L;
     public Builder clearChilledTemperature() {
       
       chilledTemperature_ = 0F;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object dateNextService_ = "";
+    /**
+     * <code>string dateNextService = 7;</code>
+     */
+    public java.lang.String getDateNextService() {
+      java.lang.Object ref = dateNextService_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        dateNextService_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string dateNextService = 7;</code>
+     */
+    public com.google.protobuf.ByteString
+        getDateNextServiceBytes() {
+      java.lang.Object ref = dateNextService_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        dateNextService_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string dateNextService = 7;</code>
+     */
+    public Builder setDateNextService(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      dateNextService_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string dateNextService = 7;</code>
+     */
+    public Builder clearDateNextService() {
+      
+      dateNextService_ = getDefaultInstance().getDateNextService();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string dateNextService = 7;</code>
+     */
+    public Builder setDateNextServiceBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      dateNextService_ = value;
       onChanged();
       return this;
     }

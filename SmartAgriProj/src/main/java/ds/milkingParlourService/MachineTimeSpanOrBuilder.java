@@ -26,4 +26,17 @@ public interface MachineTimeSpanOrBuilder extends
    */
   com.google.protobuf.ByteString
       getEndDateBytes();
+
+  /**
+   * <code>.milkingParlourService.MachineId machineID = 3;</code>
+   */
+  boolean hasMachineID();
+  /**
+   * <code>.milkingParlourService.MachineId machineID = 3;</code>
+   */
+  ds.milkingParlourService.MachineId getMachineID();
+  /**
+   * <code>.milkingParlourService.MachineId machineID = 3;</code>
+   */
+  ds.milkingParlourService.MachineIdOrBuilder getMachineIDOrBuilder();
 }
