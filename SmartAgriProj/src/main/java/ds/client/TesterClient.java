@@ -25,7 +25,7 @@ public class TesterClient {
 		
 		blockingStub = MilkingParlourServiceGrpc.newBlockingStub(channel);
 		asyncStub = MilkingParlourServiceGrpc.newStub(channel);
-		//TesterClient tc = new TesterClient();
+
 		setMachineDetails();
 		Thread.sleep(1000);
 		

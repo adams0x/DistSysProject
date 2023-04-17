@@ -33,6 +33,7 @@ message SetMachineDetailsReply {
 message MachineTimeSpan {
   string startDate = 1;
   string endDate = 2;
+  MachineId machineID = 3;
 }
 
 message MilkQuantity {
@@ -46,5 +47,6 @@ message MilkReport {
   float heatedTemperature = 4;
   float heatedDuration = 5;
   float chilledTemperature = 6;
+  string dateNextService = 7;
 
 }
