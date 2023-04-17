@@ -6,7 +6,9 @@ import ds.milkingParlourService.MilkingParlourServiceGrpc.*;
 import ds.milkingParlourService.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
+
 import java.util.*;
 import java.io.*;
 
@@ -15,6 +17,8 @@ public class TesterClient {
 
 	static MilkingParlourServiceBlockingStub blockingStub;
 	static MilkingParlourServiceStub asyncStub;
+	static ArrayList<Integer> machineIDs = new ArrayList<Integer>();
+	
 	
 	public static void main(String[] args) throws InterruptedException {
 		// TODO Auto-generated method stub
@@ -28,6 +32,7 @@ public class TesterClient {
 
 		setMachineDetails();
 		Thread.sleep(1000);
+		getMachineIDs();
 		getMilkQuantity(1);
 		getMilkQuantity(5);
 		
@@ -83,6 +88,25 @@ public class TesterClient {
 
 	}
 
+
+	public static void getMachineIDs() {
+		Empty emp = Empty.newBuilder().build();
+		try {
+			Iterator<MachineId> it = blockingStub.getMachineIds(emp);
+			System.out.println("Getting machine id's:");
+			while(it.hasNext()) {
+				MachineId temp = it.next();
+				machineIDs.add(temp.getId());				
+			}
+			System.out.println(machineIDs.toString());
+		} catch (StatusRuntimeException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	
+	
 	public static void getMilkQuantity(int machineId) {
 		MachineId mcId = MachineId.newBuilder().setId(machineId).build();
 		MachineTimeSpan mc = MachineTimeSpan.newBuilder()

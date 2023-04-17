@@ -68,8 +68,11 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	
 	@Override
 	public void getMachineIds(Empty request, StreamObserver<MachineId> responseObserver) {
-		// TODO Auto-generated method stub
-		super.getMachineIds(request, responseObserver);
+		for(Machine mc : machines) {
+			MachineId mcid = MachineId.newBuilder().setId(mc.getId()).build();
+			responseObserver.onNext(mcid);
+		}
+		responseObserver.onCompleted();
 	}
 
 
