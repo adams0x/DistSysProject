@@ -28,6 +28,8 @@ public class TesterClient {
 
 		setMachineDetails();
 		Thread.sleep(1000);
+		getMilkQuantity(1);
+		//getMilkQuantity(5);
 		
 	}
 	
@@ -81,4 +83,16 @@ public class TesterClient {
 
 	}
 
+	public static void getMilkQuantity(int machineId) {
+		MachineId mcId = MachineId.newBuilder().setId(machineId).build();
+		MachineTimeSpan mc = MachineTimeSpan.newBuilder()
+				.setMachineID(mcId)
+				.setStartDate("10/04/2023")
+				.setEndDate("17/04/2023")
+				.build();
+		MilkQuantity reply = blockingStub.getMilkVolume(mc);
+		System.out.println("Milk volume at machine id=" + machineId +" is " + reply.getVolumeLitres() + " litres");
+	}
+	
+	
 }

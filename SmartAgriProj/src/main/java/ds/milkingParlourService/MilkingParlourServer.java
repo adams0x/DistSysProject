@@ -86,7 +86,7 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 		for(Machine m : machines) {
 			if(m.getId() == mcId) {
 				float milkVolume = m.getMilkProduced(request.getStartDate(), request.getEndDate());
-				MilkQuantity Reply = MilkQuantity.newBuilder().setVolumeLitres(milkVolume).buildPartial();
+				MilkQuantity Reply = MilkQuantity.newBuilder().setVolumeLitres(milkVolume).build();
 				responseObserver.onNext(Reply);
 				responseObserver.onCompleted();
 				return;
@@ -132,7 +132,7 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 			DateTimeFormatter df = DateTimeFormatter.ofPattern("d/MM/yyyy");
 			LocalDate from = LocalDate.parse(dateFrom, df);
 			LocalDate to = LocalDate.parse(dateTo, df);
-			return milkProductionRate * Duration.between(from, to).toDays();
+			return milkProductionRate * Duration.between(from.atStartOfDay(), to.atStartOfDay()).toDays();
 		}
 	
 	
