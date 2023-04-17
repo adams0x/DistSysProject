@@ -40,10 +40,20 @@ public final class MilkingParlourServiceImpl {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_milkingParlourService_MilkQuantity_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_milkingParlourService_MachineReportDate_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_milkingParlourService_MachineReportDate_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_milkingParlourService_MilkReport_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_milkingParlourService_MilkReport_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_milkingParlourService_Empty_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_milkingParlourService_Empty_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -63,22 +73,25 @@ public final class MilkingParlourServiceImpl {
       "tDate\030\001 \001(\t\022\017\n\007endDate\030\002 \001(\t\0223\n\tmachineI" +
       "D\030\003 \001(\0132 .milkingParlourService.MachineI" +
       "d\"$\n\014MilkQuantity\022\024\n\014volumeLitres\030\001 \001(\002\"" +
-      "\336\001\n\nMilkReport\022\022\n\nreportDate\030\001 \001(\t\022>\n\016re" +
-      "portTimeSpan\030\002 \001(\0132&.milkingParlourServi" +
-      "ce.MachineTimeSpan\022\024\n\014volumeLitres\030\003 \001(\002" +
-      "\022\031\n\021heatedTemperature\030\004 \001(\002\022\026\n\016heatedDur" +
-      "ation\030\005 \001(\002\022\032\n\022chilledTemperature\030\006 \001(\002\022" +
-      "\027\n\017dateNextService\030\007 \001(\t2\302\002\n\025MilkingParl" +
-      "ourService\022l\n\021SetMachineDetails\022$.milkin" +
-      "gParlourService.MachineDetail\032-.milkingP" +
-      "arlourService.SetMachineDetailsReply\"\000(\001" +
-      "\022[\n\016GetMilkReports\022 .milkingParlourServi" +
-      "ce.MachineId\032!.milkingParlourService.Mil" +
-      "kReport\"\000(\0010\001\022^\n\rGetMilkVolume\022&.milking" +
-      "ParlourService.MachineTimeSpan\032#.milking" +
-      "ParlourService.MilkQuantity\"\000B7\n\030ds.milk" +
-      "ingParlourServiceB\031MilkingParlourService" +
-      "ImplP\001b\006proto3"
+      "\\\n\021MachineReportDate\022\022\n\nreportDate\030\001 \001(\t" +
+      "\0223\n\tmachineID\030\002 \001(\0132 .milkingParlourServ" +
+      "ice.MachineId\"\236\001\n\nMilkReport\022\022\n\nreportDa" +
+      "te\030\001 \001(\t\022\024\n\014volumeLitres\030\002 \001(\002\022\031\n\021heated" +
+      "Temperature\030\003 \001(\002\022\026\n\016heatedDuration\030\004 \001(" +
+      "\002\022\032\n\022chilledTemperature\030\005 \001(\002\022\027\n\017dateNex" +
+      "tService\030\006 \001(\t\"\007\n\005Empty2\237\003\n\025MilkingParlo" +
+      "urService\022l\n\021SetMachineDetails\022$.milking" +
+      "ParlourService.MachineDetail\032-.milkingPa" +
+      "rlourService.SetMachineDetailsReply\"\000(\001\022" +
+      "S\n\rGetMachineIds\022\034.milkingParlourService" +
+      ".Empty\032 .milkingParlourService.MachineId" +
+      "\"\0000\001\022c\n\016GetMilkReports\022(.milkingParlourS" +
+      "ervice.MachineReportDate\032!.milkingParlou" +
+      "rService.MilkReport\"\000(\0010\001\022^\n\rGetMilkVolu" +
+      "me\022&.milkingParlourService.MachineTimeSp" +
+      "an\032#.milkingParlourService.MilkQuantity\"" +
+      "\000B7\n\030ds.milkingParlourServiceB\031MilkingPa" +
+      "rlourServiceImplP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -122,12 +135,24 @@ public final class MilkingParlourServiceImpl {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_milkingParlourService_MilkQuantity_descriptor,
         new java.lang.String[] { "VolumeLitres", });
-    internal_static_milkingParlourService_MilkReport_descriptor =
+    internal_static_milkingParlourService_MachineReportDate_descriptor =
       getDescriptor().getMessageTypes().get(5);
+    internal_static_milkingParlourService_MachineReportDate_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_milkingParlourService_MachineReportDate_descriptor,
+        new java.lang.String[] { "ReportDate", "MachineID", });
+    internal_static_milkingParlourService_MilkReport_descriptor =
+      getDescriptor().getMessageTypes().get(6);
     internal_static_milkingParlourService_MilkReport_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_milkingParlourService_MilkReport_descriptor,
-        new java.lang.String[] { "ReportDate", "ReportTimeSpan", "VolumeLitres", "HeatedTemperature", "HeatedDuration", "ChilledTemperature", "DateNextService", });
+        new java.lang.String[] { "ReportDate", "VolumeLitres", "HeatedTemperature", "HeatedDuration", "ChilledTemperature", "DateNextService", });
+    internal_static_milkingParlourService_Empty_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_milkingParlourService_Empty_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_milkingParlourService_Empty_descriptor,
+        new java.lang.String[] { });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -18,44 +18,31 @@ public interface MilkReportOrBuilder extends
       getReportDateBytes();
 
   /**
-   * <code>.milkingParlourService.MachineTimeSpan reportTimeSpan = 2;</code>
-   */
-  boolean hasReportTimeSpan();
-  /**
-   * <code>.milkingParlourService.MachineTimeSpan reportTimeSpan = 2;</code>
-   */
-  ds.milkingParlourService.MachineTimeSpan getReportTimeSpan();
-  /**
-   * <code>.milkingParlourService.MachineTimeSpan reportTimeSpan = 2;</code>
-   */
-  ds.milkingParlourService.MachineTimeSpanOrBuilder getReportTimeSpanOrBuilder();
-
-  /**
-   * <code>float volumeLitres = 3;</code>
+   * <code>float volumeLitres = 2;</code>
    */
   float getVolumeLitres();
 
   /**
-   * <code>float heatedTemperature = 4;</code>
+   * <code>float heatedTemperature = 3;</code>
    */
   float getHeatedTemperature();
 
   /**
-   * <code>float heatedDuration = 5;</code>
+   * <code>float heatedDuration = 4;</code>
    */
   float getHeatedDuration();
 
   /**
-   * <code>float chilledTemperature = 6;</code>
+   * <code>float chilledTemperature = 5;</code>
    */
   float getChilledTemperature();
 
   /**
-   * <code>string dateNextService = 7;</code>
+   * <code>string dateNextService = 6;</code>
    */
   java.lang.String getDateNextService();
   /**
-   * <code>string dateNextService = 7;</code>
+   * <code>string dateNextService = 6;</code>
    */
   com.google.protobuf.ByteString
       getDateNextServiceBytes();

@@ -59,28 +59,60 @@ public final class MilkingParlourServiceGrpc {
      return getSetMachineDetailsMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<ds.milkingParlourService.MachineId,
+  private static volatile io.grpc.MethodDescriptor<ds.milkingParlourService.Empty,
+      ds.milkingParlourService.MachineId> getGetMachineIdsMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetMachineIds",
+      requestType = ds.milkingParlourService.Empty.class,
+      responseType = ds.milkingParlourService.MachineId.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+  public static io.grpc.MethodDescriptor<ds.milkingParlourService.Empty,
+      ds.milkingParlourService.MachineId> getGetMachineIdsMethod() {
+    io.grpc.MethodDescriptor<ds.milkingParlourService.Empty, ds.milkingParlourService.MachineId> getGetMachineIdsMethod;
+    if ((getGetMachineIdsMethod = MilkingParlourServiceGrpc.getGetMachineIdsMethod) == null) {
+      synchronized (MilkingParlourServiceGrpc.class) {
+        if ((getGetMachineIdsMethod = MilkingParlourServiceGrpc.getGetMachineIdsMethod) == null) {
+          MilkingParlourServiceGrpc.getGetMachineIdsMethod = getGetMachineIdsMethod = 
+              io.grpc.MethodDescriptor.<ds.milkingParlourService.Empty, ds.milkingParlourService.MachineId>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+              .setFullMethodName(generateFullMethodName(
+                  "milkingParlourService.MilkingParlourService", "GetMachineIds"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  ds.milkingParlourService.Empty.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  ds.milkingParlourService.MachineId.getDefaultInstance()))
+                  .setSchemaDescriptor(new MilkingParlourServiceMethodDescriptorSupplier("GetMachineIds"))
+                  .build();
+          }
+        }
+     }
+     return getGetMachineIdsMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<ds.milkingParlourService.MachineReportDate,
       ds.milkingParlourService.MilkReport> getGetMilkReportsMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "GetMilkReports",
-      requestType = ds.milkingParlourService.MachineId.class,
+      requestType = ds.milkingParlourService.MachineReportDate.class,
       responseType = ds.milkingParlourService.MilkReport.class,
       methodType = io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
-  public static io.grpc.MethodDescriptor<ds.milkingParlourService.MachineId,
+  public static io.grpc.MethodDescriptor<ds.milkingParlourService.MachineReportDate,
       ds.milkingParlourService.MilkReport> getGetMilkReportsMethod() {
-    io.grpc.MethodDescriptor<ds.milkingParlourService.MachineId, ds.milkingParlourService.MilkReport> getGetMilkReportsMethod;
+    io.grpc.MethodDescriptor<ds.milkingParlourService.MachineReportDate, ds.milkingParlourService.MilkReport> getGetMilkReportsMethod;
     if ((getGetMilkReportsMethod = MilkingParlourServiceGrpc.getGetMilkReportsMethod) == null) {
       synchronized (MilkingParlourServiceGrpc.class) {
         if ((getGetMilkReportsMethod = MilkingParlourServiceGrpc.getGetMilkReportsMethod) == null) {
           MilkingParlourServiceGrpc.getGetMilkReportsMethod = getGetMilkReportsMethod = 
-              io.grpc.MethodDescriptor.<ds.milkingParlourService.MachineId, ds.milkingParlourService.MilkReport>newBuilder()
+              io.grpc.MethodDescriptor.<ds.milkingParlourService.MachineReportDate, ds.milkingParlourService.MilkReport>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
               .setFullMethodName(generateFullMethodName(
                   "milkingParlourService.MilkingParlourService", "GetMilkReports"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  ds.milkingParlourService.MachineId.getDefaultInstance()))
+                  ds.milkingParlourService.MachineReportDate.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   ds.milkingParlourService.MilkReport.getDefaultInstance()))
                   .setSchemaDescriptor(new MilkingParlourServiceMethodDescriptorSupplier("GetMilkReports"))
@@ -159,7 +191,14 @@ public final class MilkingParlourServiceGrpc {
 
     /**
      */
-    public io.grpc.stub.StreamObserver<ds.milkingParlourService.MachineId> getMilkReports(
+    public void getMachineIds(ds.milkingParlourService.Empty request,
+        io.grpc.stub.StreamObserver<ds.milkingParlourService.MachineId> responseObserver) {
+      asyncUnimplementedUnaryCall(getGetMachineIdsMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public io.grpc.stub.StreamObserver<ds.milkingParlourService.MachineReportDate> getMilkReports(
         io.grpc.stub.StreamObserver<ds.milkingParlourService.MilkReport> responseObserver) {
       return asyncUnimplementedStreamingCall(getGetMilkReportsMethod(), responseObserver);
     }
@@ -181,10 +220,17 @@ public final class MilkingParlourServiceGrpc {
                 ds.milkingParlourService.SetMachineDetailsReply>(
                   this, METHODID_SET_MACHINE_DETAILS)))
           .addMethod(
+            getGetMachineIdsMethod(),
+            asyncServerStreamingCall(
+              new MethodHandlers<
+                ds.milkingParlourService.Empty,
+                ds.milkingParlourService.MachineId>(
+                  this, METHODID_GET_MACHINE_IDS)))
+          .addMethod(
             getGetMilkReportsMethod(),
             asyncBidiStreamingCall(
               new MethodHandlers<
-                ds.milkingParlourService.MachineId,
+                ds.milkingParlourService.MachineReportDate,
                 ds.milkingParlourService.MilkReport>(
                   this, METHODID_GET_MILK_REPORTS)))
           .addMethod(
@@ -226,7 +272,15 @@ public final class MilkingParlourServiceGrpc {
 
     /**
      */
-    public io.grpc.stub.StreamObserver<ds.milkingParlourService.MachineId> getMilkReports(
+    public void getMachineIds(ds.milkingParlourService.Empty request,
+        io.grpc.stub.StreamObserver<ds.milkingParlourService.MachineId> responseObserver) {
+      asyncServerStreamingCall(
+          getChannel().newCall(getGetMachineIdsMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public io.grpc.stub.StreamObserver<ds.milkingParlourService.MachineReportDate> getMilkReports(
         io.grpc.stub.StreamObserver<ds.milkingParlourService.MilkReport> responseObserver) {
       return asyncBidiStreamingCall(
           getChannel().newCall(getGetMilkReportsMethod(), getCallOptions()), responseObserver);
@@ -257,6 +311,14 @@ public final class MilkingParlourServiceGrpc {
     protected MilkingParlourServiceBlockingStub build(io.grpc.Channel channel,
         io.grpc.CallOptions callOptions) {
       return new MilkingParlourServiceBlockingStub(channel, callOptions);
+    }
+
+    /**
+     */
+    public java.util.Iterator<ds.milkingParlourService.MachineId> getMachineIds(
+        ds.milkingParlourService.Empty request) {
+      return blockingServerStreamingCall(
+          getChannel(), getGetMachineIdsMethod(), getCallOptions(), request);
     }
 
     /**
@@ -294,9 +356,10 @@ public final class MilkingParlourServiceGrpc {
     }
   }
 
-  private static final int METHODID_GET_MILK_VOLUME = 0;
-  private static final int METHODID_SET_MACHINE_DETAILS = 1;
-  private static final int METHODID_GET_MILK_REPORTS = 2;
+  private static final int METHODID_GET_MACHINE_IDS = 0;
+  private static final int METHODID_GET_MILK_VOLUME = 1;
+  private static final int METHODID_SET_MACHINE_DETAILS = 2;
+  private static final int METHODID_GET_MILK_REPORTS = 3;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -315,6 +378,10 @@ public final class MilkingParlourServiceGrpc {
     @java.lang.SuppressWarnings("unchecked")
     public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
+        case METHODID_GET_MACHINE_IDS:
+          serviceImpl.getMachineIds((ds.milkingParlourService.Empty) request,
+              (io.grpc.stub.StreamObserver<ds.milkingParlourService.MachineId>) responseObserver);
+          break;
         case METHODID_GET_MILK_VOLUME:
           serviceImpl.getMilkVolume((ds.milkingParlourService.MachineTimeSpan) request,
               (io.grpc.stub.StreamObserver<ds.milkingParlourService.MilkQuantity>) responseObserver);
@@ -387,6 +454,7 @@ public final class MilkingParlourServiceGrpc {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .setSchemaDescriptor(new MilkingParlourServiceFileDescriptorSupplier())
               .addMethod(getSetMachineDetailsMethod())
+              .addMethod(getGetMachineIdsMethod())
               .addMethod(getGetMilkReportsMethod())
               .addMethod(getGetMilkVolumeMethod())
               .build();

@@ -54,40 +54,27 @@ private static final long serialVersionUID = 0L;
             reportDate_ = s;
             break;
           }
-          case 18: {
-            ds.milkingParlourService.MachineTimeSpan.Builder subBuilder = null;
-            if (reportTimeSpan_ != null) {
-              subBuilder = reportTimeSpan_.toBuilder();
-            }
-            reportTimeSpan_ = input.readMessage(ds.milkingParlourService.MachineTimeSpan.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(reportTimeSpan_);
-              reportTimeSpan_ = subBuilder.buildPartial();
-            }
-
-            break;
-          }
-          case 29: {
+          case 21: {
 
             volumeLitres_ = input.readFloat();
             break;
           }
-          case 37: {
+          case 29: {
 
             heatedTemperature_ = input.readFloat();
             break;
           }
-          case 45: {
+          case 37: {
 
             heatedDuration_ = input.readFloat();
             break;
           }
-          case 53: {
+          case 45: {
 
             chilledTemperature_ = input.readFloat();
             break;
           }
-          case 58: {
+          case 50: {
             java.lang.String s = input.readStringRequireUtf8();
 
             dateNextService_ = s;
@@ -159,67 +146,46 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int REPORTTIMESPAN_FIELD_NUMBER = 2;
-  private ds.milkingParlourService.MachineTimeSpan reportTimeSpan_;
-  /**
-   * <code>.milkingParlourService.MachineTimeSpan reportTimeSpan = 2;</code>
-   */
-  public boolean hasReportTimeSpan() {
-    return reportTimeSpan_ != null;
-  }
-  /**
-   * <code>.milkingParlourService.MachineTimeSpan reportTimeSpan = 2;</code>
-   */
-  public ds.milkingParlourService.MachineTimeSpan getReportTimeSpan() {
-    return reportTimeSpan_ == null ? ds.milkingParlourService.MachineTimeSpan.getDefaultInstance() : reportTimeSpan_;
-  }
-  /**
-   * <code>.milkingParlourService.MachineTimeSpan reportTimeSpan = 2;</code>
-   */
-  public ds.milkingParlourService.MachineTimeSpanOrBuilder getReportTimeSpanOrBuilder() {
-    return getReportTimeSpan();
-  }
-
-  public static final int VOLUMELITRES_FIELD_NUMBER = 3;
+  public static final int VOLUMELITRES_FIELD_NUMBER = 2;
   private float volumeLitres_;
   /**
-   * <code>float volumeLitres = 3;</code>
+   * <code>float volumeLitres = 2;</code>
    */
   public float getVolumeLitres() {
     return volumeLitres_;
   }
 
-  public static final int HEATEDTEMPERATURE_FIELD_NUMBER = 4;
+  public static final int HEATEDTEMPERATURE_FIELD_NUMBER = 3;
   private float heatedTemperature_;
   /**
-   * <code>float heatedTemperature = 4;</code>
+   * <code>float heatedTemperature = 3;</code>
    */
   public float getHeatedTemperature() {
     return heatedTemperature_;
   }
 
-  public static final int HEATEDDURATION_FIELD_NUMBER = 5;
+  public static final int HEATEDDURATION_FIELD_NUMBER = 4;
   private float heatedDuration_;
   /**
-   * <code>float heatedDuration = 5;</code>
+   * <code>float heatedDuration = 4;</code>
    */
   public float getHeatedDuration() {
     return heatedDuration_;
   }
 
-  public static final int CHILLEDTEMPERATURE_FIELD_NUMBER = 6;
+  public static final int CHILLEDTEMPERATURE_FIELD_NUMBER = 5;
   private float chilledTemperature_;
   /**
-   * <code>float chilledTemperature = 6;</code>
+   * <code>float chilledTemperature = 5;</code>
    */
   public float getChilledTemperature() {
     return chilledTemperature_;
   }
 
-  public static final int DATENEXTSERVICE_FIELD_NUMBER = 7;
+  public static final int DATENEXTSERVICE_FIELD_NUMBER = 6;
   private volatile java.lang.Object dateNextService_;
   /**
-   * <code>string dateNextService = 7;</code>
+   * <code>string dateNextService = 6;</code>
    */
   public java.lang.String getDateNextService() {
     java.lang.Object ref = dateNextService_;
@@ -234,7 +200,7 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <code>string dateNextService = 7;</code>
+   * <code>string dateNextService = 6;</code>
    */
   public com.google.protobuf.ByteString
       getDateNextServiceBytes() {
@@ -267,23 +233,20 @@ private static final long serialVersionUID = 0L;
     if (!getReportDateBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, reportDate_);
     }
-    if (reportTimeSpan_ != null) {
-      output.writeMessage(2, getReportTimeSpan());
-    }
     if (volumeLitres_ != 0F) {
-      output.writeFloat(3, volumeLitres_);
+      output.writeFloat(2, volumeLitres_);
     }
     if (heatedTemperature_ != 0F) {
-      output.writeFloat(4, heatedTemperature_);
+      output.writeFloat(3, heatedTemperature_);
     }
     if (heatedDuration_ != 0F) {
-      output.writeFloat(5, heatedDuration_);
+      output.writeFloat(4, heatedDuration_);
     }
     if (chilledTemperature_ != 0F) {
-      output.writeFloat(6, chilledTemperature_);
+      output.writeFloat(5, chilledTemperature_);
     }
     if (!getDateNextServiceBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 7, dateNextService_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, dateNextService_);
     }
     unknownFields.writeTo(output);
   }
@@ -297,28 +260,24 @@ private static final long serialVersionUID = 0L;
     if (!getReportDateBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, reportDate_);
     }
-    if (reportTimeSpan_ != null) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getReportTimeSpan());
-    }
     if (volumeLitres_ != 0F) {
       size += com.google.protobuf.CodedOutputStream
-        .computeFloatSize(3, volumeLitres_);
+        .computeFloatSize(2, volumeLitres_);
     }
     if (heatedTemperature_ != 0F) {
       size += com.google.protobuf.CodedOutputStream
-        .computeFloatSize(4, heatedTemperature_);
+        .computeFloatSize(3, heatedTemperature_);
     }
     if (heatedDuration_ != 0F) {
       size += com.google.protobuf.CodedOutputStream
-        .computeFloatSize(5, heatedDuration_);
+        .computeFloatSize(4, heatedDuration_);
     }
     if (chilledTemperature_ != 0F) {
       size += com.google.protobuf.CodedOutputStream
-        .computeFloatSize(6, chilledTemperature_);
+        .computeFloatSize(5, chilledTemperature_);
     }
     if (!getDateNextServiceBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, dateNextService_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, dateNextService_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -338,11 +297,6 @@ private static final long serialVersionUID = 0L;
     boolean result = true;
     result = result && getReportDate()
         .equals(other.getReportDate());
-    result = result && (hasReportTimeSpan() == other.hasReportTimeSpan());
-    if (hasReportTimeSpan()) {
-      result = result && getReportTimeSpan()
-          .equals(other.getReportTimeSpan());
-    }
     result = result && (
         java.lang.Float.floatToIntBits(getVolumeLitres())
         == java.lang.Float.floatToIntBits(
@@ -374,10 +328,6 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + REPORTDATE_FIELD_NUMBER;
     hash = (53 * hash) + getReportDate().hashCode();
-    if (hasReportTimeSpan()) {
-      hash = (37 * hash) + REPORTTIMESPAN_FIELD_NUMBER;
-      hash = (53 * hash) + getReportTimeSpan().hashCode();
-    }
     hash = (37 * hash) + VOLUMELITRES_FIELD_NUMBER;
     hash = (53 * hash) + java.lang.Float.floatToIntBits(
         getVolumeLitres());
@@ -527,12 +477,6 @@ private static final long serialVersionUID = 0L;
       super.clear();
       reportDate_ = "";
 
-      if (reportTimeSpanBuilder_ == null) {
-        reportTimeSpan_ = null;
-      } else {
-        reportTimeSpan_ = null;
-        reportTimeSpanBuilder_ = null;
-      }
       volumeLitres_ = 0F;
 
       heatedTemperature_ = 0F;
@@ -570,11 +514,6 @@ private static final long serialVersionUID = 0L;
     public ds.milkingParlourService.MilkReport buildPartial() {
       ds.milkingParlourService.MilkReport result = new ds.milkingParlourService.MilkReport(this);
       result.reportDate_ = reportDate_;
-      if (reportTimeSpanBuilder_ == null) {
-        result.reportTimeSpan_ = reportTimeSpan_;
-      } else {
-        result.reportTimeSpan_ = reportTimeSpanBuilder_.build();
-      }
       result.volumeLitres_ = volumeLitres_;
       result.heatedTemperature_ = heatedTemperature_;
       result.heatedDuration_ = heatedDuration_;
@@ -631,9 +570,6 @@ private static final long serialVersionUID = 0L;
       if (!other.getReportDate().isEmpty()) {
         reportDate_ = other.reportDate_;
         onChanged();
-      }
-      if (other.hasReportTimeSpan()) {
-        mergeReportTimeSpan(other.getReportTimeSpan());
       }
       if (other.getVolumeLitres() != 0F) {
         setVolumeLitres(other.getVolumeLitres());
@@ -749,132 +685,15 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private ds.milkingParlourService.MachineTimeSpan reportTimeSpan_ = null;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        ds.milkingParlourService.MachineTimeSpan, ds.milkingParlourService.MachineTimeSpan.Builder, ds.milkingParlourService.MachineTimeSpanOrBuilder> reportTimeSpanBuilder_;
-    /**
-     * <code>.milkingParlourService.MachineTimeSpan reportTimeSpan = 2;</code>
-     */
-    public boolean hasReportTimeSpan() {
-      return reportTimeSpanBuilder_ != null || reportTimeSpan_ != null;
-    }
-    /**
-     * <code>.milkingParlourService.MachineTimeSpan reportTimeSpan = 2;</code>
-     */
-    public ds.milkingParlourService.MachineTimeSpan getReportTimeSpan() {
-      if (reportTimeSpanBuilder_ == null) {
-        return reportTimeSpan_ == null ? ds.milkingParlourService.MachineTimeSpan.getDefaultInstance() : reportTimeSpan_;
-      } else {
-        return reportTimeSpanBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>.milkingParlourService.MachineTimeSpan reportTimeSpan = 2;</code>
-     */
-    public Builder setReportTimeSpan(ds.milkingParlourService.MachineTimeSpan value) {
-      if (reportTimeSpanBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        reportTimeSpan_ = value;
-        onChanged();
-      } else {
-        reportTimeSpanBuilder_.setMessage(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.milkingParlourService.MachineTimeSpan reportTimeSpan = 2;</code>
-     */
-    public Builder setReportTimeSpan(
-        ds.milkingParlourService.MachineTimeSpan.Builder builderForValue) {
-      if (reportTimeSpanBuilder_ == null) {
-        reportTimeSpan_ = builderForValue.build();
-        onChanged();
-      } else {
-        reportTimeSpanBuilder_.setMessage(builderForValue.build());
-      }
-
-      return this;
-    }
-    /**
-     * <code>.milkingParlourService.MachineTimeSpan reportTimeSpan = 2;</code>
-     */
-    public Builder mergeReportTimeSpan(ds.milkingParlourService.MachineTimeSpan value) {
-      if (reportTimeSpanBuilder_ == null) {
-        if (reportTimeSpan_ != null) {
-          reportTimeSpan_ =
-            ds.milkingParlourService.MachineTimeSpan.newBuilder(reportTimeSpan_).mergeFrom(value).buildPartial();
-        } else {
-          reportTimeSpan_ = value;
-        }
-        onChanged();
-      } else {
-        reportTimeSpanBuilder_.mergeFrom(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.milkingParlourService.MachineTimeSpan reportTimeSpan = 2;</code>
-     */
-    public Builder clearReportTimeSpan() {
-      if (reportTimeSpanBuilder_ == null) {
-        reportTimeSpan_ = null;
-        onChanged();
-      } else {
-        reportTimeSpan_ = null;
-        reportTimeSpanBuilder_ = null;
-      }
-
-      return this;
-    }
-    /**
-     * <code>.milkingParlourService.MachineTimeSpan reportTimeSpan = 2;</code>
-     */
-    public ds.milkingParlourService.MachineTimeSpan.Builder getReportTimeSpanBuilder() {
-      
-      onChanged();
-      return getReportTimeSpanFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.milkingParlourService.MachineTimeSpan reportTimeSpan = 2;</code>
-     */
-    public ds.milkingParlourService.MachineTimeSpanOrBuilder getReportTimeSpanOrBuilder() {
-      if (reportTimeSpanBuilder_ != null) {
-        return reportTimeSpanBuilder_.getMessageOrBuilder();
-      } else {
-        return reportTimeSpan_ == null ?
-            ds.milkingParlourService.MachineTimeSpan.getDefaultInstance() : reportTimeSpan_;
-      }
-    }
-    /**
-     * <code>.milkingParlourService.MachineTimeSpan reportTimeSpan = 2;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        ds.milkingParlourService.MachineTimeSpan, ds.milkingParlourService.MachineTimeSpan.Builder, ds.milkingParlourService.MachineTimeSpanOrBuilder> 
-        getReportTimeSpanFieldBuilder() {
-      if (reportTimeSpanBuilder_ == null) {
-        reportTimeSpanBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            ds.milkingParlourService.MachineTimeSpan, ds.milkingParlourService.MachineTimeSpan.Builder, ds.milkingParlourService.MachineTimeSpanOrBuilder>(
-                getReportTimeSpan(),
-                getParentForChildren(),
-                isClean());
-        reportTimeSpan_ = null;
-      }
-      return reportTimeSpanBuilder_;
-    }
-
     private float volumeLitres_ ;
     /**
-     * <code>float volumeLitres = 3;</code>
+     * <code>float volumeLitres = 2;</code>
      */
     public float getVolumeLitres() {
       return volumeLitres_;
     }
     /**
-     * <code>float volumeLitres = 3;</code>
+     * <code>float volumeLitres = 2;</code>
      */
     public Builder setVolumeLitres(float value) {
       
@@ -883,7 +702,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>float volumeLitres = 3;</code>
+     * <code>float volumeLitres = 2;</code>
      */
     public Builder clearVolumeLitres() {
       
@@ -894,13 +713,13 @@ private static final long serialVersionUID = 0L;
 
     private float heatedTemperature_ ;
     /**
-     * <code>float heatedTemperature = 4;</code>
+     * <code>float heatedTemperature = 3;</code>
      */
     public float getHeatedTemperature() {
       return heatedTemperature_;
     }
     /**
-     * <code>float heatedTemperature = 4;</code>
+     * <code>float heatedTemperature = 3;</code>
      */
     public Builder setHeatedTemperature(float value) {
       
@@ -909,7 +728,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>float heatedTemperature = 4;</code>
+     * <code>float heatedTemperature = 3;</code>
      */
     public Builder clearHeatedTemperature() {
       
@@ -920,13 +739,13 @@ private static final long serialVersionUID = 0L;
 
     private float heatedDuration_ ;
     /**
-     * <code>float heatedDuration = 5;</code>
+     * <code>float heatedDuration = 4;</code>
      */
     public float getHeatedDuration() {
       return heatedDuration_;
     }
     /**
-     * <code>float heatedDuration = 5;</code>
+     * <code>float heatedDuration = 4;</code>
      */
     public Builder setHeatedDuration(float value) {
       
@@ -935,7 +754,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>float heatedDuration = 5;</code>
+     * <code>float heatedDuration = 4;</code>
      */
     public Builder clearHeatedDuration() {
       
@@ -946,13 +765,13 @@ private static final long serialVersionUID = 0L;
 
     private float chilledTemperature_ ;
     /**
-     * <code>float chilledTemperature = 6;</code>
+     * <code>float chilledTemperature = 5;</code>
      */
     public float getChilledTemperature() {
       return chilledTemperature_;
     }
     /**
-     * <code>float chilledTemperature = 6;</code>
+     * <code>float chilledTemperature = 5;</code>
      */
     public Builder setChilledTemperature(float value) {
       
@@ -961,7 +780,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>float chilledTemperature = 6;</code>
+     * <code>float chilledTemperature = 5;</code>
      */
     public Builder clearChilledTemperature() {
       
@@ -972,7 +791,7 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object dateNextService_ = "";
     /**
-     * <code>string dateNextService = 7;</code>
+     * <code>string dateNextService = 6;</code>
      */
     public java.lang.String getDateNextService() {
       java.lang.Object ref = dateNextService_;
@@ -987,7 +806,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string dateNextService = 7;</code>
+     * <code>string dateNextService = 6;</code>
      */
     public com.google.protobuf.ByteString
         getDateNextServiceBytes() {
@@ -1003,7 +822,7 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <code>string dateNextService = 7;</code>
+     * <code>string dateNextService = 6;</code>
      */
     public Builder setDateNextService(
         java.lang.String value) {
@@ -1016,7 +835,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string dateNextService = 7;</code>
+     * <code>string dateNextService = 6;</code>
      */
     public Builder clearDateNextService() {
       
@@ -1025,7 +844,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string dateNextService = 7;</code>
+     * <code>string dateNextService = 6;</code>
      */
     public Builder setDateNextServiceBytes(
         com.google.protobuf.ByteString value) {

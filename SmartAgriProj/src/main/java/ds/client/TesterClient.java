@@ -29,7 +29,7 @@ public class TesterClient {
 		setMachineDetails();
 		Thread.sleep(1000);
 		getMilkQuantity(1);
-		//getMilkQuantity(5);
+		getMilkQuantity(5);
 		
 	}
 	

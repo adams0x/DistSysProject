@@ -4,13 +4,16 @@ option java_multiple_files = true;
 option java_package = "ds.milkingParlourService";
 option java_outer_classname = "MilkingParlourServiceImpl";
 
+
 package milkingParlourService;
 
 service MilkingParlourService {
 
   rpc SetMachineDetails(stream MachineDetail) returns (SetMachineDetailsReply) {}
 
-  rpc GetMilkReports(stream MachineId) returns (stream MilkReport) {}
+  rpc GetMachineIds(Empty) returns (stream MachineId) {}
+
+  rpc GetMilkReports(stream MachineReportDate) returns (stream MilkReport) {}
 
   rpc GetMilkVolume(MachineTimeSpan) returns (MilkQuantity) {}
 
@@ -40,13 +43,22 @@ message MilkQuantity {
   float volumeLitres = 1;
 }
 
+
+message MachineReportDate {
+  string reportDate = 1;
+  MachineId machineID = 2;
+}
+
+
 message MilkReport {
   string reportDate = 1;
-  MachineTimeSpan reportTimeSpan =2;
-  float volumeLitres = 3;
-  float heatedTemperature = 4;
-  float heatedDuration = 5;
-  float chilledTemperature = 6;
-  string dateNextService = 7;
+  float volumeLitres = 2;
+  float heatedTemperature = 3;
+  float heatedDuration = 4;
+  float chilledTemperature = 5;
+  string dateNextService = 6;
 
+}
+
+message Empty{
 }

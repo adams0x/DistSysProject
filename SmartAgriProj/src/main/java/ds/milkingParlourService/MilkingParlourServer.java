@@ -62,13 +62,22 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 		};
 	}
 
-
 	
 	
 	
 	
 	@Override
-	public StreamObserver<MachineId> getMilkReports(StreamObserver<MilkReport> responseObserver) {
+	public void getMachineIds(Empty request, StreamObserver<MachineId> responseObserver) {
+		// TODO Auto-generated method stub
+		super.getMachineIds(request, responseObserver);
+	}
+
+
+
+
+
+	@Override
+	public StreamObserver<MachineReportDate> getMilkReports(StreamObserver<MilkReport> responseObserver) {
 		// Bi-directional streaming: Client streams in a series of machine ID's and the service streams
 		// back some milk reports for each machine
 		return super.getMilkReports(responseObserver);
