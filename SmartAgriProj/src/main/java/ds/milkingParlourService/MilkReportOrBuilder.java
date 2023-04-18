@@ -46,4 +46,9 @@ public interface MilkReportOrBuilder extends
    */
   com.google.protobuf.ByteString
       getDateNextServiceBytes();
+
+  /**
+   * <code>int32 machId = 7;</code>
+   */
+  int getMachId();
 }

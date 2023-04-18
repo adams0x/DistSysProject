@@ -105,6 +105,7 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 								.setHeatedDuration(heatDuration)
 								.setChilledTemperature(tempChilled)
 								.setDateNextService(nextServiceDue)
+								.setMachId(m.getId())
 								.build();
 						responseObserver.onNext(report);
 					}

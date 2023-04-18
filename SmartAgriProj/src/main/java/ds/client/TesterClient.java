@@ -120,11 +120,21 @@ public class TesterClient {
 	
 	
 	public static void getMilkReports() {
+		
+		//Create a StreamObserver that receives the stream of milk reports
 		StreamObserver<MilkReport> responseObserver = new StreamObserver<MilkReport>() {
 
 			@Override
 			public void onNext(MilkReport report) {
-				System.out.println("receiving report " + report.getReportDate() );
+				//MilkReport received, extract the data
+				System.out.println("Receiving report for machine: " + report.getMachId() );
+				System.out.println("Report date: " + report.getReportDate() );
+				System.out.println("Milk volume (L): " + report.getVolumeLitres() );
+				System.out.println("Heated Temperature (C): " + report.getHeatedTemperature() );
+				System.out.println("Heated Duration (mins): " + report.getHeatedDuration() );
+				System.out.println("Cooled Temperature (C): " + report.getChilledTemperature() );
+				System.out.println("Next service on: " + report.getDateNextService() );
+				System.out.println();
 			}
 
 			@Override
@@ -139,6 +149,7 @@ public class TesterClient {
 
 		};
 
+		//Create a StreamObserver that sends the stream of MachineReportsDate's
 		StreamObserver<MachineReportDate> requestObserver = asyncStub.getMilkReports(responseObserver);
 		try {
 			requestObserver.onNext(MachineReportDate.newBuilder()

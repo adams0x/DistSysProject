@@ -57,6 +57,7 @@ message MilkReport {
   float heatedDuration = 4;
   float chilledTemperature = 5;
   string dateNextService = 6;
+  int32 machId = 7;
 
 }
 

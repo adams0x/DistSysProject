@@ -22,6 +22,7 @@ private static final long serialVersionUID = 0L;
     heatedDuration_ = 0F;
     chilledTemperature_ = 0F;
     dateNextService_ = "";
+    machId_ = 0;
   }
 
   @java.lang.Override
@@ -78,6 +79,11 @@ private static final long serialVersionUID = 0L;
             java.lang.String s = input.readStringRequireUtf8();
 
             dateNextService_ = s;
+            break;
+          }
+          case 56: {
+
+            machId_ = input.readInt32();
             break;
           }
           default: {
@@ -216,6 +222,15 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int MACHID_FIELD_NUMBER = 7;
+  private int machId_;
+  /**
+   * <code>int32 machId = 7;</code>
+   */
+  public int getMachId() {
+    return machId_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -248,6 +263,9 @@ private static final long serialVersionUID = 0L;
     if (!getDateNextServiceBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 6, dateNextService_);
     }
+    if (machId_ != 0) {
+      output.writeInt32(7, machId_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -278,6 +296,10 @@ private static final long serialVersionUID = 0L;
     }
     if (!getDateNextServiceBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, dateNextService_);
+    }
+    if (machId_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(7, machId_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -315,6 +337,8 @@ private static final long serialVersionUID = 0L;
             other.getChilledTemperature()));
     result = result && getDateNextService()
         .equals(other.getDateNextService());
+    result = result && (getMachId()
+        == other.getMachId());
     result = result && unknownFields.equals(other.unknownFields);
     return result;
   }
@@ -342,6 +366,8 @@ private static final long serialVersionUID = 0L;
         getChilledTemperature());
     hash = (37 * hash) + DATENEXTSERVICE_FIELD_NUMBER;
     hash = (53 * hash) + getDateNextService().hashCode();
+    hash = (37 * hash) + MACHID_FIELD_NUMBER;
+    hash = (53 * hash) + getMachId();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -487,6 +513,8 @@ private static final long serialVersionUID = 0L;
 
       dateNextService_ = "";
 
+      machId_ = 0;
+
       return this;
     }
 
@@ -519,6 +547,7 @@ private static final long serialVersionUID = 0L;
       result.heatedDuration_ = heatedDuration_;
       result.chilledTemperature_ = chilledTemperature_;
       result.dateNextService_ = dateNextService_;
+      result.machId_ = machId_;
       onBuilt();
       return result;
     }
@@ -586,6 +615,9 @@ private static final long serialVersionUID = 0L;
       if (!other.getDateNextService().isEmpty()) {
         dateNextService_ = other.dateNextService_;
         onChanged();
+      }
+      if (other.getMachId() != 0) {
+        setMachId(other.getMachId());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -854,6 +886,32 @@ private static final long serialVersionUID = 0L;
   checkByteStringIsUtf8(value);
       
       dateNextService_ = value;
+      onChanged();
+      return this;
+    }
+
+    private int machId_ ;
+    /**
+     * <code>int32 machId = 7;</code>
+     */
+    public int getMachId() {
+      return machId_;
+    }
+    /**
+     * <code>int32 machId = 7;</code>
+     */
+    public Builder setMachId(int value) {
+      
+      machId_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 machId = 7;</code>
+     */
+    public Builder clearMachId() {
+      
+      machId_ = 0;
       onChanged();
       return this;
     }
