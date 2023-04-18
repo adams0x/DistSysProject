@@ -45,6 +45,12 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 			@Override
 			public void onNext(MachineDetail machine) {
 				Machine mc = new Machine(machine.getMachineID().getId(), machine.getDateInstalled(), machine.getDateNextService());
+				for(int i = 0; i < machines.size(); i++) {
+					if(machines.get(i).getId() == mc.getId()) {
+						machines.set(i, mc);
+						return;
+					}
+				}
 				machines.add(mc);
 			}
 			
