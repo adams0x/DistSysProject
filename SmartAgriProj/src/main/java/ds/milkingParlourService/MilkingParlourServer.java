@@ -1,8 +1,16 @@
 package ds.milkingParlourService;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetAddress;
 import java.util.Random;
+
+import javax.jmdns.JmDNS;
+import javax.jmdns.ServiceInfo;
+
 import java.util.List;
+import java.util.Properties;
 import java.util.ArrayList;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -20,7 +28,10 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 		
 		MilkingParlourServer service = new MilkingParlourServer();
 		
-		int port = 50051;
+		Properties prop = service.getProperties();
+		service.registerService(prop);
+		int port = Integer.valueOf( prop.getProperty("servicePort") );// #.50051;
+
 
 		Server server = ServerBuilder.forPort(port)
 				.addService(service)
@@ -34,6 +45,51 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	}
 
 	
+	private Properties getProperties() {
+		Properties prop = null;		
+		 try (InputStream input = new FileInputStream("src/main/resources/milkingParlour.properties")) {
+	            prop = new Properties();
+	            // load a properties file
+	            prop.load(input);
+	            // get the property value and print it out
+	            System.out.println("Milking Parlour Service Properies ...");
+	            System.out.println("\t serviceType: " + prop.getProperty("serviceType"));
+	            System.out.println("\t serviceName: " +prop.getProperty("serviceName"));
+	            System.out.println("\t serviceDescription: " +prop.getProperty("serviceDescription"));
+		        System.out.println("\t servicePort: " +prop.getProperty("servicePort"));
+	        } catch (IOException ex) {
+	            ex.printStackTrace();
+	        }
+	
+		 return prop;
+	}
+	
+	
+	private  void registerService(Properties prop) {
+		 try {
+	            // Create a JmDNS instance
+	            JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
+	            String serviceType = prop.getProperty("serviceType") ;//"_http._tcp.local.";
+	            String serviceName = prop.getProperty("serviceName")  ;// "example";
+	           // int service_port = 1234;
+	            int servicePort = Integer.valueOf( prop.getProperty("servicePort") );// #.50051;
+	            String serviceDescriptionProperties = prop.getProperty("serviceDescription")  ;//"path=index.html";
+	            // Register a service
+	            ServiceInfo serviceInfo = ServiceInfo.create(serviceType, serviceName, servicePort, serviceDescriptionProperties);
+	            jmdns.registerService(serviceInfo);
+	            System.out.printf("registrering service with type %s and name %s \n", serviceType, serviceName);
+	            // Wait a bit
+	            Thread.sleep(1000);
+	            // Unregister all services
+	            //jmdns.unregisterAllServices();
+	        } catch (IOException e) {
+	            System.out.println(e.getMessage());
+	        } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    
+	}
 	
 	
 	
@@ -207,7 +263,6 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 		 * Simulate a milk volume (litres) produced by this
 		 * milking machine for a given day
 		 */
-
 		public float getMilkProduced(String day) {
 			
 			DateTimeFormatter df = DateTimeFormatter.ofPattern("d/MM/yyyy");
