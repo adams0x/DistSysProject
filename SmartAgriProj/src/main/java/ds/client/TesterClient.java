@@ -105,8 +105,7 @@ public class TesterClient {
 
 	}
 	
-	
-	
+
 	public static void getMilkQuantity(int machineId) {
 		MachineId mcId = MachineId.newBuilder().setId(machineId).build();
 		MachineTimeSpan mc = MachineTimeSpan.newBuilder()
@@ -119,4 +118,7 @@ public class TesterClient {
 	}
 	
 	
+	public static void getMilkReports() {
+		
+	}
 }

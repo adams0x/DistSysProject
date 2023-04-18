@@ -68,6 +68,7 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	
 	@Override
 	public void getMachineIds(Empty request, StreamObserver<MachineId> responseObserver) {
+		//Server streaming: this returns a stream of machine id's to the client
 		for(Machine mc : machines) {
 			MachineId mcid = MachineId.newBuilder().setId(mc.getId()).build();
 			responseObserver.onNext(mcid);
@@ -81,9 +82,45 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 
 	@Override
 	public StreamObserver<MachineReportDate> getMilkReports(StreamObserver<MilkReport> responseObserver) {
-		// Bi-directional streaming: Client streams in a series of machine ID's and the service streams
+		// Bi-directional streaming: Client streams in a series of machine ID's (incl. date) and the service streams
 		// back some milk reports for each machine
-		return super.getMilkReports(responseObserver);
+		return new StreamObserver<MachineReportDate> () {
+			
+			@Override
+			public void onNext(MachineReportDate machine) {
+				Machine mc;
+				for(Machine m : machines) {
+					if(m.getId() == machine.getMachineID().getId()) {
+						mc = m;
+						String reportDate = machine.getReportDate();
+						float volume = m.getMilkProduced(reportDate);
+						float tempHeated = m.getMilkTemperatureHeated();
+						float heatDuration = m.getHeatingDuration();
+						float tempChilled = m.getMilkTemperatureChilled();
+						String nextServiceDue = m.getNextServiceDate();
+						MilkReport report = MilkReport.newBuilder()
+								.setReportDate(reportDate)
+								.setVolumeLitres(volume)
+								.setHeatedTemperature(tempHeated)
+								.setHeatedDuration(heatDuration)
+								.setChilledTemperature(tempChilled)
+								.setDateNextService(nextServiceDue)
+								.build();
+						responseObserver.onNext(report);
+					}
+				}
+				
+			}
+			
+			@Override
+			public void onError(Throwable t) {
+			}
+
+			@Override
+			public void onCompleted() {
+				responseObserver.onCompleted();
+			}
+		};
 	}
 
 
@@ -93,6 +130,7 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	
 	@Override
 	public void getMilkVolume(MachineTimeSpan request, StreamObserver<MilkQuantity> responseObserver) {
+		//Unary: this returns the milk volume produced by the machine and time span chosen by the client
 		int mcId = request.getMachineID().getId();
 		
 		for(Machine m : machines) {
@@ -118,7 +156,9 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 		LocalDate dateInstalled;
 		LocalDate dateNextService;
 		
-		
+		/*
+		 * Milking machine object construction
+		 */
 		public Machine(int id, String dateInstalled, String dateNextService) {
 			this.id = id;
 			DateTimeFormatter df = DateTimeFormatter.ofPattern("d/MM/yyyy");
@@ -132,21 +172,77 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 			return id;
 		}
 		
-		public LocalDate getInstallationDate() {
-			return dateInstalled;
+		public String getInstallationDate() {
+			DateTimeFormatter df = DateTimeFormatter.ofPattern("d/MM/yyyy");
+			return dateInstalled.format(df);
 		}
 
-		public LocalDate getNextServiceDate() {
-			return dateNextService;
+		public String getNextServiceDate() {
+			DateTimeFormatter df = DateTimeFormatter.ofPattern("d/MM/yyyy");
+			return dateNextService.format(df);
 		}
+
 		
+		/*
+		 * Simulate a milk volume (litres) produced by this
+		 * milking machine for a given range of time
+		 */
 		public float getMilkProduced(String dateFrom, String dateTo) {
+			
 			DateTimeFormatter df = DateTimeFormatter.ofPattern("d/MM/yyyy");
 			LocalDate from = LocalDate.parse(dateFrom, df);
 			LocalDate to = LocalDate.parse(dateTo, df);
 			return milkProductionRate * Duration.between(from.atStartOfDay(), to.atStartOfDay()).toDays();
 		}
-	
+
+		
+		/*
+		 * Simulate a milk volume (litres) produced by this
+		 * milking machine for a given day
+		 */
+
+		public float getMilkProduced(String day) {
+			
+			DateTimeFormatter df = DateTimeFormatter.ofPattern("d/MM/yyyy");
+			LocalDate from = LocalDate.parse(day, df);
+			Random rand = new Random();
+			return milkProductionRate * rand.nextFloat();
+		}
+		
+		
+		/*
+		 * Simulate the temperature that
+		 * the milk machine heated the milk to, for use in daily
+		 * report
+		 */
+		public float getMilkTemperatureHeated() {
+			Random rand = new Random();
+			return 60 + (20 * rand.nextFloat());
+		}
+
+		
+		/*
+		 * Simulate the temperature that
+		 * the milk machine cooled the milk to for storage, for use in daily
+		 * report
+		 */
+		public float getMilkTemperatureChilled() {
+			Random rand = new Random();
+			return 5 + (2 * rand.nextFloat());
+		}
+
+		
+		
+		/*
+		 * Simulate the length of time in minutes that
+		 * the milk machine heated milk for use in daily
+		 * report
+		 */
+		public float getHeatingDuration() {
+			Random rand = new Random();
+			return 59 + (2 * rand.nextFloat());
+		}
+
 	
 	}
 	
