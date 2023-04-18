@@ -35,6 +35,7 @@ public class TesterClient {
 		getMachineIDs();
 		getMilkQuantity(1);
 		getMilkQuantity(5);
+		getMilkReports();
 		
 	}
 	
@@ -119,6 +120,51 @@ public class TesterClient {
 	
 	
 	public static void getMilkReports() {
-		
+		StreamObserver<MilkReport> responseObserver = new StreamObserver<MilkReport>() {
+
+			@Override
+			public void onNext(MilkReport report) {
+				System.out.println("receiving report " + report.getReportDate() );
+			}
+
+			@Override
+			public void onError(Throwable t) {
+				t.printStackTrace();
+			}
+
+			@Override
+			public void onCompleted() {
+				System.out.println("stream is completed ... all milk reports recieved");
+			}
+
+		};
+
+		StreamObserver<MachineReportDate> requestObserver = asyncStub.getMilkReports(responseObserver);
+		try {
+			requestObserver.onNext(MachineReportDate.newBuilder()
+				.setMachineID(MachineId.newBuilder().setId(1).build())
+				.setReportDate("18/04/2023")
+				.build());
+			Thread.sleep(500);
+
+			requestObserver.onNext(MachineReportDate.newBuilder()
+					.setMachineID(MachineId.newBuilder().setId(3).build())
+					.setReportDate("18/04/2023")
+					.build());
+				Thread.sleep(500);
+
+
+			// Mark the end of requests
+			requestObserver.onCompleted();
+
+			
+			Thread.sleep(10000);
+			
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {			
+			e.printStackTrace();
+		}
+
 	}
 }
