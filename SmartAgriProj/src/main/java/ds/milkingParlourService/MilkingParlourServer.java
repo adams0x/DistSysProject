@@ -30,7 +30,7 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 		
 		Properties prop = service.getProperties();
 		service.registerService(prop);
-		int port = Integer.valueOf( prop.getProperty("servicePort") );// #.50051;
+		int port = Integer.valueOf( prop.getProperty("service_port") );// #.50051;
 
 
 		Server server = ServerBuilder.forPort(port)
@@ -53,10 +53,10 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	            prop.load(input);
 	            // get the property value and print it out
 	            System.out.println("Milking Parlour Service Properies ...");
-	            System.out.println("\t serviceType: " + prop.getProperty("serviceType"));
-	            System.out.println("\t serviceName: " +prop.getProperty("serviceName"));
-	            System.out.println("\t serviceDescription: " +prop.getProperty("serviceDescription"));
-		        System.out.println("\t servicePort: " +prop.getProperty("servicePort"));
+	            System.out.println("\t service_type: " + prop.getProperty("service_type"));
+	            System.out.println("\t service_name: " +prop.getProperty("service_name"));
+	            System.out.println("\t service_description: " +prop.getProperty("service_description"));
+		        System.out.println("\t service_port: " +prop.getProperty("service_port"));
 	        } catch (IOException ex) {
 	            ex.printStackTrace();
 	        }
@@ -69,11 +69,11 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 		 try {
 	            // Create a JmDNS instance
 	            JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
-	            String serviceType = prop.getProperty("serviceType") ;//"_http._tcp.local.";
-	            String serviceName = prop.getProperty("serviceName")  ;// "example";
+	            String serviceType = prop.getProperty("service_type") ;//"_http._tcp.local.";
+	            String serviceName = prop.getProperty("service_name")  ;// "example";
 	           // int service_port = 1234;
-	            int servicePort = Integer.valueOf( prop.getProperty("servicePort") );// #.50051;
-	            String serviceDescriptionProperties = prop.getProperty("serviceDescription")  ;//"path=index.html";
+	            int servicePort = Integer.valueOf( prop.getProperty("service_port") );// #.50051;
+	            String serviceDescriptionProperties = prop.getProperty("service_description")  ;//"path=index.html";
 	            // Register a service
 	            ServiceInfo serviceInfo = ServiceInfo.create(serviceType, serviceName, servicePort, serviceDescriptionProperties);
 	            jmdns.registerService(serviceInfo);

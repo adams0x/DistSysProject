@@ -10,7 +10,15 @@ import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
 import java.util.*;
+
+import javax.jmdns.JmDNS;
+import javax.jmdns.ServiceEvent;
+import javax.jmdns.ServiceInfo;
+import javax.jmdns.ServiceListener;
+
 import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 
 public class TesterClient {
@@ -18,12 +26,20 @@ public class TesterClient {
 	static MilkingParlourServiceBlockingStub blockingStub;
 	static MilkingParlourServiceStub asyncStub;
 	static ArrayList<Integer> machineIDs = new ArrayList<Integer>();
+	static ServiceInfo milkParlourServiceInfo;
 	
 	
 	public static void main(String[] args) throws InterruptedException {
-		// TODO Auto-generated method stub
+
+		
+		String milkParlourServiceType = "_milkingParlour._tcp.local.";
+		discoverMilkParlourService(milkParlourServiceType);
+		
+		String host = milkParlourServiceInfo.getHostAddresses()[0];
+		int port = milkParlourServiceInfo.getPort();
+
 		ManagedChannel channel = ManagedChannelBuilder
-				.forAddress("localhost", 50051)
+				.forAddress(host, port)
 				.usePlaintext()
 				.build();
 		
@@ -178,4 +194,60 @@ public class TesterClient {
 		}
 
 	}
+	
+	
+	public static void discoverMilkParlourService(String serviceType) {
+		try {
+			// Create a JmDNS instance
+			InetAddress addr = InetAddress.getLocalHost();
+			JmDNS jmdns = JmDNS.create(addr, InetAddress.getByName(addr.getHostName()).toString());
+			jmdns.addServiceListener(serviceType, new ServiceListener() {
+				
+				@Override
+				public void serviceResolved(ServiceEvent event) {
+					
+					System.out.println("Math Service resolved: " + event.getInfo());
+					milkParlourServiceInfo = event.getInfo();
+					int port = milkParlourServiceInfo.getPort();
+					System.out.println("resolving " + serviceType + " with properties ...");
+					System.out.println("\t port: " + port);
+					System.out.println("\t type:"+ event.getType());
+					System.out.println("\t name: " + event.getName());
+					System.out.println("\t description/properties: " + milkParlourServiceInfo.getNiceTextString());
+					System.out.println("\t host: " + milkParlourServiceInfo.getHostAddresses()[0]);
+				}
+				
+				@Override
+				public void serviceRemoved(ServiceEvent event) {
+					System.out.println("Math Service removed: " + event.getInfo());
+				}
+				
+				@Override
+				public void serviceAdded(ServiceEvent event) {
+					System.out.println("Math Service added: " + event.getInfo());
+				}
+			});
+			
+			// Wait a bit
+			Thread.sleep(20000);
+			jmdns.close();
+			System.out.println("d");
+
+		} catch (UnknownHostException e) {
+			System.out.println("a");
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			System.out.println("b");
+			System.out.println(e.getMessage());
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			System.out.println("c");
+			e.printStackTrace();
+		}
+		
+		
+	}
+
+	
+	
 }
