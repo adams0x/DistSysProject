@@ -3,6 +3,12 @@ package ds.client;
 
 import ds.milkingParlourService.MilkingParlourServiceGrpc;
 import ds.milkingParlourService.MilkingParlourServiceGrpc.*;
+import ds.livestockActivityService.AnimalDetail;
+import ds.livestockActivityService.AnimalId;
+import ds.livestockActivityService.LivestockActivityServiceGrpc;
+import ds.livestockActivityService.LivestockActivityServiceGrpc.LivestockActivityServiceBlockingStub;
+import ds.livestockActivityService.LivestockActivityServiceGrpc.LivestockActivityServiceStub;
+import ds.livestockActivityService.SetAnimalDetailsReply;
 import ds.milkingParlourService.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -23,11 +29,21 @@ import java.net.UnknownHostException;
 
 public class TesterClient {
 
+	/*
+	 * Milking parlour service members
+	 */
 	static MilkingParlourServiceBlockingStub blockingStub;
 	static MilkingParlourServiceStub asyncStub;
 	static ArrayList<Integer> machineIDs = new ArrayList<Integer>();
 	static ServiceInfo milkParlourServiceInfo;
-	
+
+	/*
+	 * Livestock activity service members
+	 */
+	static LivestockActivityServiceBlockingStub blockingStub2;
+	static LivestockActivityServiceStub asyncStub2;
+	static ArrayList<Integer> animalIDs = new ArrayList<Integer>();
+
 	
 	public static void main(String[] args) throws InterruptedException {
 
@@ -47,11 +63,30 @@ public class TesterClient {
 		asyncStub = MilkingParlourServiceGrpc.newStub(channel);
 
 		setMachineDetails();
-		Thread.sleep(1000);
+		Thread.sleep(2000); // important, allow time for all data transferred
 		getMachineIDs();
 		getMilkQuantity(1);
 		getMilkQuantity(5);
 		getMilkReports();
+		
+		
+		String host2 = "localhost";
+		int port2 = 50052;
+
+
+
+		ManagedChannel channel2 = ManagedChannelBuilder
+				.forAddress(host2, port2)
+				.usePlaintext()
+				.build();
+		
+		blockingStub2 = LivestockActivityServiceGrpc.newBlockingStub(channel2);
+		asyncStub2 = LivestockActivityServiceGrpc.newStub(channel2);
+		
+
+		setAnimalDetails();
+		Thread.sleep(2000); // important, keep client alive till all data transferred
+
 		
 	}
 	
@@ -70,7 +105,7 @@ public class TesterClient {
 			}
 			@Override
 			public void onCompleted() {
-				System.out.println("stream is completed.");
+				System.out.println("streaming machines to server is completed.");
 			}
 		};		
 		
@@ -81,7 +116,6 @@ public class TesterClient {
 		try {
 			sc = new Scanner(new File(name));
 			sc.nextLine();
-			int i = 0;
 			String st = "";
 			while (sc.hasNextLine())  //returns a boolean value
 			{
@@ -245,5 +279,54 @@ public class TesterClient {
 	}
 
 	
-	
+	public static void setAnimalDetails() {
+		//This method client streams machine details for multiple machines to the server.
+		//The service will use this data for simulating milking machines
+
+		StreamObserver<SetAnimalDetailsReply> responseObserver = new StreamObserver<SetAnimalDetailsReply>() {
+			@Override
+			public void onNext(SetAnimalDetailsReply msg) {
+				System.out.println(msg.getSetAnimalDetailsReply());
+			}
+			@Override
+			public void onError(Throwable t) {
+				t.printStackTrace();
+			}
+			@Override
+			public void onCompleted() {
+				System.out.println("streaming animals to server is completed.");
+			}
+		};		
+		
+		StreamObserver<AnimalDetail> requestObserver = asyncStub2.setAnimalDetails(responseObserver);
+		File directory = new File("");
+  		String name = directory.getAbsolutePath() + "\\src\\main\\resources\\animals.csv";
+		Scanner sc;
+		try {
+			sc = new Scanner(new File(name));
+			sc.nextLine();
+			String st = "";
+			while (sc.hasNextLine())  //returns a boolean value
+			{
+				st = sc.nextLine();
+				String[] data = st.split(",");
+				AnimalId mcid = AnimalId.newBuilder().setId(Integer.parseInt(data[0])).build();
+				AnimalDetail md = AnimalDetail.newBuilder()
+						.setAnimalID(mcid)
+						.setTypeOfAnimalValue(Integer.parseInt(data[1]))
+						.setDateOfBirth(data[2])
+						.setDateNextVaccine(data[3])
+						.build();
+				requestObserver.onNext(md);
+			}
+			sc.close();  //closes the scanner
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
+		requestObserver.onCompleted();
+
+	}
+
 }
