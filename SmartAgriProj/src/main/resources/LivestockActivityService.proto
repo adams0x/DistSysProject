@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "ds.livestockActivityService";
+option java_outer_classname = "LivestockActivityServiceImpl";
+
+
+package livestockActivityService;
+
+service LivestockActivityService {
+
+  rpc SetAnimalDetails(stream AnimalDetail) returns (SetAnimalDetailsReply) {}
+
+  rpc GetAnimalIds(Empty) returns (stream AnimalId) {}
+
+  rpc LiveHeartRate(AnimalId) returns (stream LiveHeartRate) {}
+
+  rpc HeartRateHistory(AnimalTimeSpan) returns (HeartRateHistory) {}
+
+  rpc CurrentActivity(AnimalId) returns (CurrentActivity) {}
+
+  rpc GetAnimalVitals(stream AnimalId) returns (stream AnimalHealthInfo) {}
+
+}
+
+message AnimalId {
+  int32 id = 1;
+}
+
+message AnimalDetail {
+  AnimalId animalID = 1;
+  enum TypeOfAnimal{
+  	COW =0;
+  	SHEEP=1;
+  	HORSE=2;
+  	GOAT=3;
+  }
+  TypeOfAnimal typeOfAnimal = 2;
+  string dateOfBirth = 3;
+  string dateNextVaccine = 4;
+}
+
+message SetAnimalDetailsReply {
+  string setAnimalDetailsReply = 1;
+}
+
+message AnimalTimeSpan {
+  string startDate = 1;
+  string endDate = 2;
+  AnimalId machineID = 3;
+}
+
+message LiveHeartRate {
+  int32 bpm = 1;
+}
+
+message HeartRateHistory {
+  int32 bpm = 1;
+  string timeStamp = 2;
+}
+
+message CurrentActivity {
+  AnimalId animalID = 1;
+  enum Activity{
+  	standing =0;
+  	feeding=1;
+  	drinking=2;
+  	lying=3;
+  	moving=4;
+  }
+  Activity activity = 2;
+}
+
+
+
+message AnimalHealthInfo {
+  string reportDate = 1;
+  int32 minBPM = 2;
+  int32 maxBPM = 3;
+  int32 avgBPM = 4;
+  enum Health{
+  	healthy =0;
+  	vaccineDue=1;
+  	highHeartRate=2;
+  	lowHeartRate=3;
+  }
+  Health healthIndicator = 5;
+  AnimalDetail animal = 6;
+
+}
+
+message Empty{
+}
