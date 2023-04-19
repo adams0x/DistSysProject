@@ -185,7 +185,7 @@ public class TesterClient {
 			requestObserver.onCompleted();
 
 			
-			Thread.sleep(10000);
+			//Thread.sleep(2000);
 			
 		} catch (RuntimeException e) {
 			e.printStackTrace();
@@ -199,8 +199,8 @@ public class TesterClient {
 	public static void discoverMilkParlourService(String serviceType) {
 		try {
 			// Create a JmDNS instance
-			InetAddress addr = InetAddress.getLocalHost();
-			JmDNS jmdns = JmDNS.create(addr, InetAddress.getByName(addr.getHostName()).toString());
+			//InetAddress addr = InetAddress.getLocalHost();
+			JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
 			jmdns.addServiceListener(serviceType, new ServiceListener() {
 				
 				@Override
@@ -229,19 +229,15 @@ public class TesterClient {
 			});
 			
 			// Wait a bit
-			Thread.sleep(20000);
+			Thread.sleep(2000);
 			jmdns.close();
-			System.out.println("d");
-
+			
 		} catch (UnknownHostException e) {
-			System.out.println("a");
 			System.out.println(e.getMessage());
 		} catch (IOException e) {
-			System.out.println("b");
 			System.out.println(e.getMessage());
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			System.out.println("c");
 			e.printStackTrace();
 		}
 		
