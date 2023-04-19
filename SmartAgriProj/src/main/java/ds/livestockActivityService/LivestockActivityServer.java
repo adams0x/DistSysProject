@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import ds.livestockActivityService.LivestockActivityServiceGrpc.LivestockActivityServiceImplBase;
 import io.grpc.Server;
@@ -75,8 +77,9 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 
 	@Override
 	public void getLiveHeartRate(AnimalId request, StreamObserver<LiveHeartRate> responseObserver) {
-		// TODO Auto-generated method stub
-		super.getLiveHeartRate(request, responseObserver);
+		Timer timer = new Timer();
+		Animal animal = machines.get(request.getId());
+	    timer.schedule(new LiveHeartRateGenerator( responseObserver, animal ), 0, 1000);
 	}
 
 	@Override
@@ -102,6 +105,7 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 		int id;
 		LocalDate dateOfBirth;
 		LocalDate dateNextVaccine;
+		int heartRate;
 
 		
 		/*
@@ -118,8 +122,36 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 		public int getId() {
 			return id;
 		}
+		
+		
+		public int getHeartRate() {
+			return heartRate;
+		}
 
 
+	}
+	
+	
+	
+	class LiveHeartRateGenerator extends TimerTask {
+
+	    private final StreamObserver<LiveHeartRate> responseObserver;
+	    private final Animal animal;
+
+
+	    LiveHeartRateGenerator ( StreamObserver<LiveHeartRate> responseObserver, Animal animal )
+	    {
+	      this.responseObserver = responseObserver;
+	      this.animal = animal;
+	    }
+
+	    public void run() {
+	      //Do stuff
+	    	LiveHeartRate lhr = LiveHeartRate.newBuilder()
+	    			.setBpm(animal.getHeartRate())
+	    			.build();
+	    	responseObserver.onNext(lhr);
+	    }
 	}
 	
 }

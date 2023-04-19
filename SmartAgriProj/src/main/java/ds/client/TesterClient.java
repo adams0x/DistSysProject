@@ -5,6 +5,7 @@ import ds.milkingParlourService.MilkingParlourServiceGrpc;
 import ds.milkingParlourService.MilkingParlourServiceGrpc.*;
 import ds.livestockActivityService.AnimalDetail;
 import ds.livestockActivityService.AnimalId;
+import ds.livestockActivityService.LiveHeartRate;
 import ds.livestockActivityService.LivestockActivityServiceGrpc;
 import ds.livestockActivityService.LivestockActivityServiceGrpc.LivestockActivityServiceBlockingStub;
 import ds.livestockActivityService.LivestockActivityServiceGrpc.LivestockActivityServiceStub;
@@ -86,6 +87,7 @@ public class TesterClient {
 
 		setAnimalDetails();
 		Thread.sleep(2000); // important, keep client alive till all data transferred
+		getLiveHeartRate(200);
 
 		
 	}
@@ -326,6 +328,25 @@ public class TesterClient {
 			e.printStackTrace();
 		}
 		requestObserver.onCompleted();
+
+	}
+
+	
+	
+	public static void getLiveHeartRate(int animalID) {
+		AnimalId id = AnimalId.newBuilder()
+				.setId(animalID)
+				.build();
+		try {
+			Iterator<LiveHeartRate> it = blockingStub2.getLiveHeartRate(id);
+			System.out.println("Getting heart rate:");
+			while(it.hasNext()) {
+				LiveHeartRate temp = it.next();
+				System.out.println("Getting heart rate:" + temp.getBpm());				
+			}
+		} catch (StatusRuntimeException e) {
+			e.printStackTrace();
+		}
 
 	}
 
