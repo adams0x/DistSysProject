@@ -13,11 +13,11 @@ service LivestockActivityService {
 
   rpc GetAnimalIds(Empty) returns (stream AnimalId) {}
 
-  rpc LiveHeartRate(AnimalId) returns (stream LiveHeartRate) {}
+  rpc GetLiveHeartRate(AnimalId) returns (stream LiveHeartRate) {}
 
-  rpc HeartRateHistory(AnimalTimeSpan) returns (HeartRateHistory) {}
+  rpc GetHeartRateHistory(AnimalTimeSpan) returns (HeartRateHistory) {}
 
-  rpc CurrentActivity(AnimalId) returns (CurrentActivity) {}
+  rpc GetCurrentActivity(AnimalId) returns (CurrentActivity) {}
 
   rpc GetAnimalVitals(stream AnimalId) returns (stream AnimalHealthInfo) {}
 
