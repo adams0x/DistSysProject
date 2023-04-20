@@ -10,7 +10,10 @@ import ds.livestockActivityService.LivestockActivityServiceGrpc;
 import ds.livestockActivityService.LivestockActivityServiceGrpc.LivestockActivityServiceBlockingStub;
 import ds.livestockActivityService.LivestockActivityServiceGrpc.LivestockActivityServiceStub;
 import ds.livestockActivityService.SetAnimalDetailsReply;
+//import ds.livestockActivityService.LivestockActivityServer.Animal;
 import ds.milkingParlourService.*;
+import io.grpc.Context;
+import io.grpc.Context.CancellableContext;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
@@ -44,6 +47,10 @@ public class TesterClient {
 	static LivestockActivityServiceBlockingStub blockingStub2;
 	static LivestockActivityServiceStub asyncStub2;
 	static ArrayList<Integer> animalIDs = new ArrayList<Integer>();
+	
+	
+	//static StreamObserverWithCancel bpmStreamObserver =  new StreamObserverWithCancel();
+	static CancellableContext withCancellation2;
 
 	
 	public static void main(String[] args) throws InterruptedException {
@@ -87,7 +94,13 @@ public class TesterClient {
 
 		setAnimalDetails();
 		Thread.sleep(2000); // important, keep client alive till all data transferred
-		getLiveHeartRate(200);
+		getLiveHeartRateBegin(200);
+		Thread.sleep(5000);
+		withCancellation2.cancel(null);
+		//bpmStreamObs.cancel();
+		Thread.sleep(5000);
+		//bpmStreamObserver.
+		System.out.println("Client Exit");
 
 		
 	}
@@ -334,20 +347,74 @@ public class TesterClient {
 	
 	
 	public static void getLiveHeartRate(int animalID) {
+		
+		CancellableContext withCancellation;
 		AnimalId id = AnimalId.newBuilder()
 				.setId(animalID)
 				.build();
 		try {
-			Iterator<LiveHeartRate> it = blockingStub2.getLiveHeartRate(id);
-			System.out.println("Getting heart rate:");
-			while(it.hasNext()) {
-				LiveHeartRate temp = it.next();
-				System.out.println("Getting heart rate:" + temp.getBpm());				
-			}
+			withCancellation = Context.current().withCancellation();
+
+			withCancellation.run(() -> {
+				int count = 0;
+				System.out.println("Attempt to get bpm sync");
+				Iterator<LiveHeartRate> it = blockingStub2.getLiveHeartRate(id);
+				while(it.hasNext()) {
+					LiveHeartRate temp = it.next();
+					System.out.println("Getting heart rate:" + temp.getBpm() + count);
+					count++;
+					if(count==5) {
+						withCancellation.cancel(null);
+						System.out.println("Client has cancelled");
+						return;
+					}
+						
+				}
+			});
+
 		} catch (StatusRuntimeException e) {
 			e.printStackTrace();
 		}
 
 	}
 
+	
+
+	public static void getLiveHeartRateBegin(int animalID) {
+		
+		StreamObserver<LiveHeartRate> ab = new StreamObserver<LiveHeartRate>() {
+			@Override
+			public void onNext(LiveHeartRate machine) {
+				System.out.println("Getting heart rate:" + machine.getBpm());
+			}
+			
+			@Override
+			public void onError(Throwable t) {
+				//t.printStackTrace();
+				System.out.println("Server stream live heartrate error: " +t);
+			}
+
+			@Override
+			public void onCompleted() {
+				System.out.println("Server finished sending live heartrate");
+			}
+		};		
+		
+		AnimalId id = AnimalId.newBuilder()
+				.setId(animalID)
+				.build();
+		try {
+			withCancellation2 = Context.current().withCancellation();
+			withCancellation2.run(() -> {
+				asyncStub2.getLiveHeartRate(id, ab);
+			});
+
+		} catch (StatusRuntimeException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	
+	
 }

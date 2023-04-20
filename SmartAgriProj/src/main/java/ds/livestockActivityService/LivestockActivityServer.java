@@ -13,6 +13,7 @@ import java.util.TimerTask;
 import ds.livestockActivityService.LivestockActivityServiceGrpc.LivestockActivityServiceImplBase;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 
 public class LivestockActivityServer extends LivestockActivityServiceImplBase {
@@ -146,11 +147,21 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 	    }
 
 	    public void run() {
-	      //Do stuff
-	    	LiveHeartRate lhr = LiveHeartRate.newBuilder()
-	    			.setBpm(animal.getHeartRate())
-	    			.build();
-	    	responseObserver.onNext(lhr);
+	    	ServerCallStreamObserver<LiveHeartRate> scStreamObserver
+	    	= ((ServerCallStreamObserver<LiveHeartRate>)responseObserver);
+	    	if (scStreamObserver.isCancelled()) {
+	    		this.cancel();
+	    		System.out.println("live haert reate cancelled by client");
+	    	}
+	    	else
+	    	{
+		    	LiveHeartRate lhr = LiveHeartRate.newBuilder()
+		    			.setBpm(animal.getHeartRate())
+		    			.build();
+		    	scStreamObserver.onNext(lhr);
+	    		
+	    	}
+	    	
 	    }
 	}
 	
