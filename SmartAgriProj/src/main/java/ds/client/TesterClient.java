@@ -5,6 +5,8 @@ import ds.milkingParlourService.MilkingParlourServiceGrpc;
 import ds.milkingParlourService.MilkingParlourServiceGrpc.*;
 import ds.livestockActivityService.AnimalDetail;
 import ds.livestockActivityService.AnimalId;
+import ds.livestockActivityService.AnimalTimeSpan;
+import ds.livestockActivityService.HeartRateHistory;
 import ds.livestockActivityService.LiveHeartRate;
 import ds.livestockActivityService.LivestockActivityServiceGrpc;
 import ds.livestockActivityService.LivestockActivityServiceGrpc.LivestockActivityServiceBlockingStub;
@@ -49,7 +51,6 @@ public class TesterClient {
 	static ArrayList<Integer> animalIDs = new ArrayList<Integer>();
 	
 	
-	//static StreamObserverWithCancel bpmStreamObserver =  new StreamObserverWithCancel();
 	static CancellableContext withCancellation2;
 
 	
@@ -95,8 +96,10 @@ public class TesterClient {
 		setAnimalDetails();
 		Thread.sleep(2000); // important, keep client alive till all data transferred
 		getLiveHeartRateBegin(200);
+		getAnimalIDs();
 		Thread.sleep(5000);
 		withCancellation2.cancel(null);
+		getHeartRateHistory();
 		//bpmStreamObs.cancel();
 		Thread.sleep(5000);
 		//bpmStreamObserver.
@@ -344,6 +347,26 @@ public class TesterClient {
 
 	}
 
+
+	
+	public static void getAnimalIDs() {
+		ds.livestockActivityService.Empty emp = ds.livestockActivityService.Empty.newBuilder().build();
+		try {
+			Iterator<AnimalId> it = blockingStub2.getAnimalIds(emp);
+			System.out.println("Getting animal id's:");
+			while(it.hasNext()) {
+				AnimalId temp = it.next();
+				animalIDs.add(temp.getId());				
+			}
+			System.out.println(animalIDs.toString());
+		} catch (StatusRuntimeException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	
+	
 	
 	
 	public static void getLiveHeartRate(int animalID) {
@@ -382,10 +405,10 @@ public class TesterClient {
 
 	public static void getLiveHeartRateBegin(int animalID) {
 		
-		StreamObserver<LiveHeartRate> ab = new StreamObserver<LiveHeartRate>() {
+		StreamObserver<LiveHeartRate> streamHeartRateRecvd = new StreamObserver<LiveHeartRate>() {
 			@Override
-			public void onNext(LiveHeartRate machine) {
-				System.out.println("Getting heart rate:" + machine.getBpm());
+			public void onNext(LiveHeartRate lhr) {
+				System.out.println("Getting heart rate:" + lhr.getBpm());
 			}
 			
 			@Override
@@ -406,13 +429,45 @@ public class TesterClient {
 		try {
 			withCancellation2 = Context.current().withCancellation();
 			withCancellation2.run(() -> {
-				asyncStub2.getLiveHeartRate(id, ab);
+				asyncStub2.getLiveHeartRate(id, streamHeartRateRecvd);
 			});
 
 		} catch (StatusRuntimeException e) {
 			e.printStackTrace();
 		}
 
+	}
+	
+	
+	public static void getHeartRateHistory() {
+		StreamObserver<HeartRateHistory> streamHeartRateHistRecvd = new StreamObserver<HeartRateHistory>() {
+			@Override
+			public void onNext(HeartRateHistory heartRateHist) {
+				System.out.println("Getting heart rate history:" + heartRateHist.getBpm());
+			}
+			
+			@Override
+			public void onError(Throwable t) {
+				System.out.println("Server stream heartrate history error: " +t);
+			}
+
+			@Override
+			public void onCompleted() {
+				System.out.println("Finished receiving heartrate history");
+			}
+		};
+		AnimalId id = AnimalId.newBuilder()
+				.setId(222)
+				.build();
+		
+		AnimalTimeSpan timeSpan = AnimalTimeSpan.newBuilder()
+				.setStartDate("20/04/2023")
+				.setEndDate("21/04/2023")
+				.setMachineID(id)
+				.build();
+		
+		asyncStub2.getHeartRateHistory(timeSpan, streamHeartRateHistRecvd);
+		
 	}
 
 	

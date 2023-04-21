@@ -1,6 +1,7 @@
 package ds.livestockActivityService;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -13,13 +14,17 @@ import java.util.TimerTask;
 import ds.livestockActivityService.LivestockActivityServiceGrpc.LivestockActivityServiceImplBase;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.Status;
 import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 
 public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 	
-	List<Animal> machines = new ArrayList<Animal>();
+	List<Animal> animals = new ArrayList<Animal>();
 
+
+	
+	
 	public static void main(String[] args) throws InterruptedException, IOException {
 		
 		LivestockActivityServer service = new LivestockActivityServer();
@@ -37,6 +42,9 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 		
 	}
 
+
+	
+	
 	@Override
 	public StreamObserver<AnimalDetail> setAnimalDetails(StreamObserver<SetAnimalDetailsReply> responseObserver) {
 		// Client streaming: client sends a list of animal data for simulating
@@ -44,14 +52,14 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 			
 			@Override
 			public void onNext(AnimalDetail machine) {
-				Animal mc = new Animal(machine.getAnimalID().getId(), machine.getDateOfBirth(), machine.getDateNextVaccine());
-				for(int i = 0; i < machines.size(); i++) {
-					if(machines.get(i).getId() == mc.getId()) {
-						machines.set(i, mc);
+				Animal animal = new Animal(machine.getAnimalID().getId(), machine.getDateOfBirth(), machine.getDateNextVaccine());
+				for(int i = 0; i < animals.size(); i++) {
+					if(animals.get(i).getId() == animal.getId()) {
+						animals.set(i, animal);
 						return;
 					}
 				}
-				machines.add(mc);
+				animals.add(animal);
 			}
 			
 			@Override
@@ -60,7 +68,7 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 
 			@Override
 			public void onCompleted() {
-				String str = "Successfully added " + machines.size() + " animals to server";
+				String str = "Successfully added " + animals.size() + " animals to server";
 				SetAnimalDetailsReply reply = SetAnimalDetailsReply.newBuilder().setSetAnimalDetailsReply(str).build();
 				responseObserver.onNext(reply);
 				responseObserver.onCompleted();
@@ -72,21 +80,39 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 	
 	@Override
 	public void getAnimalIds(Empty request, StreamObserver<AnimalId> responseObserver) {
-		// TODO Auto-generated method stub
-		super.getAnimalIds(request, responseObserver);
+		//Server streaming: this returns a stream of animal id's to the client so that
+		//the client knows what animals can be queried
+		for(Animal animal : animals) {
+			AnimalId aid = AnimalId.newBuilder().setId(animal.getId()).build();
+			responseObserver.onNext(aid);
+		}
+		responseObserver.onCompleted();
 	}
 
 	@Override
 	public void getLiveHeartRate(AnimalId request, StreamObserver<LiveHeartRate> responseObserver) {
 		Timer timer = new Timer();
-		Animal animal = machines.get(request.getId());
+		Animal animal = animals.get(request.getId());
 	    timer.schedule(new LiveHeartRateGenerator( responseObserver, animal ), 0, 1000);
 	}
 
 	@Override
 	public void getHeartRateHistory(AnimalTimeSpan request, StreamObserver<HeartRateHistory> responseObserver) {
-		// TODO Auto-generated method stub
-		super.getHeartRateHistory(request, responseObserver);
+		int[] heartRateHist = animals.get(request.getMachineID().getId()).getHeartRateHistory(request.getStartDate(), request.getEndDate());
+		if(heartRateHist == null)
+		
+		responseObserver.onError(io.grpc.Status.INVALID_ARGUMENT.withDescription("The time range is too large")
+				.asRuntimeException());
+		else {
+			for(int i = 0; i<heartRateHist.length; i++) {
+				HeartRateHistory hrh = HeartRateHistory.newBuilder()
+						.setTimeStamp(Integer.toString(i))
+						.setBpm(heartRateHist[i])
+						.build();
+				responseObserver.onNext(hrh);
+			}
+			responseObserver.onCompleted();
+		}
 	}
 
 	@Override
@@ -102,6 +128,9 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 	}
 
 
+
+	
+	
 	private class Animal{
 		int id;
 		LocalDate dateOfBirth;
@@ -117,6 +146,8 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 			DateTimeFormatter df = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 			this.dateOfBirth = LocalDate.parse(dateOfBirth, df);
 			this.dateNextVaccine = LocalDate.parse(dateNextVaccine, df);
+			Random rand = new Random();
+			heartRate = rand.nextInt(71) +50; //range from 50 ~ 120 bpm
 		}
 		
 		
@@ -126,7 +157,25 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 		
 		
 		public int getHeartRate() {
+			Random rand = new Random();
+			heartRate = heartRate + (rand.nextInt(3) - 1);
 			return heartRate;
+		}
+		
+		
+		public int[] getHeartRateHistory(String dateFrom, String dateTo) {
+			DateTimeFormatter df = DateTimeFormatter.ofPattern("d/MM/yyyy");
+			LocalDate from = LocalDate.parse(dateFrom, df);
+			LocalDate to = LocalDate.parse(dateTo, df);
+			long numSamples = Duration.between(from.atStartOfDay(), to.atStartOfDay()).toHours();
+			if(numSamples>1008)
+				return null;
+			int[] heartHistSamples = new int[(int)numSamples];
+			Random rand = new Random();
+			for(int i = 0; i<numSamples; i++) {
+				heartHistSamples[i] = heartRate + (rand.nextInt(3) - 1);
+			}
+			return heartHistSamples;
 		}
 
 
@@ -158,8 +207,7 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 		    	LiveHeartRate lhr = LiveHeartRate.newBuilder()
 		    			.setBpm(animal.getHeartRate())
 		    			.build();
-		    	scStreamObserver.onNext(lhr);
-	    		
+		    	scStreamObserver.onNext(lhr);	    		
 	    	}
 	    	
 	    }

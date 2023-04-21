@@ -212,6 +212,10 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	
 	
 	
+	/***************************************************
+	 * Milking machine class that simulates
+	 * and generates data to mimik a milking machine
+	 ***************************************************/
 	
 	private class Machine{
 		int id;
@@ -261,8 +265,7 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 		
 		/*
 		 * Simulate a milk volume (litres) produced by this
-		 * milking machine for a given day
-		 */
+		 * milking machine for a given day*/
 		public float getMilkProduced(String day) {
 			
 			DateTimeFormatter df = DateTimeFormatter.ofPattern("d/MM/yyyy");
@@ -275,8 +278,7 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 		/*
 		 * Simulate the temperature that
 		 * the milk machine heated the milk to, for use in daily
-		 * report
-		 */
+		 * report*/
 		public float getMilkTemperatureHeated() {
 			Random rand = new Random();
 			return 60 + (20 * rand.nextFloat());
@@ -286,8 +288,7 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 		/*
 		 * Simulate the temperature that
 		 * the milk machine cooled the milk to for storage, for use in daily
-		 * report
-		 */
+		 * report*/
 		public float getMilkTemperatureChilled() {
 			Random rand = new Random();
 			return 5 + (2 * rand.nextFloat());
