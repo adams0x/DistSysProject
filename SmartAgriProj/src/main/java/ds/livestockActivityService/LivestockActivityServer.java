@@ -98,12 +98,13 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 
 	@Override
 	public void getHeartRateHistory(AnimalTimeSpan request, StreamObserver<HeartRateHistory> responseObserver) {
-		int[] heartRateHist = animals.get(request.getMachineID().getId()).getHeartRateHistory(request.getStartDate(), request.getEndDate());
-		if(heartRateHist == null)
-		
-		responseObserver.onError(io.grpc.Status.INVALID_ARGUMENT.withDescription("The time range is too large")
-				.asRuntimeException());
+		int[] heartRateHist = animals.get(request.getAnimalID().getId()).getHeartRateHistory(request.getStartDate(), request.getEndDate());
+		if(heartRateHist == null) {
+			responseObserver.onError(io.grpc.Status.INVALID_ARGUMENT.withDescription("The time range is too large")
+					.asRuntimeException());			
+		}
 		else {
+			System.out.println("Sending heartrate history samples: " + heartRateHist.length);
 			for(int i = 0; i<heartRateHist.length; i++) {
 				HeartRateHistory hrh = HeartRateHistory.newBuilder()
 						.setTimeStamp(Integer.toString(i))
@@ -173,7 +174,8 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 			int[] heartHistSamples = new int[(int)numSamples];
 			Random rand = new Random();
 			for(int i = 0; i<numSamples; i++) {
-				heartHistSamples[i] = heartRate + (rand.nextInt(3) - 1);
+				heartRate = heartRate + (rand.nextInt(11) - 5);
+				heartHistSamples[i] = heartRate;
 			}
 			return heartHistSamples;
 		}

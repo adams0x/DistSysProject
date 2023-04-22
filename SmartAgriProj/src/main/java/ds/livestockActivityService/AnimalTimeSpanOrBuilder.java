@@ -28,15 +28,15 @@ public interface AnimalTimeSpanOrBuilder extends
       getEndDateBytes();
 
   /**
-   * <code>.livestockActivityService.AnimalId machineID = 3;</code>
+   * <code>.livestockActivityService.AnimalId animalID = 3;</code>
    */
-  boolean hasMachineID();
+  boolean hasAnimalID();
   /**
-   * <code>.livestockActivityService.AnimalId machineID = 3;</code>
+   * <code>.livestockActivityService.AnimalId animalID = 3;</code>
    */
-  ds.livestockActivityService.AnimalId getMachineID();
+  ds.livestockActivityService.AnimalId getAnimalID();
   /**
-   * <code>.livestockActivityService.AnimalId machineID = 3;</code>
+   * <code>.livestockActivityService.AnimalId animalID = 3;</code>
    */
-  ds.livestockActivityService.AnimalIdOrBuilder getMachineIDOrBuilder();
+  ds.livestockActivityService.AnimalIdOrBuilder getAnimalIDOrBuilder();
 }

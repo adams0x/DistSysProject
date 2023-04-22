@@ -97,12 +97,11 @@ public class TesterClient {
 		Thread.sleep(2000); // important, keep client alive till all data transferred
 		getLiveHeartRateBegin(200);
 		getAnimalIDs();
+		getHeartRateHistory();
 		Thread.sleep(5000);
 		withCancellation2.cancel(null);
 		getHeartRateHistory();
-		//bpmStreamObs.cancel();
 		Thread.sleep(5000);
-		//bpmStreamObserver.
 		System.out.println("Client Exit");
 
 		
@@ -258,7 +257,7 @@ public class TesterClient {
 				@Override
 				public void serviceResolved(ServiceEvent event) {
 					
-					System.out.println("Math Service resolved: " + event.getInfo());
+					System.out.println("Milk Parlour Service resolved: " + event.getInfo());
 					milkParlourServiceInfo = event.getInfo();
 					int port = milkParlourServiceInfo.getPort();
 					System.out.println("resolving " + serviceType + " with properties ...");
@@ -271,12 +270,12 @@ public class TesterClient {
 				
 				@Override
 				public void serviceRemoved(ServiceEvent event) {
-					System.out.println("Math Service removed: " + event.getInfo());
+					System.out.println("Milk Parlour Service removed: " + event.getInfo());
 				}
 				
 				@Override
 				public void serviceAdded(ServiceEvent event) {
-					System.out.println("Math Service added: " + event.getInfo());
+					System.out.println("Milk Parlour Service added: " + event.getInfo());
 				}
 			});
 			
@@ -463,7 +462,7 @@ public class TesterClient {
 		AnimalTimeSpan timeSpan = AnimalTimeSpan.newBuilder()
 				.setStartDate("20/04/2023")
 				.setEndDate("21/04/2023")
-				.setMachineID(id)
+				.setAnimalID(id)
 				.build();
 		
 		asyncStub2.getHeartRateHistory(timeSpan, streamHeartRateHistRecvd);

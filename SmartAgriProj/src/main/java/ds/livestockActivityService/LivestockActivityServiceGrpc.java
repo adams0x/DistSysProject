@@ -130,7 +130,7 @@ public final class LivestockActivityServiceGrpc {
       fullMethodName = SERVICE_NAME + '/' + "GetHeartRateHistory",
       requestType = ds.livestockActivityService.AnimalTimeSpan.class,
       responseType = ds.livestockActivityService.HeartRateHistory.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
   public static io.grpc.MethodDescriptor<ds.livestockActivityService.AnimalTimeSpan,
       ds.livestockActivityService.HeartRateHistory> getGetHeartRateHistoryMethod() {
     io.grpc.MethodDescriptor<ds.livestockActivityService.AnimalTimeSpan, ds.livestockActivityService.HeartRateHistory> getGetHeartRateHistoryMethod;
@@ -139,7 +139,7 @@ public final class LivestockActivityServiceGrpc {
         if ((getGetHeartRateHistoryMethod = LivestockActivityServiceGrpc.getGetHeartRateHistoryMethod) == null) {
           LivestockActivityServiceGrpc.getGetHeartRateHistoryMethod = getGetHeartRateHistoryMethod = 
               io.grpc.MethodDescriptor.<ds.livestockActivityService.AnimalTimeSpan, ds.livestockActivityService.HeartRateHistory>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
               .setFullMethodName(generateFullMethodName(
                   "livestockActivityService.LivestockActivityService", "GetHeartRateHistory"))
               .setSampledToLocalTracing(true)
@@ -313,7 +313,7 @@ public final class LivestockActivityServiceGrpc {
                   this, METHODID_GET_LIVE_HEART_RATE)))
           .addMethod(
             getGetHeartRateHistoryMethod(),
-            asyncUnaryCall(
+            asyncServerStreamingCall(
               new MethodHandlers<
                 ds.livestockActivityService.AnimalTimeSpan,
                 ds.livestockActivityService.HeartRateHistory>(
@@ -382,7 +382,7 @@ public final class LivestockActivityServiceGrpc {
      */
     public void getHeartRateHistory(ds.livestockActivityService.AnimalTimeSpan request,
         io.grpc.stub.StreamObserver<ds.livestockActivityService.HeartRateHistory> responseObserver) {
-      asyncUnaryCall(
+      asyncServerStreamingCall(
           getChannel().newCall(getGetHeartRateHistoryMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -439,8 +439,9 @@ public final class LivestockActivityServiceGrpc {
 
     /**
      */
-    public ds.livestockActivityService.HeartRateHistory getHeartRateHistory(ds.livestockActivityService.AnimalTimeSpan request) {
-      return blockingUnaryCall(
+    public java.util.Iterator<ds.livestockActivityService.HeartRateHistory> getHeartRateHistory(
+        ds.livestockActivityService.AnimalTimeSpan request) {
+      return blockingServerStreamingCall(
           getChannel(), getGetHeartRateHistoryMethod(), getCallOptions(), request);
     }
 
@@ -468,14 +469,6 @@ public final class LivestockActivityServiceGrpc {
     protected LivestockActivityServiceFutureStub build(io.grpc.Channel channel,
         io.grpc.CallOptions callOptions) {
       return new LivestockActivityServiceFutureStub(channel, callOptions);
-    }
-
-    /**
-     */
-    public com.google.common.util.concurrent.ListenableFuture<ds.livestockActivityService.HeartRateHistory> getHeartRateHistory(
-        ds.livestockActivityService.AnimalTimeSpan request) {
-      return futureUnaryCall(
-          getChannel().newCall(getGetHeartRateHistoryMethod(), getCallOptions()), request);
     }
 
     /**

@@ -77,43 +77,43 @@ public final class LivestockActivityServiceImpl {
       "rth\030\003 \001(\t\022\027\n\017dateNextVaccine\030\004 \001(\t\"7\n\014Ty" +
       "peOfAnimal\022\007\n\003COW\020\000\022\t\n\005SHEEP\020\001\022\t\n\005HORSE\020" +
       "\002\022\010\n\004GOAT\020\003\"6\n\025SetAnimalDetailsReply\022\035\n\025" +
-      "setAnimalDetailsReply\030\001 \001(\t\"k\n\016AnimalTim" +
+      "setAnimalDetailsReply\030\001 \001(\t\"j\n\016AnimalTim" +
       "eSpan\022\021\n\tstartDate\030\001 \001(\t\022\017\n\007endDate\030\002 \001(" +
-      "\t\0225\n\tmachineID\030\003 \001(\0132\".livestockActivity" +
-      "Service.AnimalId\"\034\n\rLiveHeartRate\022\013\n\003bpm" +
-      "\030\001 \001(\005\"2\n\020HeartRateHistory\022\013\n\003bpm\030\001 \001(\005\022" +
-      "\021\n\ttimeStamp\030\002 \001(\t\"\331\001\n\017CurrentActivity\0224" +
-      "\n\010animalID\030\001 \001(\0132\".livestockActivityServ" +
-      "ice.AnimalId\022D\n\010activity\030\002 \001(\01622.livesto" +
-      "ckActivityService.CurrentActivity.Activi" +
-      "ty\"J\n\010Activity\022\014\n\010standing\020\000\022\013\n\007feeding\020" +
-      "\001\022\014\n\010drinking\020\002\022\t\n\005lying\020\003\022\n\n\006moving\020\004\"\246" +
-      "\002\n\020AnimalHealthInfo\022\022\n\nreportDate\030\001 \001(\t\022" +
-      "\016\n\006minBPM\030\002 \001(\005\022\016\n\006maxBPM\030\003 \001(\005\022\016\n\006avgBP" +
-      "M\030\004 \001(\005\022J\n\017healthIndicator\030\005 \001(\01621.lives" +
-      "tockActivityService.AnimalHealthInfo.Hea" +
-      "lth\0226\n\006animal\030\006 \001(\0132&.livestockActivityS" +
-      "ervice.AnimalDetail\"J\n\006Health\022\013\n\007healthy" +
-      "\020\000\022\016\n\nvaccineDue\020\001\022\021\n\rhighHeartRate\020\002\022\020\n" +
-      "\014lowHeartRate\020\003\"\007\n\005Empty2\210\005\n\030LivestockAc" +
-      "tivityService\022o\n\020SetAnimalDetails\022&.live" +
-      "stockActivityService.AnimalDetail\032/.live" +
-      "stockActivityService.SetAnimalDetailsRep" +
-      "ly\"\000(\001\022W\n\014GetAnimalIds\022\037.livestockActivi" +
-      "tyService.Empty\032\".livestockActivityServi" +
-      "ce.AnimalId\"\0000\001\022c\n\020GetLiveHeartRate\022\".li" +
-      "vestockActivityService.AnimalId\032\'.livest" +
-      "ockActivityService.LiveHeartRate\"\0000\001\022m\n\023" +
-      "GetHeartRateHistory\022(.livestockActivityS" +
-      "ervice.AnimalTimeSpan\032*.livestockActivit" +
-      "yService.HeartRateHistory\"\000\022e\n\022GetCurren" +
-      "tActivity\022\".livestockActivityService.Ani" +
-      "malId\032).livestockActivityService.Current" +
-      "Activity\"\000\022g\n\017GetAnimalVitals\022\".livestoc" +
-      "kActivityService.AnimalId\032*.livestockAct" +
-      "ivityService.AnimalHealthInfo\"\000(\0010\001B=\n\033d" +
-      "s.livestockActivityServiceB\034LivestockAct" +
-      "ivityServiceImplP\001b\006proto3"
+      "\t\0224\n\010animalID\030\003 \001(\0132\".livestockActivityS" +
+      "ervice.AnimalId\"\034\n\rLiveHeartRate\022\013\n\003bpm\030" +
+      "\001 \001(\005\"2\n\020HeartRateHistory\022\013\n\003bpm\030\001 \001(\005\022\021" +
+      "\n\ttimeStamp\030\002 \001(\t\"\331\001\n\017CurrentActivity\0224\n" +
+      "\010animalID\030\001 \001(\0132\".livestockActivityServi" +
+      "ce.AnimalId\022D\n\010activity\030\002 \001(\01622.livestoc" +
+      "kActivityService.CurrentActivity.Activit" +
+      "y\"J\n\010Activity\022\014\n\010standing\020\000\022\013\n\007feeding\020\001" +
+      "\022\014\n\010drinking\020\002\022\t\n\005lying\020\003\022\n\n\006moving\020\004\"\246\002" +
+      "\n\020AnimalHealthInfo\022\022\n\nreportDate\030\001 \001(\t\022\016" +
+      "\n\006minBPM\030\002 \001(\005\022\016\n\006maxBPM\030\003 \001(\005\022\016\n\006avgBPM" +
+      "\030\004 \001(\005\022J\n\017healthIndicator\030\005 \001(\01621.livest" +
+      "ockActivityService.AnimalHealthInfo.Heal" +
+      "th\0226\n\006animal\030\006 \001(\0132&.livestockActivitySe" +
+      "rvice.AnimalDetail\"J\n\006Health\022\013\n\007healthy\020" +
+      "\000\022\016\n\nvaccineDue\020\001\022\021\n\rhighHeartRate\020\002\022\020\n\014" +
+      "lowHeartRate\020\003\"\007\n\005Empty2\212\005\n\030LivestockAct" +
+      "ivityService\022o\n\020SetAnimalDetails\022&.lives" +
+      "tockActivityService.AnimalDetail\032/.lives" +
+      "tockActivityService.SetAnimalDetailsRepl" +
+      "y\"\000(\001\022W\n\014GetAnimalIds\022\037.livestockActivit" +
+      "yService.Empty\032\".livestockActivityServic" +
+      "e.AnimalId\"\0000\001\022c\n\020GetLiveHeartRate\022\".liv" +
+      "estockActivityService.AnimalId\032\'.livesto" +
+      "ckActivityService.LiveHeartRate\"\0000\001\022o\n\023G" +
+      "etHeartRateHistory\022(.livestockActivitySe" +
+      "rvice.AnimalTimeSpan\032*.livestockActivity" +
+      "Service.HeartRateHistory\"\0000\001\022e\n\022GetCurre" +
+      "ntActivity\022\".livestockActivityService.An" +
+      "imalId\032).livestockActivityService.Curren" +
+      "tActivity\"\000\022g\n\017GetAnimalVitals\022\".livesto" +
+      "ckActivityService.AnimalId\032*.livestockAc" +
+      "tivityService.AnimalHealthInfo\"\000(\0010\001B=\n\033" +
+      "ds.livestockActivityServiceB\034LivestockAc" +
+      "tivityServiceImplP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -150,7 +150,7 @@ public final class LivestockActivityServiceImpl {
     internal_static_livestockActivityService_AnimalTimeSpan_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_livestockActivityService_AnimalTimeSpan_descriptor,
-        new java.lang.String[] { "StartDate", "EndDate", "MachineID", });
+        new java.lang.String[] { "StartDate", "EndDate", "AnimalID", });
     internal_static_livestockActivityService_LiveHeartRate_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_livestockActivityService_LiveHeartRate_fieldAccessorTable = new

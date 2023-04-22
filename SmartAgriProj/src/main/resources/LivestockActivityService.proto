@@ -15,7 +15,7 @@ service LivestockActivityService {
 
   rpc GetLiveHeartRate(AnimalId) returns (stream LiveHeartRate) {}
 
-  rpc GetHeartRateHistory(AnimalTimeSpan) returns (HeartRateHistory) {}
+  rpc GetHeartRateHistory(AnimalTimeSpan) returns (stream HeartRateHistory) {}
 
   rpc GetCurrentActivity(AnimalId) returns (CurrentActivity) {}
 
@@ -47,7 +47,7 @@ message SetAnimalDetailsReply {
 message AnimalTimeSpan {
   string startDate = 1;
   string endDate = 2;
-  AnimalId machineID = 3;
+  AnimalId animalID = 3;
 }
 
 message LiveHeartRate {
