@@ -12,11 +12,29 @@ import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+
+import ds.milkingParlourService.Empty;
+import ds.milkingParlourService.MachineDetail;
+import ds.milkingParlourService.MachineId;
+import ds.milkingParlourService.MilkingParlourServiceGrpc;
+import ds.milkingParlourService.SetMachineDetailsReply;
+import ds.milkingParlourService.MilkingParlourServiceGrpc.MilkingParlourServiceBlockingStub;
+import ds.milkingParlourService.MilkingParlourServiceGrpc.MilkingParlourServiceStub;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
+import io.grpc.stub.StreamObserver;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Scanner;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,15 +42,20 @@ import java.util.concurrent.Executors;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import java.awt.Font;
 
 public class ClientUI {
 
 	private JFrame frame;
 	private MachineInfo mc;
 	private jmDNSInfo jmDnsMilkParlour;
+	static ArrayList<Integer> machineIDs = new ArrayList<Integer>();
+	private MilkingParlourServiceBlockingStub blockingStub;
+	private MilkingParlourServiceStub asyncStub;
 	private ServiceInfo milkParlourServiceInfo;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JLabel lblNewLabel_1;
 
 
 	/**
@@ -62,34 +85,56 @@ public class ClientUI {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		mc = new MachineInfo();
-		mc.setId(5);
 		jmDnsMilkParlour = new jmDNSInfo();
-		jmDnsMilkParlour.setDiscoveryStatus("init");
+		jmDnsMilkParlour.setDiscoveryStatus("Initialised");
 		frame = new JFrame();
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
-				System.out.println("window opened");
 				ExecutorService newCachedThreadPool = Executors.newCachedThreadPool();
 				newCachedThreadPool.submit(() -> {
 					String milkParlourServiceType = "_milkingParlour._tcp.local.";
 					discoverMilkParlourService(milkParlourServiceType);
+					String host = milkParlourServiceInfo.getHostAddresses()[0];
+					int port = milkParlourServiceInfo.getPort();
+
+					ManagedChannel channel = ManagedChannelBuilder
+							.forAddress(host, port)
+							.usePlaintext()
+							.build();
+					
+					blockingStub = MilkingParlourServiceGrpc.newBlockingStub(channel);
+					asyncStub = MilkingParlourServiceGrpc.newStub(channel);
+					
+					setMachineDetails();
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} // important, allow time for all data transferred
+					getMachineIDs();
+
+
 				});
 			
 			}
 		});
-		frame.setBounds(100, 100, 389, 300);
+		frame.setBounds(100, 100, 1017, 651);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		textField = new JTextField();
-		textField.setBounds(100, 88, 172, 37);
-		frame.getContentPane().add(textField);
-		textField.setColumns(10);
-		textField_1 = new JTextField();
-		textField_1.setBounds(63, 161, 163, 37);
-		frame.getContentPane().add(textField_1);
-		textField_1.setColumns(10);
+		
+		JLabel lblNewLabel = new JLabel("Milking Parlour Service Discovery Status:");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNewLabel.setBounds(227, 10, 277, 23);
+		frame.getContentPane().add(lblNewLabel);
+		
+		lblNewLabel_1 = new JLabel("???");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblNewLabel_1.setBounds(514, 10, 245, 23);
+		frame.getContentPane().add(lblNewLabel_1);
 		initDataBindings();
 	}
 	
@@ -98,11 +143,7 @@ public class ClientUI {
 	private void discoverMilkParlourService(String serviceType) {
 		try {
 			// Create a JmDNS instance
-			//InetAddress addr = InetAddress.getLocalHost();
-			System.out.println("Discovering...");
 			jmDnsMilkParlour.setDiscoveryStatus("Discovering...");
-			Thread.sleep(5000);
-			mc.setId(7);
 			JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
 			jmdns.addServiceListener(serviceType, new ServiceListener() {
 				
@@ -118,25 +159,26 @@ public class ClientUI {
 					System.out.println("\t name: " + event.getName());
 					System.out.println("\t description/properties: " + milkParlourServiceInfo.getNiceTextString());
 					System.out.println("\t host: " + milkParlourServiceInfo.getHostAddresses()[0]);
-					jmDnsMilkParlour.setDiscoveryStatus("Milk Parlour Service resolved");
+					jmDnsMilkParlour.setDiscoveryStatus("Milk Parlour service resolved");
 				}
 				
 				@Override
 				public void serviceRemoved(ServiceEvent event) {
 					System.out.println("Milk Parlour Service removed: " + event.getInfo());
+					jmDnsMilkParlour.setDiscoveryStatus("Milk Parlour service removed");
 				}
 				
 				@Override
 				public void serviceAdded(ServiceEvent event) {
 					System.out.println("Milk Parlour Service added: " + event.getInfo());
-					jmDnsMilkParlour.setDiscoveryStatus("Milk Parlour Service added");
+					jmDnsMilkParlour.setDiscoveryStatus("Milk Parlour service added");
 				}
 			});
 			
 			// Wait a bit
-			Thread.sleep(5000);
+			Thread.sleep(2000);
 			if(milkParlourServiceInfo==null)
-				jmDnsMilkParlour.setDiscoveryStatus("Not found");
+				jmDnsMilkParlour.setDiscoveryStatus("Milk Parlour service not found");
 			jmdns.close();
 			
 		} catch (UnknownHostException e) {
@@ -151,16 +193,77 @@ public class ClientUI {
 		
 	}
 
+	private void setMachineDetails() {
+		//This method client streams machine details for multiple machines to the server.
+		//The service will use this data for simulating milking machines
+
+		StreamObserver<SetMachineDetailsReply> responseObserver = new StreamObserver<SetMachineDetailsReply>() {
+			@Override
+			public void onNext(SetMachineDetailsReply msg) {
+				System.out.println(msg.getSetMachineDetailsReply());
+			}
+			@Override
+			public void onError(Throwable t) {
+				t.printStackTrace();
+			}
+			@Override
+			public void onCompleted() {
+				System.out.println("streaming machines to server is completed.");
+			}
+		};		
+		
+		StreamObserver<MachineDetail> requestObserver = asyncStub.setMachineDetails(responseObserver);
+		File directory = new File("");
+  		String name = directory.getAbsolutePath() + "\\src\\main\\resources\\machines.csv";
+		Scanner sc;
+		try {
+			sc = new Scanner(new File(name));
+			sc.nextLine();
+			String st = "";
+			while (sc.hasNextLine())  //returns a boolean value
+			{
+				st = sc.nextLine();
+				String[] data = st.split(",");
+				MachineId mcid = MachineId.newBuilder().setId(Integer.parseInt(data[0])).build();
+				MachineDetail md = MachineDetail.newBuilder()
+						.setMachineID(mcid)
+						.setDateInstalled(data[1])
+						.setDateNextService(data[2])
+						.build();
+				requestObserver.onNext(md);
+			}
+			sc.close();  //closes the scanner
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
+		requestObserver.onCompleted();
+
+	}
+
+
+	private void getMachineIDs() {
+		Empty emp = Empty.newBuilder().build();
+		try {
+			Iterator<MachineId> it = blockingStub.getMachineIds(emp);
+			System.out.println("Getting machine id's:");
+			while(it.hasNext()) {
+				MachineId temp = it.next();
+				machineIDs.add(temp.getId());				
+			}
+			System.out.println(machineIDs.toString());
+		} catch (StatusRuntimeException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
 	
 	protected void initDataBindings() {
 		BeanProperty<jmDNSInfo, String> jmDNSInfoBeanProperty = BeanProperty.create("discoveryStatus");
-		BeanProperty<JTextField, String> jTextFieldBeanProperty = BeanProperty.create("text");
-		AutoBinding<jmDNSInfo, String, JTextField, String> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ, jmDnsMilkParlour, jmDNSInfoBeanProperty, textField, jTextFieldBeanProperty);
+		BeanProperty<JLabel, String> jLabelBeanProperty = BeanProperty.create("text");
+		AutoBinding<jmDNSInfo, String, JLabel, String> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ, jmDnsMilkParlour, jmDNSInfoBeanProperty, lblNewLabel_1, jLabelBeanProperty);
 		autoBinding.bind();
-		//
-		BeanProperty<MachineInfo, Integer> machineInfoBeanProperty = BeanProperty.create("id");
-		BeanProperty<JTextField, String> jTextFieldBeanProperty_1 = BeanProperty.create("text");
-		AutoBinding<MachineInfo, Integer, JTextField, String> autoBinding_1 = Bindings.createAutoBinding(UpdateStrategy.READ, mc, machineInfoBeanProperty, textField_1, jTextFieldBeanProperty_1);
-		autoBinding_1.bind();
 	}
 }
