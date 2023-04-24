@@ -15,6 +15,8 @@ import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 
 import ds.client.ModelsUI.MachineIdCollectionModel;
 import ds.client.ModelsUI.MachineIdModel;
+import ds.client.ModelsUI.MachineReportCollectionModel;
+import ds.client.ModelsUI.MachineReportModel;
 import ds.milkingParlourService.Empty;
 import ds.milkingParlourService.MachineDetail;
 import ds.milkingParlourService.MachineId;
@@ -73,13 +75,20 @@ import com.toedter.calendar.JDateChooser;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import java.text.DateFormat;  
-import java.text.SimpleDateFormat; 
+import java.text.SimpleDateFormat;
+import javax.swing.ListSelectionModel;
+import javax.swing.JTable;
+import org.jdesktop.swingbinding.JTableBinding;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel; 
 
 public class ClientUI {
 
 	private JFrame frame;
 	private MachineIdCollectionModel mc;
+	private MachineReportCollectionModel mcListReport;
 	private MachineIdModel mm = new MachineIdModel();
+	private MachineReportModel mReport = new MachineReportModel();
 	private jmDNSInfo jmDnsMilkParlour;
 	static ArrayList<Integer> machineIDs = new ArrayList<Integer>();
 	private MilkingParlourServiceBlockingStub blockingStub;
@@ -92,6 +101,7 @@ public class ClientUI {
 	private JDateChooser dateOfReport;
 	private JButton btnGetMilkVolume;
 	private JButton btnGetMachineReports;
+	private JTable table;
 
 
 	/**
@@ -124,6 +134,7 @@ public class ClientUI {
 		jmDnsMilkParlour = new jmDNSInfo();
 		jmDnsMilkParlour.setDiscoveryStatus("Initialised");
 		mc = new MachineIdCollectionModel();
+		mcListReport = new MachineReportCollectionModel();
 		//mm = new MachineIdModel();
 		frame = new JFrame();
 		frame.addWindowListener(new WindowAdapter() {
@@ -202,13 +213,13 @@ public class ClientUI {
 				}
 			}
 		});
-		list.setBounds(49, 105, 157, 325);
+		list.setBounds(49, 105, 137, 325);
 		frame.getContentPane().add(list);
 		
 		dateBeginMilkVolume = new JDateChooser();
 		dateBeginMilkVolume.setDateFormatString("dd/MM/yyyy");
 		dateBeginMilkVolume.setEnabled(false);
-		dateBeginMilkVolume.setBounds(49, 63, 157, 32);
+		dateBeginMilkVolume.setBounds(238, 105, 157, 32);
 		dateBeginMilkVolume.setDate(new Date());
 		frame.getContentPane().add(dateBeginMilkVolume);
 		
@@ -223,20 +234,20 @@ public class ClientUI {
 			}
 		});
 		btnGetMilkVolume.setEnabled(false);
-		btnGetMilkVolume.setBounds(435, 63, 146, 32);
+		btnGetMilkVolume.setBounds(238, 212, 157, 32);
 		frame.getContentPane().add(btnGetMilkVolume);
 		
 		dateEndMilkVolume = new JDateChooser();
 		dateEndMilkVolume.setEnabled(false);
 		dateEndMilkVolume.setDateFormatString("dd/MM/yyyy");
-		dateEndMilkVolume.setBounds(238, 63, 157, 32);
+		dateEndMilkVolume.setBounds(238, 170, 157, 32);
 		dateEndMilkVolume.setDate(new Date());
 		frame.getContentPane().add(dateEndMilkVolume);
 		
 		dateOfReport = new JDateChooser();
 		dateOfReport.setEnabled(false);
 		dateOfReport.setDateFormatString("dd/MM/yyyy");
-		dateOfReport.setBounds(238, 123, 157, 32);
+		dateOfReport.setBounds(238, 356, 157, 32);
 		dateOfReport.setDate(new Date());
 		frame.getContentPane().add(dateOfReport);
 		
@@ -250,8 +261,45 @@ public class ClientUI {
 			}
 		});
 		btnGetMachineReports.setEnabled(false);
-		btnGetMachineReports.setBounds(435, 123, 146, 32);
+		btnGetMachineReports.setBounds(238, 398, 157, 32);
 		frame.getContentPane().add(btnGetMachineReports);
+		
+		JLabel lblNewLabel_2 = new JLabel("Available Machines:");
+		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_2.setBounds(51, 86, 155, 13);
+		frame.getContentPane().add(lblNewLabel_2);
+		
+		JLabel lblNewLabel_3 = new JLabel("From:");
+		lblNewLabel_3.setBounds(238, 88, 45, 13);
+		frame.getContentPane().add(lblNewLabel_3);
+		
+		JLabel lblNewLabel_4 = new JLabel("To:");
+		lblNewLabel_4.setBounds(238, 157, 45, 13);
+		frame.getContentPane().add(lblNewLabel_4);
+		
+		JLabel lblNewLabel_5 = new JLabel("Report Date:");
+		lblNewLabel_5.setBounds(238, 339, 93, 13);
+		frame.getContentPane().add(lblNewLabel_5);
+		
+		JLabel lblNewLabel_2_1 = new JLabel("Available Reports:");
+		lblNewLabel_2_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_2_1.setBounds(432, 85, 155, 13);
+		frame.getContentPane().add(lblNewLabel_2_1);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(432, 105, 561, 325);
+		frame.getContentPane().add(scrollPane);
+		
+		table = new JTable();
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Id", "Date", "Volume", "Heated (\u00B0C)", "Heated Time", "Chilled (\u00B0C)", "Service"
+			}
+		));
+		scrollPane.setViewportView(table);
+		table.setRowSelectionAllowed(false);
 		initDataBindings();
 	}
 	
@@ -403,7 +451,7 @@ public class ClientUI {
 	
 	
 	
-	private void getMilkReports(List mids, String reportDate) {
+	private void getMilkReports(List<Integer> mids, String reportDate) {
 		
 		//Create a StreamObserver that receives the stream of milk reports
 		StreamObserver<MilkReport> responseObserver = new StreamObserver<MilkReport>() {
@@ -419,6 +467,19 @@ public class ClientUI {
 				System.out.println("Cooled Temperature (C): " + report.getChilledTemperature() );
 				System.out.println("Next service on: " + report.getDateNextService() );
 				System.out.println();
+				SwingUtilities.invokeLater(new Runnable() {
+					 public void run() {
+							mReport = new MachineReportModel();
+							mReport.setId(report.getMachId());
+							mReport.setReportDate(report.getReportDate());
+							mReport.setDateNextService(report.getDateNextService());
+							mReport.setHeatedTemperature(report.getHeatedTemperature());
+							mReport.setHeatedDuration(report.getHeatedDuration());
+							mReport.setChilledTemperature(report.getChilledTemperature());
+							mReport.setVolumeLitres(report.getVolumeLitres());
+							mcListReport.addMachine(mReport);
+						 }
+						 });
 			}
 
 			@Override
@@ -455,9 +516,6 @@ public class ClientUI {
 		//}
 
 	}
-
-	
-
 	protected void initDataBindings() {
 		BeanProperty<jmDNSInfo, String> jmDNSInfoBeanProperty = BeanProperty.create("discoveryStatus");
 		BeanProperty<JLabel, String> jLabelBeanProperty = BeanProperty.create("text");
@@ -471,5 +529,31 @@ public class ClientUI {
 		jListBinding.setDetailBinding(machineIdModelBeanProperty, "b123");
 		//
 		jListBinding.bind();
+		//
+		BeanProperty<MachineReportCollectionModel, List<MachineReportModel>> machineReportCollectionModelBeanProperty = BeanProperty.create("machines");
+		JTableBinding<MachineReportModel, MachineReportCollectionModel, JTable> jTableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ, mcListReport, machineReportCollectionModelBeanProperty, table);
+		//
+		BeanProperty<MachineReportModel, Integer> machineReportModelBeanProperty = BeanProperty.create("id");
+		jTableBinding.addColumnBinding(machineReportModelBeanProperty).setColumnName("New Column");
+		//
+		BeanProperty<MachineReportModel, String> machineReportModelBeanProperty_1 = BeanProperty.create("reportDate");
+		jTableBinding.addColumnBinding(machineReportModelBeanProperty_1).setColumnName("New Column");
+		//
+		BeanProperty<MachineReportModel, Float> machineReportModelBeanProperty_2 = BeanProperty.create("heatedTemperature");
+		jTableBinding.addColumnBinding(machineReportModelBeanProperty_2).setColumnName("New Column");
+		//
+		BeanProperty<MachineReportModel, Float> machineReportModelBeanProperty_3 = BeanProperty.create("heatedDuration");
+		jTableBinding.addColumnBinding(machineReportModelBeanProperty_3).setColumnName("New Column");
+		//
+		BeanProperty<MachineReportModel, Float> machineReportModelBeanProperty_4 = BeanProperty.create("chilledTemperature");
+		jTableBinding.addColumnBinding(machineReportModelBeanProperty_4).setColumnName("New Column");
+		//
+		BeanProperty<MachineReportModel, Float> machineReportModelBeanProperty_5 = BeanProperty.create("volumeLitres");
+		jTableBinding.addColumnBinding(machineReportModelBeanProperty_5).setColumnName("New Column");
+		//
+		BeanProperty<MachineReportModel, String> machineReportModelBeanProperty_6 = BeanProperty.create("dateNextService");
+		jTableBinding.addColumnBinding(machineReportModelBeanProperty_6).setColumnName("New Column");
+		//
+		jTableBinding.bind();
 	}
 }
