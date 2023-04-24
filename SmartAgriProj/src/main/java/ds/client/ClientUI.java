@@ -13,6 +13,8 @@ import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 
+import ds.client.ModelsUI.MachineIdCollectionModel;
+import ds.client.ModelsUI.MachineIdModel;
 import ds.milkingParlourService.Empty;
 import ds.milkingParlourService.MachineDetail;
 import ds.milkingParlourService.MachineId;
@@ -44,18 +46,30 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
 import java.awt.Font;
+import javax.swing.JList;
+import java.util.List;
+import org.jdesktop.swingbinding.JListBinding;
+import org.jdesktop.swingbinding.SwingBindings;
+import org.jdesktop.beansbinding.ObjectProperty;
+import org.jdesktop.beansbinding.ELProperty;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ClientUI {
 
 	private JFrame frame;
-	private MachineInfo mc;
+	private MachineIdCollectionModel mc;
+	private MachineIdModel mm = new MachineIdModel();
 	private jmDNSInfo jmDnsMilkParlour;
 	static ArrayList<Integer> machineIDs = new ArrayList<Integer>();
 	private MilkingParlourServiceBlockingStub blockingStub;
 	private MilkingParlourServiceStub asyncStub;
 	private ServiceInfo milkParlourServiceInfo;
 	private JLabel lblNewLabel_1;
+	private JList list;
 
 
 	/**
@@ -87,6 +101,8 @@ public class ClientUI {
 	private void initialize() {
 		jmDnsMilkParlour = new jmDNSInfo();
 		jmDnsMilkParlour.setDiscoveryStatus("Initialised");
+		mc = new MachineIdCollectionModel();
+		//mm = new MachineIdModel();
 		frame = new JFrame();
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
@@ -135,6 +151,10 @@ public class ClientUI {
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblNewLabel_1.setBounds(514, 10, 245, 23);
 		frame.getContentPane().add(lblNewLabel_1);
+		
+		list = new JList();
+		list.setBounds(49, 105, 157, 325);
+		frame.getContentPane().add(list);
 		initDataBindings();
 	}
 	
@@ -251,19 +271,34 @@ public class ClientUI {
 			while(it.hasNext()) {
 				MachineId temp = it.next();
 				machineIDs.add(temp.getId());				
+				SwingUtilities.invokeLater(new Runnable() {
+					 public void run() {
+							mm = new MachineIdModel();
+							mm.setId(temp.getId());
+							mc.addMachine(mm);
+						 }
+						 });
 			}
 			System.out.println(machineIDs.toString());
+				
+			//mc.setIds(arr);
 		} catch (StatusRuntimeException e) {
 			e.printStackTrace();
 		}
 
 	}
-	
-	
 	protected void initDataBindings() {
 		BeanProperty<jmDNSInfo, String> jmDNSInfoBeanProperty = BeanProperty.create("discoveryStatus");
 		BeanProperty<JLabel, String> jLabelBeanProperty = BeanProperty.create("text");
 		AutoBinding<jmDNSInfo, String, JLabel, String> autoBinding = Bindings.createAutoBinding(UpdateStrategy.READ, jmDnsMilkParlour, jmDNSInfoBeanProperty, lblNewLabel_1, jLabelBeanProperty);
 		autoBinding.bind();
+		//
+		BeanProperty<MachineIdCollectionModel, List<MachineIdModel>> machineIdCollectionModelBeanProperty = BeanProperty.create("machines");
+		JListBinding<MachineIdModel, MachineIdCollectionModel, JList> jListBinding = SwingBindings.createJListBinding(UpdateStrategy.READ, mc, machineIdCollectionModelBeanProperty, list);
+		//
+		BeanProperty<MachineIdModel, Integer> machineIdModelBeanProperty = BeanProperty.create("id");
+		jListBinding.setDetailBinding(machineIdModelBeanProperty, "b123");
+		//
+		jListBinding.bind();
 	}
 }
