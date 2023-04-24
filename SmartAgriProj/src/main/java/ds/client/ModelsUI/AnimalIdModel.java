@@ -1,6 +1,6 @@
 package ds.client.ModelsUI;
 
-public class MachineIdModel extends AbstractModelObject {
+public class AnimalIdModel extends AbstractModelObject {
 	
 	private int id;
 	

@@ -1,6 +1,9 @@
 package ds.livestockActivityService;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetAddress;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -10,6 +13,9 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.jmdns.JmDNS;
+import javax.jmdns.ServiceInfo;
 
 import ds.livestockActivityService.LivestockActivityServiceGrpc.LivestockActivityServiceImplBase;
 import io.grpc.Server;
@@ -29,7 +35,9 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 		
 		LivestockActivityServer service = new LivestockActivityServer();
 		
-		int port = 50052;
+		Properties prop = service.getProperties();
+		service.registerService(prop);
+		int port = Integer.valueOf( prop.getProperty("service_port") );// #.50051;
 
 		Server server = ServerBuilder.forPort(port)
 				.addService(service)
@@ -42,6 +50,52 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 		
 	}
 
+
+	private Properties getProperties() {
+		Properties prop = null;		
+		 try (InputStream input = new FileInputStream("src/main/resources/livestockActivity.properties")) {
+	            prop = new Properties();
+	            // load a properties file
+	            prop.load(input);
+	            // get the property value and print it out
+	            System.out.println("Livestock Activity Service Properies ...");
+	            System.out.println("\t service_type: " + prop.getProperty("service_type"));
+	            System.out.println("\t service_name: " +prop.getProperty("service_name"));
+	            System.out.println("\t service_description: " +prop.getProperty("service_description"));
+		        System.out.println("\t service_port: " +prop.getProperty("service_port"));
+	        } catch (IOException ex) {
+	            ex.printStackTrace();
+	        }
+	
+		 return prop;
+	}
+	
+	
+	private  void registerService(Properties prop) {
+		 try {
+	            // Create a JmDNS instance
+	            JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
+	            String serviceType = prop.getProperty("service_type") ;//"_http._tcp.local.";
+	            String serviceName = prop.getProperty("service_name")  ;// "example";
+	           // int service_port = 1234;
+	            int servicePort = Integer.valueOf( prop.getProperty("service_port") );// #.50051;
+	            String serviceDescriptionProperties = prop.getProperty("service_description")  ;//"path=index.html";
+	            // Register a service
+	            ServiceInfo serviceInfo = ServiceInfo.create(serviceType, serviceName, servicePort, serviceDescriptionProperties);
+	            jmdns.registerService(serviceInfo);
+	            System.out.printf("registrering service with type %s and name %s \n", serviceType, serviceName);
+	            // Wait a bit
+	            Thread.sleep(1000);
+	            // Unregister all services
+	            //jmdns.unregisterAllServices();
+	        } catch (IOException e) {
+	            System.out.println(e.getMessage());
+	        } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    
+	}
 
 	
 	
