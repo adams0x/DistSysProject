@@ -18,8 +18,10 @@ import ds.client.ModelsUI.MachineIdModel;
 import ds.milkingParlourService.Empty;
 import ds.milkingParlourService.MachineDetail;
 import ds.milkingParlourService.MachineId;
+import ds.milkingParlourService.MachineReportDate;
 import ds.milkingParlourService.MachineTimeSpan;
 import ds.milkingParlourService.MilkQuantity;
+import ds.milkingParlourService.MilkReport;
 import ds.milkingParlourService.MilkingParlourServiceGrpc;
 import ds.milkingParlourService.SetMachineDetailsReply;
 import ds.milkingParlourService.MilkingParlourServiceGrpc.MilkingParlourServiceBlockingStub;
@@ -87,7 +89,9 @@ public class ClientUI {
 	private JList list;
 	private JDateChooser dateBeginMilkVolume;
 	private JDateChooser dateEndMilkVolume;
+	private JDateChooser dateOfReport;
 	private JButton btnGetMilkVolume;
+	private JButton btnGetMachineReports;
 
 
 	/**
@@ -176,13 +180,25 @@ public class ClientUI {
 				if(list.getSelectedIndices().length==1) {
 					dateBeginMilkVolume.setEnabled(true);
 					dateEndMilkVolume.setEnabled(true);
+					dateOfReport.setEnabled(true);
 					btnGetMilkVolume.setEnabled(true);
+					btnGetMachineReports.setEnabled(true);
 				}
-				
+
+				else if(list.getSelectedIndices().length>1) {
+					dateBeginMilkVolume.setEnabled(false);
+					dateEndMilkVolume.setEnabled(false);
+					dateOfReport.setEnabled(true);
+					btnGetMilkVolume.setEnabled(false);
+					btnGetMachineReports.setEnabled(true);
+				}
+
 				else {
 					dateBeginMilkVolume.setEnabled(false);
 					dateEndMilkVolume.setEnabled(false);
+					dateOfReport.setEnabled(false);
 					btnGetMilkVolume.setEnabled(false);
+					btnGetMachineReports.setEnabled(false);
 				}
 			}
 		});
@@ -216,6 +232,26 @@ public class ClientUI {
 		dateEndMilkVolume.setBounds(238, 63, 157, 32);
 		dateEndMilkVolume.setDate(new Date());
 		frame.getContentPane().add(dateEndMilkVolume);
+		
+		dateOfReport = new JDateChooser();
+		dateOfReport.setEnabled(false);
+		dateOfReport.setDateFormatString("dd/MM/yyyy");
+		dateOfReport.setBounds(238, 123, 157, 32);
+		dateOfReport.setDate(new Date());
+		frame.getContentPane().add(dateOfReport);
+		
+		btnGetMachineReports = new JButton("Get Reports");
+		btnGetMachineReports.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				DateFormat dateFormat = new SimpleDateFormat("d/MM/yyyy");
+				String dateReport = dateFormat.format(dateOfReport.getDate());
+				getMilkReports(list.getSelectedValuesList(), dateReport);
+			}
+		});
+		btnGetMachineReports.setEnabled(false);
+		btnGetMachineReports.setBounds(435, 123, 146, 32);
+		frame.getContentPane().add(btnGetMachineReports);
 		initDataBindings();
 	}
 	
@@ -364,6 +400,63 @@ public class ClientUI {
 		resultLabel.setFont(new Font("Arial", Font.BOLD, 18));
 		JOptionPane.showMessageDialog(frame,resultLabel);
 	}
+	
+	
+	
+	private void getMilkReports(List mids, String reportDate) {
+		
+		//Create a StreamObserver that receives the stream of milk reports
+		StreamObserver<MilkReport> responseObserver = new StreamObserver<MilkReport>() {
+
+			@Override
+			public void onNext(MilkReport report) {
+				//MilkReport received, extract the data
+				System.out.println("Receiving report for machine: " + report.getMachId() );
+				System.out.println("Report date: " + report.getReportDate() );
+				System.out.println("Milk volume (L): " + report.getVolumeLitres() );
+				System.out.println("Heated Temperature (C): " + report.getHeatedTemperature() );
+				System.out.println("Heated Duration (mins): " + report.getHeatedDuration() );
+				System.out.println("Cooled Temperature (C): " + report.getChilledTemperature() );
+				System.out.println("Next service on: " + report.getDateNextService() );
+				System.out.println();
+			}
+
+			@Override
+			public void onError(Throwable t) {
+				t.printStackTrace();
+			}
+
+			@Override
+			public void onCompleted() {
+				System.out.println("stream is completed ... all milk reports recieved");
+			}
+
+		};
+
+		//Create a StreamObserver that sends the stream of MachineReportsDate's
+		StreamObserver<MachineReportDate> requestObserver = asyncStub.getMilkReports(responseObserver);
+		try {
+			for(int i = 0; i < mids.size(); i++) {
+				requestObserver.onNext(MachineReportDate.newBuilder()
+						.setMachineID(MachineId.newBuilder().setId((int)mids.get(i)).build())
+						.setReportDate(reportDate)
+						.build());
+					//Thread.sleep(500);
+			}
+
+			// Mark the end of requests
+			requestObserver.onCompleted();
+			//Thread.sleep(2000);
+			
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		} //catch (InterruptedException e) {			
+			//e.printStackTrace();
+		//}
+
+	}
+
+	
 
 	protected void initDataBindings() {
 		BeanProperty<jmDNSInfo, String> jmDNSInfoBeanProperty = BeanProperty.create("discoveryStatus");
