@@ -18,6 +18,8 @@ import ds.client.ModelsUI.MachineIdModel;
 import ds.milkingParlourService.Empty;
 import ds.milkingParlourService.MachineDetail;
 import ds.milkingParlourService.MachineId;
+import ds.milkingParlourService.MachineTimeSpan;
+import ds.milkingParlourService.MilkQuantity;
 import ds.milkingParlourService.MilkingParlourServiceGrpc;
 import ds.milkingParlourService.SetMachineDetailsReply;
 import ds.milkingParlourService.MilkingParlourServiceGrpc.MilkingParlourServiceBlockingStub;
@@ -34,7 +36,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.concurrent.Executor;
@@ -50,6 +55,8 @@ import javax.swing.SwingUtilities;
 
 import java.awt.Font;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
+
 import java.util.List;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
@@ -57,6 +64,14 @@ import org.jdesktop.beansbinding.ObjectProperty;
 import org.jdesktop.beansbinding.ELProperty;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import com.toedter.calendar.JCalendar;
+import com.toedter.calendar.JDayChooser;
+import com.toedter.components.JSpinField;
+import com.toedter.calendar.JDateChooser;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
+import java.text.DateFormat;  
+import java.text.SimpleDateFormat; 
 
 public class ClientUI {
 
@@ -70,6 +85,9 @@ public class ClientUI {
 	private ServiceInfo milkParlourServiceInfo;
 	private JLabel lblNewLabel_1;
 	private JList list;
+	private JDateChooser dateBeginMilkVolume;
+	private JDateChooser dateEndMilkVolume;
+	private JButton btnGetMilkVolume;
 
 
 	/**
@@ -153,8 +171,51 @@ public class ClientUI {
 		frame.getContentPane().add(lblNewLabel_1);
 		
 		list = new JList();
+		list.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if(list.getSelectedIndices().length==1) {
+					dateBeginMilkVolume.setEnabled(true);
+					dateEndMilkVolume.setEnabled(true);
+					btnGetMilkVolume.setEnabled(true);
+				}
+				
+				else {
+					dateBeginMilkVolume.setEnabled(false);
+					dateEndMilkVolume.setEnabled(false);
+					btnGetMilkVolume.setEnabled(false);
+				}
+			}
+		});
 		list.setBounds(49, 105, 157, 325);
 		frame.getContentPane().add(list);
+		
+		dateBeginMilkVolume = new JDateChooser();
+		dateBeginMilkVolume.setDateFormatString("dd/MM/yyyy");
+		dateBeginMilkVolume.setEnabled(false);
+		dateBeginMilkVolume.setBounds(49, 63, 157, 32);
+		dateBeginMilkVolume.setDate(new Date());
+		frame.getContentPane().add(dateBeginMilkVolume);
+		
+		btnGetMilkVolume = new JButton("Get Milk Volume");
+		btnGetMilkVolume.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				DateFormat dateFormat = new SimpleDateFormat("d/MM/yyyy");
+				String dateFrom = dateFormat.format(dateBeginMilkVolume.getDate());
+				String dateTo = dateFormat.format(dateEndMilkVolume.getDate());
+				getMilkQuantity((int)list.getSelectedValue(), dateFrom, dateTo);
+			}
+		});
+		btnGetMilkVolume.setEnabled(false);
+		btnGetMilkVolume.setBounds(435, 63, 146, 32);
+		frame.getContentPane().add(btnGetMilkVolume);
+		
+		dateEndMilkVolume = new JDateChooser();
+		dateEndMilkVolume.setEnabled(false);
+		dateEndMilkVolume.setDateFormatString("dd/MM/yyyy");
+		dateEndMilkVolume.setBounds(238, 63, 157, 32);
+		dateEndMilkVolume.setDate(new Date());
+		frame.getContentPane().add(dateEndMilkVolume);
 		initDataBindings();
 	}
 	
@@ -287,6 +348,23 @@ public class ClientUI {
 		}
 
 	}
+	
+	
+	
+	private void getMilkQuantity(int machineId, String from, String to) {
+		MachineId mcId = MachineId.newBuilder().setId(machineId).build();
+		MachineTimeSpan mc = MachineTimeSpan.newBuilder()
+				.setMachineID(mcId)
+				.setStartDate(from)
+				.setEndDate(to)
+				.build();
+		MilkQuantity reply = blockingStub.getMilkVolume(mc);
+		System.out.println("Milk volume at machine id=" + machineId +" is " + reply.getVolumeLitres() + " litres");
+		JLabel resultLabel = new JLabel("Milk volume at machine id=" + machineId +" is " + reply.getVolumeLitres() + " litres from " + from + " to " + to);
+		resultLabel.setFont(new Font("Arial", Font.BOLD, 18));
+		JOptionPane.showMessageDialog(frame,resultLabel);
+	}
+
 	protected void initDataBindings() {
 		BeanProperty<jmDNSInfo, String> jmDNSInfoBeanProperty = BeanProperty.create("discoveryStatus");
 		BeanProperty<JLabel, String> jLabelBeanProperty = BeanProperty.create("text");

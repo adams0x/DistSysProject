@@ -259,7 +259,10 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 			DateTimeFormatter df = DateTimeFormatter.ofPattern("d/MM/yyyy");
 			LocalDate from = LocalDate.parse(dateFrom, df);
 			LocalDate to = LocalDate.parse(dateTo, df);
-			return milkProductionRate * Duration.between(from.atStartOfDay(), to.atStartOfDay()).toDays();
+			long durationDays = Duration.between(from.atStartOfDay(), to.atStartOfDay()).toDays()+1;
+			if(durationDays<=0)
+				durationDays=1;
+			return milkProductionRate * durationDays;
 		}
 
 		
