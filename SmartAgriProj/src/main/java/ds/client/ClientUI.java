@@ -18,8 +18,10 @@ import ds.client.ModelsUI.MachineIdCollectionModel;
 import ds.client.ModelsUI.MachineIdModel;
 import ds.client.ModelsUI.MachineReportCollectionModel;
 import ds.client.ModelsUI.MachineReportModel;
+import ds.client.ModelsUI.LiveHeartRateModel;
 import ds.livestockActivityService.AnimalDetail;
 import ds.livestockActivityService.AnimalId;
+import ds.livestockActivityService.LiveHeartRate;
 import ds.livestockActivityService.LivestockActivityServiceGrpc;
 import ds.livestockActivityService.SetAnimalDetailsReply;
 import ds.livestockActivityService.LivestockActivityServiceGrpc.LivestockActivityServiceBlockingStub;
@@ -35,6 +37,7 @@ import ds.milkingParlourService.MilkingParlourServiceGrpc;
 import ds.milkingParlourService.SetMachineDetailsReply;
 import ds.milkingParlourService.MilkingParlourServiceGrpc.MilkingParlourServiceBlockingStub;
 import ds.milkingParlourService.MilkingParlourServiceGrpc.MilkingParlourServiceStub;
+import io.grpc.Context;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
@@ -82,7 +85,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
-import java.awt.Dimension; 
+import java.awt.Dimension;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent; 
 
 public class ClientUI {
 
@@ -108,6 +113,7 @@ public class ClientUI {
 	private LivestockActivityServiceStub asyncStub2;
 	private ServiceInfo livestockActivityServiceInfo;
 	private ArrayList<Integer> animalIDs = new ArrayList<Integer>();
+	private LiveHeartRateModel liveHeartRateModel = new LiveHeartRateModel();
 	
 	
 	private CancellableContext withCancellation2;
@@ -121,7 +127,10 @@ public class ClientUI {
 	private JButton btnGetMachineReports;
 	private JTable table;
 	private JLabel lblNewLabel_1_1;
-	private JList list_1;
+	private JList listAnimalIds;
+	private JLabel lblLiveHeartRateAnimalId;
+	private JLabel lblLiveHeartRateAnimalType;
+	private JLabel lblLiveHeartRateBpm;
 
 
 	/**
@@ -371,8 +380,44 @@ public class ClientUI {
 		scrollPane_1.setBounds(48, 39, 214, 346);
 		panel_3.add(scrollPane_1);
 		
-		list_1 = new JList();
-		scrollPane_1.setViewportView(list_1);
+		listAnimalIds = new JList();
+		scrollPane_1.setViewportView(listAnimalIds);
+		
+		JPanel panel_4 = new JPanel();
+		panel_4.setBounds(287, 39, 167, 180);
+		panel_3.add(panel_4);
+		panel_4.setLayout(null);
+		
+		lblLiveHeartRateAnimalId = new JLabel("animal id");
+		lblLiveHeartRateAnimalId.setBounds(12, 12, 143, 26);
+		panel_4.add(lblLiveHeartRateAnimalId);
+		
+		lblLiveHeartRateAnimalType = new JLabel("animal type");
+		lblLiveHeartRateAnimalType.setBounds(12, 50, 143, 16);
+		panel_4.add(lblLiveHeartRateAnimalType);
+		
+		lblLiveHeartRateBpm = new JLabel("heart rate");
+		lblLiveHeartRateBpm.setBounds(12, 78, 55, 16);
+		panel_4.add(lblLiveHeartRateBpm);
+		
+		JButton btnNewButton = new JButton("start monitor");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(listAnimalIds.getSelectedValue()==null)
+					return;
+				else {
+					System.out.println((int)listAnimalIds.getSelectedValue());
+					getLiveHeartRateBegin((int)listAnimalIds.getSelectedValue());
+				}
+			}
+		});
+		btnNewButton.setBounds(22, 106, 114, 26);
+		panel_4.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("stop monitor");
+		btnNewButton_1.setBounds(22, 142, 114, 26);
+		panel_4.add(btnNewButton_1);
 		list.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if(list.getSelectedIndices().length==1) {
@@ -749,6 +794,50 @@ public class ClientUI {
 		}
 
 	}
+	
+	
+	
+	private void getLiveHeartRateBegin(int animalID) {
+		
+		StreamObserver<LiveHeartRate> streamHeartRateRecvd = new StreamObserver<LiveHeartRate>() {
+			@Override
+			public void onNext(LiveHeartRate lhr) {
+				System.out.println("Getting heart rate:" + lhr.getBpm());
+				SwingUtilities.invokeLater(new Runnable() {
+					 public void run() {
+							liveHeartRateModel.setId(lhr.getAnimal().getAnimalID().getId());
+							liveHeartRateModel.setAnimalType(lhr.getAnimal().getTypeOfAnimalValue());
+							liveHeartRateModel.setLiveHeartRate(lhr.getBpm());
+						 }
+						 });
+			}
+			
+			@Override
+			public void onError(Throwable t) {
+				//t.printStackTrace();
+				System.out.println("Server stream live heartrate error: " +t);
+			}
+
+			@Override
+			public void onCompleted() {
+				System.out.println("Server finished sending live heartrate");
+			}
+		};		
+		
+		AnimalId id = AnimalId.newBuilder()
+				.setId(animalID)
+				.build();
+		try {
+			withCancellation2 = Context.current().withCancellation();
+			withCancellation2.run(() -> {
+				asyncStub2.getLiveHeartRate(id, streamHeartRateRecvd);
+			});
+
+		} catch (StatusRuntimeException e) {
+			e.printStackTrace();
+		}
+
+	}
 	protected void initDataBindings() {
 		BeanProperty<jmDNSInfo, String> jmDNSInfoBeanProperty = BeanProperty.create("discoveryStatus");
 		BeanProperty<JLabel, String> jLabelBeanProperty = BeanProperty.create("text");
@@ -793,11 +882,23 @@ public class ClientUI {
 		autoBinding_1.bind();
 		//
 		BeanProperty<AnimalIdCollectionModel, List<AnimalIdModel>> animalIdCollectionModelBeanProperty = BeanProperty.create("animals");
-		JListBinding<AnimalIdModel, AnimalIdCollectionModel, JList> jListBinding_1 = SwingBindings.createJListBinding(UpdateStrategy.READ, ac, animalIdCollectionModelBeanProperty, list_1);
+		JListBinding<AnimalIdModel, AnimalIdCollectionModel, JList> jListBinding_1 = SwingBindings.createJListBinding(UpdateStrategy.READ, ac, animalIdCollectionModelBeanProperty, listAnimalIds);
 		//
 		BeanProperty<AnimalIdModel, Integer> animalIdModelBeanProperty = BeanProperty.create("id");
 		jListBinding_1.setDetailBinding(animalIdModelBeanProperty);
 		//
 		jListBinding_1.bind();
+		//
+		BeanProperty<LiveHeartRateModel, Integer> liveHeartRateModelBeanProperty = BeanProperty.create("id");
+		AutoBinding<LiveHeartRateModel, Integer, JLabel, String> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ, liveHeartRateModel, liveHeartRateModelBeanProperty, lblLiveHeartRateAnimalId, jLabelBeanProperty);
+		autoBinding_2.bind();
+		//
+		BeanProperty<LiveHeartRateModel, Integer> liveHeartRateModelBeanProperty_1 = BeanProperty.create("animalType");
+		AutoBinding<LiveHeartRateModel, Integer, JLabel, String> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ, liveHeartRateModel, liveHeartRateModelBeanProperty_1, lblLiveHeartRateAnimalType, jLabelBeanProperty);
+		autoBinding_3.bind();
+		//
+		BeanProperty<LiveHeartRateModel, Integer> liveHeartRateModelBeanProperty_2 = BeanProperty.create("liveHeartRate");
+		AutoBinding<LiveHeartRateModel, Integer, JLabel, String> autoBinding_4 = Bindings.createAutoBinding(UpdateStrategy.READ, liveHeartRateModel, liveHeartRateModelBeanProperty_2, lblLiveHeartRateBpm, jLabelBeanProperty);
+		autoBinding_4.bind();
 	}
 }

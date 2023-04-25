@@ -106,7 +106,7 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 			
 			@Override
 			public void onNext(AnimalDetail machine) {
-				Animal animal = new Animal(machine.getAnimalID().getId(), machine.getDateOfBirth(), machine.getDateNextVaccine());
+				Animal animal = new Animal(machine.getAnimalID().getId(), machine.getDateOfBirth(), machine.getDateNextVaccine(), machine.getTypeOfAnimal());
 				for(int i = 0; i < animals.size(); i++) {
 					if(animals.get(i).getId() == animal.getId()) {
 						animals.set(i, animal);
@@ -146,8 +146,12 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 	@Override
 	public void getLiveHeartRate(AnimalId request, StreamObserver<LiveHeartRate> responseObserver) {
 		Timer timer = new Timer();
-		Animal animal = animals.get(request.getId());
-	    timer.schedule(new LiveHeartRateGenerator( responseObserver, animal ), 0, 1000);
+		//Animal animal = animals.get(request.getId());
+		for(Animal animal:animals) {
+			if(animal.getId()==request.getId())
+				timer.schedule(new LiveHeartRateGenerator( responseObserver, animal ), 0, 1000);
+		}
+	    //timer.schedule(new LiveHeartRateGenerator( responseObserver, animal ), 0, 1000);
 	}
 
 	@Override
@@ -160,9 +164,14 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 		else {
 			System.out.println("Sending heartrate history samples: " + heartRateHist.length);
 			for(int i = 0; i<heartRateHist.length; i++) {
+	    		AnimalDetail animalDetail = AnimalDetail.newBuilder()
+	    				.setAnimalID(AnimalId.newBuilder().setId(request.getAnimalID().getId()))
+	    				.setTypeOfAnimal(animals.get(request.getAnimalID().getId()).getAnimalType())
+	    				.build();
 				HeartRateHistory hrh = HeartRateHistory.newBuilder()
 						.setTimeStamp(Integer.toString(i))
 						.setBpm(heartRateHist[i])
+						.setAnimal(animalDetail)
 						.build();
 				responseObserver.onNext(hrh);
 			}
@@ -191,18 +200,25 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 		LocalDate dateOfBirth;
 		LocalDate dateNextVaccine;
 		int heartRate;
+		AnimalDetail.TypeOfAnimal animalType;
 
 		
+		public AnimalDetail.TypeOfAnimal getAnimalType() {
+			return animalType;
+		}
+
+
 		/*
 		 * Livestock animal object construction
 		 */
-		public Animal(int id, String dateOfBirth, String dateNextVaccine) {
+		public Animal(int id, String dateOfBirth, String dateNextVaccine, AnimalDetail.TypeOfAnimal animalType) {
 			this.id = id;
 			DateTimeFormatter df = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 			this.dateOfBirth = LocalDate.parse(dateOfBirth, df);
 			this.dateNextVaccine = LocalDate.parse(dateNextVaccine, df);
 			Random rand = new Random();
 			heartRate = rand.nextInt(71) +50; //range from 50 ~ 120 bpm
+			this.animalType = animalType;
 		}
 		
 		
@@ -233,6 +249,7 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 			}
 			return heartHistSamples;
 		}
+		
 
 
 	}
@@ -260,13 +277,21 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 	    	}
 	    	else
 	    	{
+	    		AnimalDetail animalDetail = AnimalDetail.newBuilder()
+	    				.setAnimalID(AnimalId.newBuilder().setId(animal.getId()))
+	    				.setTypeOfAnimal(animal.getAnimalType())
+	    				.build();
 		    	LiveHeartRate lhr = LiveHeartRate.newBuilder()
 		    			.setBpm(animal.getHeartRate())
+		    			.setAnimal(animalDetail)
 		    			.build();
+		    	System.out.println("live haert rate " + lhr.getBpm() + " for animal id " + lhr.getAnimal().getAnimalID().getId());
 		    	scStreamObserver.onNext(lhr);	    		
 	    	}
 	    	
 	    }
 	}
+	
+
 	
 }

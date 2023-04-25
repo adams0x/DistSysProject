@@ -55,6 +55,19 @@ private static final long serialVersionUID = 0L;
             timeStamp_ = s;
             break;
           }
+          case 26: {
+            ds.livestockActivityService.AnimalDetail.Builder subBuilder = null;
+            if (animal_ != null) {
+              subBuilder = animal_.toBuilder();
+            }
+            animal_ = input.readMessage(ds.livestockActivityService.AnimalDetail.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(animal_);
+              animal_ = subBuilder.buildPartial();
+            }
+
+            break;
+          }
           default: {
             if (!parseUnknownFieldProto3(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -130,6 +143,27 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int ANIMAL_FIELD_NUMBER = 3;
+  private ds.livestockActivityService.AnimalDetail animal_;
+  /**
+   * <code>.livestockActivityService.AnimalDetail animal = 3;</code>
+   */
+  public boolean hasAnimal() {
+    return animal_ != null;
+  }
+  /**
+   * <code>.livestockActivityService.AnimalDetail animal = 3;</code>
+   */
+  public ds.livestockActivityService.AnimalDetail getAnimal() {
+    return animal_ == null ? ds.livestockActivityService.AnimalDetail.getDefaultInstance() : animal_;
+  }
+  /**
+   * <code>.livestockActivityService.AnimalDetail animal = 3;</code>
+   */
+  public ds.livestockActivityService.AnimalDetailOrBuilder getAnimalOrBuilder() {
+    return getAnimal();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -150,6 +184,9 @@ private static final long serialVersionUID = 0L;
     if (!getTimeStampBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, timeStamp_);
     }
+    if (animal_ != null) {
+      output.writeMessage(3, getAnimal());
+    }
     unknownFields.writeTo(output);
   }
 
@@ -165,6 +202,10 @@ private static final long serialVersionUID = 0L;
     }
     if (!getTimeStampBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, timeStamp_);
+    }
+    if (animal_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getAnimal());
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -186,6 +227,11 @@ private static final long serialVersionUID = 0L;
         == other.getBpm());
     result = result && getTimeStamp()
         .equals(other.getTimeStamp());
+    result = result && (hasAnimal() == other.hasAnimal());
+    if (hasAnimal()) {
+      result = result && getAnimal()
+          .equals(other.getAnimal());
+    }
     result = result && unknownFields.equals(other.unknownFields);
     return result;
   }
@@ -201,6 +247,10 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getBpm();
     hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
     hash = (53 * hash) + getTimeStamp().hashCode();
+    if (hasAnimal()) {
+      hash = (37 * hash) + ANIMAL_FIELD_NUMBER;
+      hash = (53 * hash) + getAnimal().hashCode();
+    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -338,6 +388,12 @@ private static final long serialVersionUID = 0L;
 
       timeStamp_ = "";
 
+      if (animalBuilder_ == null) {
+        animal_ = null;
+      } else {
+        animal_ = null;
+        animalBuilder_ = null;
+      }
       return this;
     }
 
@@ -366,6 +422,11 @@ private static final long serialVersionUID = 0L;
       ds.livestockActivityService.HeartRateHistory result = new ds.livestockActivityService.HeartRateHistory(this);
       result.bpm_ = bpm_;
       result.timeStamp_ = timeStamp_;
+      if (animalBuilder_ == null) {
+        result.animal_ = animal_;
+      } else {
+        result.animal_ = animalBuilder_.build();
+      }
       onBuilt();
       return result;
     }
@@ -420,6 +481,9 @@ private static final long serialVersionUID = 0L;
       if (!other.getTimeStamp().isEmpty()) {
         timeStamp_ = other.timeStamp_;
         onChanged();
+      }
+      if (other.hasAnimal()) {
+        mergeAnimal(other.getAnimal());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -543,6 +607,123 @@ private static final long serialVersionUID = 0L;
       timeStamp_ = value;
       onChanged();
       return this;
+    }
+
+    private ds.livestockActivityService.AnimalDetail animal_ = null;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        ds.livestockActivityService.AnimalDetail, ds.livestockActivityService.AnimalDetail.Builder, ds.livestockActivityService.AnimalDetailOrBuilder> animalBuilder_;
+    /**
+     * <code>.livestockActivityService.AnimalDetail animal = 3;</code>
+     */
+    public boolean hasAnimal() {
+      return animalBuilder_ != null || animal_ != null;
+    }
+    /**
+     * <code>.livestockActivityService.AnimalDetail animal = 3;</code>
+     */
+    public ds.livestockActivityService.AnimalDetail getAnimal() {
+      if (animalBuilder_ == null) {
+        return animal_ == null ? ds.livestockActivityService.AnimalDetail.getDefaultInstance() : animal_;
+      } else {
+        return animalBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.livestockActivityService.AnimalDetail animal = 3;</code>
+     */
+    public Builder setAnimal(ds.livestockActivityService.AnimalDetail value) {
+      if (animalBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        animal_ = value;
+        onChanged();
+      } else {
+        animalBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.livestockActivityService.AnimalDetail animal = 3;</code>
+     */
+    public Builder setAnimal(
+        ds.livestockActivityService.AnimalDetail.Builder builderForValue) {
+      if (animalBuilder_ == null) {
+        animal_ = builderForValue.build();
+        onChanged();
+      } else {
+        animalBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.livestockActivityService.AnimalDetail animal = 3;</code>
+     */
+    public Builder mergeAnimal(ds.livestockActivityService.AnimalDetail value) {
+      if (animalBuilder_ == null) {
+        if (animal_ != null) {
+          animal_ =
+            ds.livestockActivityService.AnimalDetail.newBuilder(animal_).mergeFrom(value).buildPartial();
+        } else {
+          animal_ = value;
+        }
+        onChanged();
+      } else {
+        animalBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.livestockActivityService.AnimalDetail animal = 3;</code>
+     */
+    public Builder clearAnimal() {
+      if (animalBuilder_ == null) {
+        animal_ = null;
+        onChanged();
+      } else {
+        animal_ = null;
+        animalBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.livestockActivityService.AnimalDetail animal = 3;</code>
+     */
+    public ds.livestockActivityService.AnimalDetail.Builder getAnimalBuilder() {
+      
+      onChanged();
+      return getAnimalFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.livestockActivityService.AnimalDetail animal = 3;</code>
+     */
+    public ds.livestockActivityService.AnimalDetailOrBuilder getAnimalOrBuilder() {
+      if (animalBuilder_ != null) {
+        return animalBuilder_.getMessageOrBuilder();
+      } else {
+        return animal_ == null ?
+            ds.livestockActivityService.AnimalDetail.getDefaultInstance() : animal_;
+      }
+    }
+    /**
+     * <code>.livestockActivityService.AnimalDetail animal = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        ds.livestockActivityService.AnimalDetail, ds.livestockActivityService.AnimalDetail.Builder, ds.livestockActivityService.AnimalDetailOrBuilder> 
+        getAnimalFieldBuilder() {
+      if (animalBuilder_ == null) {
+        animalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            ds.livestockActivityService.AnimalDetail, ds.livestockActivityService.AnimalDetail.Builder, ds.livestockActivityService.AnimalDetailOrBuilder>(
+                getAnimal(),
+                getParentForChildren(),
+                isClean());
+        animal_ = null;
+      }
+      return animalBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

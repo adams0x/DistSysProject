@@ -8,17 +8,17 @@ public interface CurrentActivityOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.livestockActivityService.AnimalId animalID = 1;</code>
+   * <code>.livestockActivityService.AnimalDetail animal = 1;</code>
    */
-  boolean hasAnimalID();
+  boolean hasAnimal();
   /**
-   * <code>.livestockActivityService.AnimalId animalID = 1;</code>
+   * <code>.livestockActivityService.AnimalDetail animal = 1;</code>
    */
-  ds.livestockActivityService.AnimalId getAnimalID();
+  ds.livestockActivityService.AnimalDetail getAnimal();
   /**
-   * <code>.livestockActivityService.AnimalId animalID = 1;</code>
+   * <code>.livestockActivityService.AnimalDetail animal = 1;</code>
    */
-  ds.livestockActivityService.AnimalIdOrBuilder getAnimalIDOrBuilder();
+  ds.livestockActivityService.AnimalDetailOrBuilder getAnimalOrBuilder();
 
   /**
    * <code>.livestockActivityService.CurrentActivity.Activity activity = 2;</code>

@@ -52,15 +52,17 @@ message AnimalTimeSpan {
 
 message LiveHeartRate {
   int32 bpm = 1;
+  AnimalDetail animal = 2;
 }
 
 message HeartRateHistory {
   int32 bpm = 1;
   string timeStamp = 2;
+  AnimalDetail animal = 3;
 }
 
 message CurrentActivity {
-  AnimalId animalID = 1;
+  AnimalDetail animal = 1;
   enum Activity{
   	standing =0;
   	feeding=1;

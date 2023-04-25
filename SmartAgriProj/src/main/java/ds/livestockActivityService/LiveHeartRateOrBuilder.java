@@ -11,4 +11,17 @@ public interface LiveHeartRateOrBuilder extends
    * <code>int32 bpm = 1;</code>
    */
   int getBpm();
+
+  /**
+   * <code>.livestockActivityService.AnimalDetail animal = 2;</code>
+   */
+  boolean hasAnimal();
+  /**
+   * <code>.livestockActivityService.AnimalDetail animal = 2;</code>
+   */
+  ds.livestockActivityService.AnimalDetail getAnimal();
+  /**
+   * <code>.livestockActivityService.AnimalDetail animal = 2;</code>
+   */
+  ds.livestockActivityService.AnimalDetailOrBuilder getAnimalOrBuilder();
 }

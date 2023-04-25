@@ -44,14 +44,14 @@ private static final long serialVersionUID = 0L;
             done = true;
             break;
           case 10: {
-            ds.livestockActivityService.AnimalId.Builder subBuilder = null;
-            if (animalID_ != null) {
-              subBuilder = animalID_.toBuilder();
+            ds.livestockActivityService.AnimalDetail.Builder subBuilder = null;
+            if (animal_ != null) {
+              subBuilder = animal_.toBuilder();
             }
-            animalID_ = input.readMessage(ds.livestockActivityService.AnimalId.parser(), extensionRegistry);
+            animal_ = input.readMessage(ds.livestockActivityService.AnimalDetail.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom(animalID_);
-              animalID_ = subBuilder.buildPartial();
+              subBuilder.mergeFrom(animal_);
+              animal_ = subBuilder.buildPartial();
             }
 
             break;
@@ -219,25 +219,25 @@ private static final long serialVersionUID = 0L;
     // @@protoc_insertion_point(enum_scope:livestockActivityService.CurrentActivity.Activity)
   }
 
-  public static final int ANIMALID_FIELD_NUMBER = 1;
-  private ds.livestockActivityService.AnimalId animalID_;
+  public static final int ANIMAL_FIELD_NUMBER = 1;
+  private ds.livestockActivityService.AnimalDetail animal_;
   /**
-   * <code>.livestockActivityService.AnimalId animalID = 1;</code>
+   * <code>.livestockActivityService.AnimalDetail animal = 1;</code>
    */
-  public boolean hasAnimalID() {
-    return animalID_ != null;
+  public boolean hasAnimal() {
+    return animal_ != null;
   }
   /**
-   * <code>.livestockActivityService.AnimalId animalID = 1;</code>
+   * <code>.livestockActivityService.AnimalDetail animal = 1;</code>
    */
-  public ds.livestockActivityService.AnimalId getAnimalID() {
-    return animalID_ == null ? ds.livestockActivityService.AnimalId.getDefaultInstance() : animalID_;
+  public ds.livestockActivityService.AnimalDetail getAnimal() {
+    return animal_ == null ? ds.livestockActivityService.AnimalDetail.getDefaultInstance() : animal_;
   }
   /**
-   * <code>.livestockActivityService.AnimalId animalID = 1;</code>
+   * <code>.livestockActivityService.AnimalDetail animal = 1;</code>
    */
-  public ds.livestockActivityService.AnimalIdOrBuilder getAnimalIDOrBuilder() {
-    return getAnimalID();
+  public ds.livestockActivityService.AnimalDetailOrBuilder getAnimalOrBuilder() {
+    return getAnimal();
   }
 
   public static final int ACTIVITY_FIELD_NUMBER = 2;
@@ -271,8 +271,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (animalID_ != null) {
-      output.writeMessage(1, getAnimalID());
+    if (animal_ != null) {
+      output.writeMessage(1, getAnimal());
     }
     if (activity_ != ds.livestockActivityService.CurrentActivity.Activity.standing.getNumber()) {
       output.writeEnum(2, activity_);
@@ -286,9 +286,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (animalID_ != null) {
+    if (animal_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getAnimalID());
+        .computeMessageSize(1, getAnimal());
     }
     if (activity_ != ds.livestockActivityService.CurrentActivity.Activity.standing.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
@@ -310,10 +310,10 @@ private static final long serialVersionUID = 0L;
     ds.livestockActivityService.CurrentActivity other = (ds.livestockActivityService.CurrentActivity) obj;
 
     boolean result = true;
-    result = result && (hasAnimalID() == other.hasAnimalID());
-    if (hasAnimalID()) {
-      result = result && getAnimalID()
-          .equals(other.getAnimalID());
+    result = result && (hasAnimal() == other.hasAnimal());
+    if (hasAnimal()) {
+      result = result && getAnimal()
+          .equals(other.getAnimal());
     }
     result = result && activity_ == other.activity_;
     result = result && unknownFields.equals(other.unknownFields);
@@ -327,9 +327,9 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (hasAnimalID()) {
-      hash = (37 * hash) + ANIMALID_FIELD_NUMBER;
-      hash = (53 * hash) + getAnimalID().hashCode();
+    if (hasAnimal()) {
+      hash = (37 * hash) + ANIMAL_FIELD_NUMBER;
+      hash = (53 * hash) + getAnimal().hashCode();
     }
     hash = (37 * hash) + ACTIVITY_FIELD_NUMBER;
     hash = (53 * hash) + activity_;
@@ -466,11 +466,11 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      if (animalIDBuilder_ == null) {
-        animalID_ = null;
+      if (animalBuilder_ == null) {
+        animal_ = null;
       } else {
-        animalID_ = null;
-        animalIDBuilder_ = null;
+        animal_ = null;
+        animalBuilder_ = null;
       }
       activity_ = 0;
 
@@ -500,10 +500,10 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public ds.livestockActivityService.CurrentActivity buildPartial() {
       ds.livestockActivityService.CurrentActivity result = new ds.livestockActivityService.CurrentActivity(this);
-      if (animalIDBuilder_ == null) {
-        result.animalID_ = animalID_;
+      if (animalBuilder_ == null) {
+        result.animal_ = animal_;
       } else {
-        result.animalID_ = animalIDBuilder_.build();
+        result.animal_ = animalBuilder_.build();
       }
       result.activity_ = activity_;
       onBuilt();
@@ -554,8 +554,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(ds.livestockActivityService.CurrentActivity other) {
       if (other == ds.livestockActivityService.CurrentActivity.getDefaultInstance()) return this;
-      if (other.hasAnimalID()) {
-        mergeAnimalID(other.getAnimalID());
+      if (other.hasAnimal()) {
+        mergeAnimal(other.getAnimal());
       }
       if (other.activity_ != 0) {
         setActivityValue(other.getActivityValue());
@@ -589,121 +589,121 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private ds.livestockActivityService.AnimalId animalID_ = null;
+    private ds.livestockActivityService.AnimalDetail animal_ = null;
     private com.google.protobuf.SingleFieldBuilderV3<
-        ds.livestockActivityService.AnimalId, ds.livestockActivityService.AnimalId.Builder, ds.livestockActivityService.AnimalIdOrBuilder> animalIDBuilder_;
+        ds.livestockActivityService.AnimalDetail, ds.livestockActivityService.AnimalDetail.Builder, ds.livestockActivityService.AnimalDetailOrBuilder> animalBuilder_;
     /**
-     * <code>.livestockActivityService.AnimalId animalID = 1;</code>
+     * <code>.livestockActivityService.AnimalDetail animal = 1;</code>
      */
-    public boolean hasAnimalID() {
-      return animalIDBuilder_ != null || animalID_ != null;
+    public boolean hasAnimal() {
+      return animalBuilder_ != null || animal_ != null;
     }
     /**
-     * <code>.livestockActivityService.AnimalId animalID = 1;</code>
+     * <code>.livestockActivityService.AnimalDetail animal = 1;</code>
      */
-    public ds.livestockActivityService.AnimalId getAnimalID() {
-      if (animalIDBuilder_ == null) {
-        return animalID_ == null ? ds.livestockActivityService.AnimalId.getDefaultInstance() : animalID_;
+    public ds.livestockActivityService.AnimalDetail getAnimal() {
+      if (animalBuilder_ == null) {
+        return animal_ == null ? ds.livestockActivityService.AnimalDetail.getDefaultInstance() : animal_;
       } else {
-        return animalIDBuilder_.getMessage();
+        return animalBuilder_.getMessage();
       }
     }
     /**
-     * <code>.livestockActivityService.AnimalId animalID = 1;</code>
+     * <code>.livestockActivityService.AnimalDetail animal = 1;</code>
      */
-    public Builder setAnimalID(ds.livestockActivityService.AnimalId value) {
-      if (animalIDBuilder_ == null) {
+    public Builder setAnimal(ds.livestockActivityService.AnimalDetail value) {
+      if (animalBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        animalID_ = value;
+        animal_ = value;
         onChanged();
       } else {
-        animalIDBuilder_.setMessage(value);
+        animalBuilder_.setMessage(value);
       }
 
       return this;
     }
     /**
-     * <code>.livestockActivityService.AnimalId animalID = 1;</code>
+     * <code>.livestockActivityService.AnimalDetail animal = 1;</code>
      */
-    public Builder setAnimalID(
-        ds.livestockActivityService.AnimalId.Builder builderForValue) {
-      if (animalIDBuilder_ == null) {
-        animalID_ = builderForValue.build();
+    public Builder setAnimal(
+        ds.livestockActivityService.AnimalDetail.Builder builderForValue) {
+      if (animalBuilder_ == null) {
+        animal_ = builderForValue.build();
         onChanged();
       } else {
-        animalIDBuilder_.setMessage(builderForValue.build());
+        animalBuilder_.setMessage(builderForValue.build());
       }
 
       return this;
     }
     /**
-     * <code>.livestockActivityService.AnimalId animalID = 1;</code>
+     * <code>.livestockActivityService.AnimalDetail animal = 1;</code>
      */
-    public Builder mergeAnimalID(ds.livestockActivityService.AnimalId value) {
-      if (animalIDBuilder_ == null) {
-        if (animalID_ != null) {
-          animalID_ =
-            ds.livestockActivityService.AnimalId.newBuilder(animalID_).mergeFrom(value).buildPartial();
+    public Builder mergeAnimal(ds.livestockActivityService.AnimalDetail value) {
+      if (animalBuilder_ == null) {
+        if (animal_ != null) {
+          animal_ =
+            ds.livestockActivityService.AnimalDetail.newBuilder(animal_).mergeFrom(value).buildPartial();
         } else {
-          animalID_ = value;
+          animal_ = value;
         }
         onChanged();
       } else {
-        animalIDBuilder_.mergeFrom(value);
+        animalBuilder_.mergeFrom(value);
       }
 
       return this;
     }
     /**
-     * <code>.livestockActivityService.AnimalId animalID = 1;</code>
+     * <code>.livestockActivityService.AnimalDetail animal = 1;</code>
      */
-    public Builder clearAnimalID() {
-      if (animalIDBuilder_ == null) {
-        animalID_ = null;
+    public Builder clearAnimal() {
+      if (animalBuilder_ == null) {
+        animal_ = null;
         onChanged();
       } else {
-        animalID_ = null;
-        animalIDBuilder_ = null;
+        animal_ = null;
+        animalBuilder_ = null;
       }
 
       return this;
     }
     /**
-     * <code>.livestockActivityService.AnimalId animalID = 1;</code>
+     * <code>.livestockActivityService.AnimalDetail animal = 1;</code>
      */
-    public ds.livestockActivityService.AnimalId.Builder getAnimalIDBuilder() {
+    public ds.livestockActivityService.AnimalDetail.Builder getAnimalBuilder() {
       
       onChanged();
-      return getAnimalIDFieldBuilder().getBuilder();
+      return getAnimalFieldBuilder().getBuilder();
     }
     /**
-     * <code>.livestockActivityService.AnimalId animalID = 1;</code>
+     * <code>.livestockActivityService.AnimalDetail animal = 1;</code>
      */
-    public ds.livestockActivityService.AnimalIdOrBuilder getAnimalIDOrBuilder() {
-      if (animalIDBuilder_ != null) {
-        return animalIDBuilder_.getMessageOrBuilder();
+    public ds.livestockActivityService.AnimalDetailOrBuilder getAnimalOrBuilder() {
+      if (animalBuilder_ != null) {
+        return animalBuilder_.getMessageOrBuilder();
       } else {
-        return animalID_ == null ?
-            ds.livestockActivityService.AnimalId.getDefaultInstance() : animalID_;
+        return animal_ == null ?
+            ds.livestockActivityService.AnimalDetail.getDefaultInstance() : animal_;
       }
     }
     /**
-     * <code>.livestockActivityService.AnimalId animalID = 1;</code>
+     * <code>.livestockActivityService.AnimalDetail animal = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilderV3<
-        ds.livestockActivityService.AnimalId, ds.livestockActivityService.AnimalId.Builder, ds.livestockActivityService.AnimalIdOrBuilder> 
-        getAnimalIDFieldBuilder() {
-      if (animalIDBuilder_ == null) {
-        animalIDBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            ds.livestockActivityService.AnimalId, ds.livestockActivityService.AnimalId.Builder, ds.livestockActivityService.AnimalIdOrBuilder>(
-                getAnimalID(),
+        ds.livestockActivityService.AnimalDetail, ds.livestockActivityService.AnimalDetail.Builder, ds.livestockActivityService.AnimalDetailOrBuilder> 
+        getAnimalFieldBuilder() {
+      if (animalBuilder_ == null) {
+        animalBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            ds.livestockActivityService.AnimalDetail, ds.livestockActivityService.AnimalDetail.Builder, ds.livestockActivityService.AnimalDetailOrBuilder>(
+                getAnimal(),
                 getParentForChildren(),
                 isClean());
-        animalID_ = null;
+        animal_ = null;
       }
-      return animalIDBuilder_;
+      return animalBuilder_;
     }
 
     private int activity_ = 0;

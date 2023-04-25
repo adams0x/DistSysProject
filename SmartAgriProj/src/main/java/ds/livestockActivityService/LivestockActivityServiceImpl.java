@@ -80,40 +80,43 @@ public final class LivestockActivityServiceImpl {
       "setAnimalDetailsReply\030\001 \001(\t\"j\n\016AnimalTim" +
       "eSpan\022\021\n\tstartDate\030\001 \001(\t\022\017\n\007endDate\030\002 \001(" +
       "\t\0224\n\010animalID\030\003 \001(\0132\".livestockActivityS" +
-      "ervice.AnimalId\"\034\n\rLiveHeartRate\022\013\n\003bpm\030" +
-      "\001 \001(\005\"2\n\020HeartRateHistory\022\013\n\003bpm\030\001 \001(\005\022\021" +
-      "\n\ttimeStamp\030\002 \001(\t\"\331\001\n\017CurrentActivity\0224\n" +
-      "\010animalID\030\001 \001(\0132\".livestockActivityServi" +
-      "ce.AnimalId\022D\n\010activity\030\002 \001(\01622.livestoc" +
-      "kActivityService.CurrentActivity.Activit" +
-      "y\"J\n\010Activity\022\014\n\010standing\020\000\022\013\n\007feeding\020\001" +
-      "\022\014\n\010drinking\020\002\022\t\n\005lying\020\003\022\n\n\006moving\020\004\"\246\002" +
-      "\n\020AnimalHealthInfo\022\022\n\nreportDate\030\001 \001(\t\022\016" +
-      "\n\006minBPM\030\002 \001(\005\022\016\n\006maxBPM\030\003 \001(\005\022\016\n\006avgBPM" +
-      "\030\004 \001(\005\022J\n\017healthIndicator\030\005 \001(\01621.livest" +
-      "ockActivityService.AnimalHealthInfo.Heal" +
-      "th\0226\n\006animal\030\006 \001(\0132&.livestockActivitySe" +
-      "rvice.AnimalDetail\"J\n\006Health\022\013\n\007healthy\020" +
-      "\000\022\016\n\nvaccineDue\020\001\022\021\n\rhighHeartRate\020\002\022\020\n\014" +
-      "lowHeartRate\020\003\"\007\n\005Empty2\212\005\n\030LivestockAct" +
-      "ivityService\022o\n\020SetAnimalDetails\022&.lives" +
-      "tockActivityService.AnimalDetail\032/.lives" +
-      "tockActivityService.SetAnimalDetailsRepl" +
-      "y\"\000(\001\022W\n\014GetAnimalIds\022\037.livestockActivit" +
-      "yService.Empty\032\".livestockActivityServic" +
-      "e.AnimalId\"\0000\001\022c\n\020GetLiveHeartRate\022\".liv" +
-      "estockActivityService.AnimalId\032\'.livesto" +
-      "ckActivityService.LiveHeartRate\"\0000\001\022o\n\023G" +
-      "etHeartRateHistory\022(.livestockActivitySe" +
-      "rvice.AnimalTimeSpan\032*.livestockActivity" +
-      "Service.HeartRateHistory\"\0000\001\022e\n\022GetCurre" +
-      "ntActivity\022\".livestockActivityService.An" +
-      "imalId\032).livestockActivityService.Curren" +
-      "tActivity\"\000\022g\n\017GetAnimalVitals\022\".livesto" +
-      "ckActivityService.AnimalId\032*.livestockAc" +
-      "tivityService.AnimalHealthInfo\"\000(\0010\001B=\n\033" +
-      "ds.livestockActivityServiceB\034LivestockAc" +
-      "tivityServiceImplP\001b\006proto3"
+      "ervice.AnimalId\"T\n\rLiveHeartRate\022\013\n\003bpm\030" +
+      "\001 \001(\005\0226\n\006animal\030\002 \001(\0132&.livestockActivit" +
+      "yService.AnimalDetail\"j\n\020HeartRateHistor" +
+      "y\022\013\n\003bpm\030\001 \001(\005\022\021\n\ttimeStamp\030\002 \001(\t\0226\n\006ani" +
+      "mal\030\003 \001(\0132&.livestockActivityService.Ani" +
+      "malDetail\"\333\001\n\017CurrentActivity\0226\n\006animal\030" +
+      "\001 \001(\0132&.livestockActivityService.AnimalD" +
+      "etail\022D\n\010activity\030\002 \001(\01622.livestockActiv" +
+      "ityService.CurrentActivity.Activity\"J\n\010A" +
+      "ctivity\022\014\n\010standing\020\000\022\013\n\007feeding\020\001\022\014\n\010dr" +
+      "inking\020\002\022\t\n\005lying\020\003\022\n\n\006moving\020\004\"\246\002\n\020Anim" +
+      "alHealthInfo\022\022\n\nreportDate\030\001 \001(\t\022\016\n\006minB" +
+      "PM\030\002 \001(\005\022\016\n\006maxBPM\030\003 \001(\005\022\016\n\006avgBPM\030\004 \001(\005" +
+      "\022J\n\017healthIndicator\030\005 \001(\01621.livestockAct" +
+      "ivityService.AnimalHealthInfo.Health\0226\n\006" +
+      "animal\030\006 \001(\0132&.livestockActivityService." +
+      "AnimalDetail\"J\n\006Health\022\013\n\007healthy\020\000\022\016\n\nv" +
+      "accineDue\020\001\022\021\n\rhighHeartRate\020\002\022\020\n\014lowHea" +
+      "rtRate\020\003\"\007\n\005Empty2\212\005\n\030LivestockActivityS" +
+      "ervice\022o\n\020SetAnimalDetails\022&.livestockAc" +
+      "tivityService.AnimalDetail\032/.livestockAc" +
+      "tivityService.SetAnimalDetailsReply\"\000(\001\022" +
+      "W\n\014GetAnimalIds\022\037.livestockActivityServi" +
+      "ce.Empty\032\".livestockActivityService.Anim" +
+      "alId\"\0000\001\022c\n\020GetLiveHeartRate\022\".livestock" +
+      "ActivityService.AnimalId\032\'.livestockActi" +
+      "vityService.LiveHeartRate\"\0000\001\022o\n\023GetHear" +
+      "tRateHistory\022(.livestockActivityService." +
+      "AnimalTimeSpan\032*.livestockActivityServic" +
+      "e.HeartRateHistory\"\0000\001\022e\n\022GetCurrentActi" +
+      "vity\022\".livestockActivityService.AnimalId" +
+      "\032).livestockActivityService.CurrentActiv" +
+      "ity\"\000\022g\n\017GetAnimalVitals\022\".livestockActi" +
+      "vityService.AnimalId\032*.livestockActivity" +
+      "Service.AnimalHealthInfo\"\000(\0010\001B=\n\033ds.liv" +
+      "estockActivityServiceB\034LivestockActivity" +
+      "ServiceImplP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -156,19 +159,19 @@ public final class LivestockActivityServiceImpl {
     internal_static_livestockActivityService_LiveHeartRate_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_livestockActivityService_LiveHeartRate_descriptor,
-        new java.lang.String[] { "Bpm", });
+        new java.lang.String[] { "Bpm", "Animal", });
     internal_static_livestockActivityService_HeartRateHistory_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_livestockActivityService_HeartRateHistory_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_livestockActivityService_HeartRateHistory_descriptor,
-        new java.lang.String[] { "Bpm", "TimeStamp", });
+        new java.lang.String[] { "Bpm", "TimeStamp", "Animal", });
     internal_static_livestockActivityService_CurrentActivity_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_livestockActivityService_CurrentActivity_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_livestockActivityService_CurrentActivity_descriptor,
-        new java.lang.String[] { "AnimalID", "Activity", });
+        new java.lang.String[] { "Animal", "Activity", });
     internal_static_livestockActivityService_AnimalHealthInfo_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_livestockActivityService_AnimalHealthInfo_fieldAccessorTable = new

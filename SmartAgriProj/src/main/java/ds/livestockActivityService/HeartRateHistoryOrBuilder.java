@@ -21,4 +21,17 @@ public interface HeartRateHistoryOrBuilder extends
    */
   com.google.protobuf.ByteString
       getTimeStampBytes();
+
+  /**
+   * <code>.livestockActivityService.AnimalDetail animal = 3;</code>
+   */
+  boolean hasAnimal();
+  /**
+   * <code>.livestockActivityService.AnimalDetail animal = 3;</code>
+   */
+  ds.livestockActivityService.AnimalDetail getAnimal();
+  /**
+   * <code>.livestockActivityService.AnimalDetail animal = 3;</code>
+   */
+  ds.livestockActivityService.AnimalDetailOrBuilder getAnimalOrBuilder();
 }
