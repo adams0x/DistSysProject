@@ -20,7 +20,6 @@ import javax.jmdns.ServiceInfo;
 import ds.livestockActivityService.LivestockActivityServiceGrpc.LivestockActivityServiceImplBase;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import io.grpc.Status;
 import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 
@@ -156,39 +155,114 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 
 	@Override
 	public void getHeartRateHistory(AnimalTimeSpan request, StreamObserver<HeartRateHistory> responseObserver) {
-		int[] heartRateHist = animals.get(request.getAnimalID().getId()).getHeartRateHistory(request.getStartDate(), request.getEndDate());
-		if(heartRateHist == null) {
-			responseObserver.onError(io.grpc.Status.INVALID_ARGUMENT.withDescription("The time range is too large")
-					.asRuntimeException());			
-		}
-		else {
-			System.out.println("Sending heartrate history samples: " + heartRateHist.length);
-			for(int i = 0; i<heartRateHist.length; i++) {
-	    		AnimalDetail animalDetail = AnimalDetail.newBuilder()
-	    				.setAnimalID(AnimalId.newBuilder().setId(request.getAnimalID().getId()))
-	    				.setTypeOfAnimal(animals.get(request.getAnimalID().getId()).getAnimalType())
-	    				.build();
-				HeartRateHistory hrh = HeartRateHistory.newBuilder()
-						.setTimeStamp(Integer.toString(i))
-						.setBpm(heartRateHist[i])
-						.setAnimal(animalDetail)
-						.build();
-				responseObserver.onNext(hrh);
+			for(Animal animal:animals) {
+				if(animal.getId()==request.getAnimalID().getId()) {
+					int[] heartRateHist = animal.getHeartRateHistory(request.getStartDate(), request.getEndDate());
+					if(heartRateHist == null) {
+						responseObserver.onError(io.grpc.Status.INVALID_ARGUMENT.withDescription("The time range is too large")
+								.asRuntimeException());			
+					}
+					else {
+						System.out.println("Sending heartrate history samples: " + heartRateHist.length);
+						for(int i = 0; i<heartRateHist.length; i++) {
+							DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+				    		AnimalDetail animalDetail = AnimalDetail.newBuilder()
+				    				.setAnimalID(AnimalId.newBuilder().setId(request.getAnimalID().getId()))
+				    				.setTypeOfAnimal(animals.get(request.getAnimalID().getId()).getAnimalType())
+									.setDateOfBirth(df.format(animal.getDateOfBirth()))
+									.setDateNextVaccine(df.format(animal.getDateNextVaccine()))
+				    				.build();
+							HeartRateHistory hrh = HeartRateHistory.newBuilder()
+									.setTimeStamp(Integer.toString(i))
+									.setBpm(heartRateHist[i])
+									.setAnimal(animalDetail)
+									.build();
+							responseObserver.onNext(hrh);
+						}
+						responseObserver.onCompleted();
+						return;
+					}
+				
 			}
-			responseObserver.onCompleted();
+			responseObserver.onError(io.grpc.Status.INVALID_ARGUMENT.withDescription("The animal ID is not found")
+					.asRuntimeException());
 		}
 	}
 
 	@Override
 	public void getCurrentActivity(AnimalId request, StreamObserver<CurrentActivity> responseObserver) {
 		// TODO Auto-generated method stub
-		super.getCurrentActivity(request, responseObserver);
+		for(Animal animal:animals) {
+			if(animal.getId()==request.getId()) {
+				DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+				AnimalDetail animalDetail = AnimalDetail.newBuilder()
+						.setAnimalID(AnimalId.newBuilder().setId(animal.getId()))
+						.setTypeOfAnimal(animal.getAnimalType())
+						.setDateOfBirth(df.format(animal.getDateOfBirth()))
+						.setDateNextVaccine(df.format(animal.getDateNextVaccine()))
+						.build();
+				CurrentActivity activity = CurrentActivity.newBuilder()
+						.setActivity(animal.getActivity())
+						.setAnimal(animalDetail)
+						.build();
+				responseObserver.onNext(activity);
+				responseObserver.onCompleted();
+				return;
+			}
+			
+		}
+		responseObserver.onError(io.grpc.Status.INVALID_ARGUMENT.withDescription("The animal ID is not found")
+				.asRuntimeException());
 	}
 
 	@Override
 	public StreamObserver<AnimalId> getAnimalVitals(StreamObserver<AnimalHealthInfo> responseObserver) {
-		// TODO Auto-generated method stub
-		return super.getAnimalVitals(responseObserver);
+		// Bi-directional streaming: Client streams in a series of machine ID's (incl. date) and the service streams
+		// back some milk reports for each machine
+		return new StreamObserver<AnimalId> () {
+			
+			@Override
+			public void onNext(AnimalId animalId) {
+				for(Animal animal : animals) {
+					if(animal.getId() == animalId.getId()) {
+						DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+						
+						String reportDate = df.format(LocalDate.now());
+						int minBPM = animal.getMinBPM();
+						int maxBPM = animal.getMaxBPM();
+						int avgBPM = animal.getAvgBPM();
+						AnimalHealthInfo.Health health = animal.getHealth();
+						
+						AnimalDetail animalDetail = AnimalDetail.newBuilder()
+								.setAnimalID(AnimalId.newBuilder().setId(animal.getId()))
+								.setTypeOfAnimal(animal.getAnimalType())
+								.setDateOfBirth(df.format(animal.getDateOfBirth()))
+								.setDateNextVaccine(df.format(animal.getDateNextVaccine()))
+								.build();
+						
+						AnimalHealthInfo report = AnimalHealthInfo.newBuilder()
+								.setReportDate(reportDate)
+								.setMinBPM(minBPM)
+								.setMaxBPM(maxBPM)
+								.setAvgBPM(avgBPM)
+								.setHealthIndicator(health)
+								.setAnimal(animalDetail)
+								.build();
+						responseObserver.onNext(report);
+					}
+				}
+				
+			}
+			
+			@Override
+			public void onError(Throwable t) {
+			}
+
+			@Override
+			public void onCompleted() {
+				responseObserver.onCompleted();
+			}
+		};
 	}
 
 
@@ -196,13 +270,55 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 	
 	
 	private class Animal{
-		int id;
-		LocalDate dateOfBirth;
-		LocalDate dateNextVaccine;
-		int heartRate;
-		AnimalDetail.TypeOfAnimal animalType;
+		 int id;
+		 LocalDate dateOfBirth;
+		 LocalDate dateNextVaccine;
+		 int heartRate;
+		 int minBPM;
+		 int maxBPM;
+		 int avgBPM;
+		 AnimalDetail.TypeOfAnimal animalType;
+		 CurrentActivity.Activity activity;
+		 AnimalHealthInfo.Health health;
+		
+		
 
 		
+		public AnimalHealthInfo.Health getHealth() {
+			return health;
+		}
+
+
+		public int getMinBPM() {
+			return minBPM;
+		}
+
+
+		public int getMaxBPM() {
+			return maxBPM;
+		}
+
+
+		public int getAvgBPM() {
+			return avgBPM;
+		}
+
+
+		public LocalDate getDateOfBirth() {
+			return dateOfBirth;
+		}
+
+
+		public LocalDate getDateNextVaccine() {
+			return dateNextVaccine;
+		}
+
+
+		public CurrentActivity.Activity getActivity() {
+			return activity;
+		}
+
+
 		public AnimalDetail.TypeOfAnimal getAnimalType() {
 			return animalType;
 		}
@@ -218,6 +334,11 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 			this.dateNextVaccine = LocalDate.parse(dateNextVaccine, df);
 			Random rand = new Random();
 			heartRate = rand.nextInt(71) +50; //range from 50 ~ 120 bpm
+			minBPM = rand.nextInt(11) +40; //range from 40 ~ 50 bpm
+			maxBPM = rand.nextInt(11) +120; //range from 120 ~ 130 bpm
+			avgBPM = (maxBPM - minBPM) / 2 ;
+			this.activity = CurrentActivity.Activity.values()[rand.nextInt(4)];
+			this.health = AnimalHealthInfo.Health.values()[rand.nextInt(4)];
 			this.animalType = animalType;
 		}
 		
@@ -277,10 +398,13 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 	    	}
 	    	else
 	    	{
-	    		AnimalDetail animalDetail = AnimalDetail.newBuilder()
-	    				.setAnimalID(AnimalId.newBuilder().setId(animal.getId()))
-	    				.setTypeOfAnimal(animal.getAnimalType())
-	    				.build();
+				DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+				AnimalDetail animalDetail = AnimalDetail.newBuilder()
+						.setAnimalID(AnimalId.newBuilder().setId(animal.getId()))
+						.setTypeOfAnimal(animal.getAnimalType())
+						.setDateOfBirth(df.format(animal.getDateOfBirth()))
+						.setDateNextVaccine(df.format(animal.getDateNextVaccine()))
+						.build();
 		    	LiveHeartRate lhr = LiveHeartRate.newBuilder()
 		    			.setBpm(animal.getHeartRate())
 		    			.setAnimal(animalDetail)

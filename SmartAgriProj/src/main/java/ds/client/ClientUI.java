@@ -19,8 +19,12 @@ import ds.client.ModelsUI.MachineIdModel;
 import ds.client.ModelsUI.MachineReportCollectionModel;
 import ds.client.ModelsUI.MachineReportModel;
 import ds.client.ModelsUI.LiveHeartRateModel;
+import ds.client.ModelsUI.AnimalHealthReportModel;
+import ds.client.ModelsUI.AnimalHealthReportCollectionModel;
 import ds.livestockActivityService.AnimalDetail;
+import ds.livestockActivityService.AnimalHealthInfo;
 import ds.livestockActivityService.AnimalId;
+import ds.livestockActivityService.CurrentActivity;
 import ds.livestockActivityService.LiveHeartRate;
 import ds.livestockActivityService.LivestockActivityServiceGrpc;
 import ds.livestockActivityService.SetAnimalDetailsReply;
@@ -87,7 +91,8 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent; 
+import java.awt.event.ActionEvent;
+import org.jdesktop.beansbinding.ObjectProperty; 
 
 public class ClientUI {
 
@@ -98,6 +103,8 @@ public class ClientUI {
 	private MachineReportModel mReport = new MachineReportModel();
 	private AnimalIdCollectionModel ac;
 	private AnimalIdModel am = new AnimalIdModel();
+	private AnimalHealthReportModel hm = new AnimalHealthReportModel();
+	private AnimalHealthReportCollectionModel hc;
 
 	private jmDNSInfo jmDnsMilkParlour;
 	static ArrayList<Integer> machineIDs = new ArrayList<Integer>();
@@ -131,6 +138,7 @@ public class ClientUI {
 	private JLabel lblLiveHeartRateAnimalId;
 	private JLabel lblLiveHeartRateAnimalType;
 	private JLabel lblLiveHeartRateBpm;
+	private JTable tableHealthReports;
 
 
 	/**
@@ -167,8 +175,10 @@ public class ClientUI {
 		mc = new MachineIdCollectionModel();
 		mcListReport = new MachineReportCollectionModel();
 		ac = new AnimalIdCollectionModel();
+		hc = new AnimalHealthReportCollectionModel();
 		//mm = new MachineIdModel();
 		frame = new JFrame();
+		frame.setResizable(false);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
@@ -225,47 +235,47 @@ public class ClientUI {
 				
 			}
 		});
-		frame.setBounds(100, 100, 1066, 465);
+		frame.setBounds(100, 100, 1259, 748);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(0, 0, 1049, 425);
+		tabbedPane.setBounds(0, 0, 1233, 699);
 		frame.getContentPane().add(tabbedPane);
 		
-		JPanel panel = new JPanel();
-		panel.setName("");
-		tabbedPane.addTab("Milk Machines", null, panel, null);
-		panel.setLayout(null);
+		JPanel panelMilkMachines = new JPanel();
+		panelMilkMachines.setName("");
+		tabbedPane.addTab("Milk Machines", null, panelMilkMachines, null);
+		panelMilkMachines.setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Milking Parlour Service Discovery Status:");
 		lblNewLabel.setBounds(34, 0, 277, 23);
-		panel.add(lblNewLabel);
+		panelMilkMachines.add(lblNewLabel);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		
 		lblNewLabel_1 = new JLabel("???");
 		lblNewLabel_1.setBounds(323, 0, 245, 23);
-		panel.add(lblNewLabel_1);
+		panelMilkMachines.add(lblNewLabel_1);
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		
 		list = new JList();
 		list.setBorder(new LineBorder(new Color(128, 128, 128)));
 		list.setBounds(34, 47, 168, 338);
-		panel.add(list);
+		panelMilkMachines.add(list);
 		list.setMaximumSize(new Dimension(100, 100));
 		list.setOpaque(false);
 		
 		JLabel lblNewLabel_2 = new JLabel("Available Machines:");
 		lblNewLabel_2.setBounds(44, 30, 143, 17);
-		panel.add(lblNewLabel_2);
+		panelMilkMachines.add(lblNewLabel_2);
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new LineBorder(new Color(128, 128, 128), 2, true));
 		panel_1.setBounds(214, 47, 175, 208);
-		panel.add(panel_1);
+		panelMilkMachines.add(panel_1);
 		panel_1.setLayout(null);
 		
 		JLabel lblNewLabel_6 = new JLabel("<HTML>Select date range to obtain volume of milk for that duration<HTML>");
@@ -313,7 +323,7 @@ public class ClientUI {
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new LineBorder(new Color(128, 128, 128), 2, true));
 		panel_2.setBounds(214, 263, 175, 122);
-		panel.add(panel_2);
+		panelMilkMachines.add(panel_2);
 		panel_2.setLayout(null);
 		
 		JLabel lblNewLabel_5 = new JLabel("Report Date:");
@@ -342,12 +352,12 @@ public class ClientUI {
 		
 		JLabel lblNewLabel_2_1 = new JLabel("Available Reports:");
 		lblNewLabel_2_1.setBounds(401, 32, 155, 13);
-		panel.add(lblNewLabel_2_1);
+		panelMilkMachines.add(lblNewLabel_2_1);
 		lblNewLabel_2_1.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(401, 47, 603, 338);
-		panel.add(scrollPane);
+		scrollPane.setBounds(401, 47, 790, 583);
+		panelMilkMachines.add(scrollPane);
 		
 		table = new JTable();
 		table.setModel(new DefaultTableModel(
@@ -360,32 +370,33 @@ public class ClientUI {
 		scrollPane.setViewportView(table);
 		table.setRowSelectionAllowed(false);
 		
-		JPanel panel_3 = new JPanel();
-		tabbedPane.addTab("Livestock Activity", null, panel_3, null);
-		panel_3.setLayout(null);
+		JPanel panelLivestock = new JPanel();
+		tabbedPane.addTab("Livestock Activity", null, panelLivestock, null);
+		panelLivestock.setLayout(null);
 		
 		JLabel lblLivestockActivityService = new JLabel("Livestock Activity Service Discovery Status:");
 		lblLivestockActivityService.setBounds(38, 12, 280, 15);
 		lblLivestockActivityService.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblLivestockActivityService.setFont(new Font("Tahoma", Font.BOLD, 12));
-		panel_3.add(lblLivestockActivityService);
+		panelLivestock.add(lblLivestockActivityService);
 		
 		lblNewLabel_1_1 = new JLabel("???");
 		lblNewLabel_1_1.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_1_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblNewLabel_1_1.setBounds(335, 11, 245, 23);
-		panel_3.add(lblNewLabel_1_1);
+		panelLivestock.add(lblNewLabel_1_1);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(48, 39, 214, 346);
-		panel_3.add(scrollPane_1);
+		panelLivestock.add(scrollPane_1);
 		
 		listAnimalIds = new JList();
 		scrollPane_1.setViewportView(listAnimalIds);
 		
 		JPanel panel_4 = new JPanel();
+		panel_4.setBorder(new LineBorder(new Color(128, 128, 128)));
 		panel_4.setBounds(287, 39, 167, 180);
-		panel_3.add(panel_4);
+		panelLivestock.add(panel_4);
 		panel_4.setLayout(null);
 		
 		lblLiveHeartRateAnimalId = new JLabel("animal id");
@@ -407,7 +418,6 @@ public class ClientUI {
 				if(listAnimalIds.getSelectedValue()==null)
 					return;
 				else {
-					System.out.println((int)listAnimalIds.getSelectedValue());
 					getLiveHeartRateBegin((int)listAnimalIds.getSelectedValue());
 				}
 			}
@@ -416,8 +426,61 @@ public class ClientUI {
 		panel_4.add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("stop monitor");
+		btnNewButton_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				withCancellation2.cancel(null);
+			}
+		});
 		btnNewButton_1.setBounds(22, 142, 114, 26);
 		panel_4.add(btnNewButton_1);
+		
+		JPanel panel_5 = new JPanel();
+		panel_5.setBorder(new LineBorder(new Color(128, 128, 128)));
+		panel_5.setBounds(287, 231, 167, 154);
+		panelLivestock.add(panel_5);
+		panel_5.setLayout(null);
+		
+		JLabel lblNewLabel_7 = new JLabel("Get the animal activity:");
+		lblNewLabel_7.setBounds(12, 28, 143, 16);
+		panel_5.add(lblNewLabel_7);
+		
+		JButton btnNewButton_2 = new JButton("Get Activity");
+		btnNewButton_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(listAnimalIds.getSelectedValue()==null)
+					return;
+				else {
+					getAnimalActivity((int)listAnimalIds.getSelectedValue());
+				}
+			}
+		});
+		btnNewButton_2.setBounds(25, 56, 113, 26);
+		panel_5.add(btnNewButton_2);
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new LineBorder(new Color(128, 128, 128)));
+		panel.setBounds(466, 39, 728, 599);
+		panelLivestock.add(panel);
+		panel.setLayout(null);
+		
+		JButton btnGetHealthReports = new JButton("Get Health Reports");
+		btnGetHealthReports.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				getAnimalVitals(listAnimalIds.getSelectedValuesList());
+			}
+		});
+		btnGetHealthReports.setBounds(12, 12, 152, 26);
+		panel.add(btnGetHealthReports);
+		
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBounds(12, 50, 691, 521);
+		panel.add(scrollPane_2);
+		
+		tableHealthReports = new JTable();
+		scrollPane_2.setViewportView(tableHealthReports);
 		list.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if(list.getSelectedIndices().length==1) {
@@ -795,6 +858,84 @@ public class ClientUI {
 
 	}
 	
+
+	
+	private void getAnimalActivity(int animalId) {
+		AnimalId aId = AnimalId.newBuilder().setId(animalId).build();
+
+		CurrentActivity reply = blockingStub2.getCurrentActivity(aId);
+		System.out.println("Activity of "+ reply.getAnimal().getTypeOfAnimal() + " with id=" + animalId +" is " + reply.getActivity());
+		JLabel resultLabelActivity = new JLabel("Activity of "+ reply.getAnimal().getTypeOfAnimal() + " with id=" + animalId +" is " + reply.getActivity());
+		resultLabelActivity.setFont(new Font("Arial", Font.BOLD, 18));
+		JOptionPane.showMessageDialog(frame,resultLabelActivity);
+	}
+
+
+	private void getAnimalVitals(List<Integer> mids) {
+		
+		//Create a StreamObserver that receives the stream of milk reports
+		StreamObserver<AnimalHealthInfo> responseObserver = new StreamObserver<AnimalHealthInfo>() {
+
+			@Override
+			public void onNext(AnimalHealthInfo report) {
+				//MilkReport received, extract the data
+				System.out.println("Receiving report for animal health: " + report.getAnimal().getAnimalID().getId() );
+				System.out.println("Report date: " + report.getReportDate() );
+				System.out.println("Milk volume (L): " + report.getAnimal().getTypeOfAnimal() );
+				System.out.println("Heated Temperature (C): " + report.getAnimal().getDateOfBirth() );
+				System.out.println("Heated Duration (mins): " + report.getAnimal().getDateNextVaccine() );
+				System.out.println("Cooled Temperature (C): " + report.getMinBPM() );
+				System.out.println("Next service on: " + report.getMaxBPM() );
+				System.out.println("Next service on: " + report.getAvgBPM() );
+				System.out.println("Next service on: " + report.getHealthIndicator() );
+				System.out.println();
+				SwingUtilities.invokeLater(new Runnable() {
+					 public void run() {
+							hm = new AnimalHealthReportModel();
+							hm.setId(report.getAnimal().getAnimalID().getId());
+							hm.setReportDate(report.getReportDate());
+							hm.setAnimalType(report.getAnimal().getTypeOfAnimal().toString());
+							hm.setDateOfBirth(report.getAnimal().getDateOfBirth());
+							hm.setDateNextVaccine(report.getAnimal().getDateNextVaccine());
+							hm.setMinBPM(report.getMinBPM());
+							hm.setMaxBPM(report.getMaxBPM());
+							hm.setAvgBPM(report.getAvgBPM());
+							hm.setHealth(report.getHealthIndicator().toString());
+							hc.addHealthReport(hm);
+						 }
+						 });
+			}
+
+			@Override
+			public void onError(Throwable t) {
+				t.printStackTrace();
+			}
+
+			@Override
+			public void onCompleted() {
+				System.out.println("stream is completed ... all animal health reports recieved");
+			}
+
+		};
+
+		//Create a StreamObserver that sends the stream of MachineReportsDate's
+		StreamObserver<AnimalId> requestObserver = asyncStub2.getAnimalVitals(responseObserver);
+		try {
+			for(int i = 0; i < mids.size(); i++) {
+				requestObserver.onNext(AnimalId.newBuilder()
+						.setId((int)mids.get(i))
+						.build());
+			}
+
+			// Mark the end of requests
+			requestObserver.onCompleted();
+			
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
+	}
+
+	
 	
 	
 	private void getLiveHeartRateBegin(int animalID) {
@@ -806,7 +947,7 @@ public class ClientUI {
 				SwingUtilities.invokeLater(new Runnable() {
 					 public void run() {
 							liveHeartRateModel.setId(lhr.getAnimal().getAnimalID().getId());
-							liveHeartRateModel.setAnimalType(lhr.getAnimal().getTypeOfAnimalValue());
+							liveHeartRateModel.setAnimalType(lhr.getAnimal().getTypeOfAnimal().toString());
 							liveHeartRateModel.setLiveHeartRate(lhr.getBpm());
 						 }
 						 });
@@ -893,12 +1034,44 @@ public class ClientUI {
 		AutoBinding<LiveHeartRateModel, Integer, JLabel, String> autoBinding_2 = Bindings.createAutoBinding(UpdateStrategy.READ, liveHeartRateModel, liveHeartRateModelBeanProperty, lblLiveHeartRateAnimalId, jLabelBeanProperty);
 		autoBinding_2.bind();
 		//
-		BeanProperty<LiveHeartRateModel, Integer> liveHeartRateModelBeanProperty_1 = BeanProperty.create("animalType");
-		AutoBinding<LiveHeartRateModel, Integer, JLabel, String> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ, liveHeartRateModel, liveHeartRateModelBeanProperty_1, lblLiveHeartRateAnimalType, jLabelBeanProperty);
-		autoBinding_3.bind();
-		//
 		BeanProperty<LiveHeartRateModel, Integer> liveHeartRateModelBeanProperty_2 = BeanProperty.create("liveHeartRate");
 		AutoBinding<LiveHeartRateModel, Integer, JLabel, String> autoBinding_4 = Bindings.createAutoBinding(UpdateStrategy.READ, liveHeartRateModel, liveHeartRateModelBeanProperty_2, lblLiveHeartRateBpm, jLabelBeanProperty);
 		autoBinding_4.bind();
+		//
+		BeanProperty<LiveHeartRateModel, String> liveHeartRateModelBeanProperty_1 = BeanProperty.create("animalType");
+		AutoBinding<LiveHeartRateModel, String, JLabel, String> autoBinding_3 = Bindings.createAutoBinding(UpdateStrategy.READ, liveHeartRateModel, liveHeartRateModelBeanProperty_1, lblLiveHeartRateAnimalType, jLabelBeanProperty);
+		autoBinding_3.bind();
+		//
+		BeanProperty<AnimalHealthReportCollectionModel, List<AnimalHealthReportModel>> animalHealthReportCollectionModelBeanProperty = BeanProperty.create("healthReports");
+		JTableBinding<AnimalHealthReportModel, AnimalHealthReportCollectionModel, JTable> jTableBinding_1 = SwingBindings.createJTableBinding(UpdateStrategy.READ, hc, animalHealthReportCollectionModelBeanProperty, tableHealthReports);
+		//
+		BeanProperty<AnimalHealthReportModel, Integer> animalHealthReportModelBeanProperty = BeanProperty.create("id");
+		jTableBinding_1.addColumnBinding(animalHealthReportModelBeanProperty).setColumnName("Animal Id");
+		//
+		BeanProperty<AnimalHealthReportModel, String> animalHealthReportModelBeanProperty_1 = BeanProperty.create("reportDate");
+		jTableBinding_1.addColumnBinding(animalHealthReportModelBeanProperty_1).setColumnName("Date");
+		//
+		BeanProperty<AnimalHealthReportModel, String> animalHealthReportModelBeanProperty_2 = BeanProperty.create("dateOfBirth");
+		jTableBinding_1.addColumnBinding(animalHealthReportModelBeanProperty_2).setColumnName("DOB");
+		//
+		BeanProperty<AnimalHealthReportModel, String> animalHealthReportModelBeanProperty_3 = BeanProperty.create("dateNextVaccine");
+		jTableBinding_1.addColumnBinding(animalHealthReportModelBeanProperty_3).setColumnName("Vaccine Due");
+		//
+		BeanProperty<AnimalHealthReportModel, String> animalHealthReportModelBeanProperty_4 = BeanProperty.create("animalType");
+		jTableBinding_1.addColumnBinding(animalHealthReportModelBeanProperty_4).setColumnName("Type");
+		//
+		BeanProperty<AnimalHealthReportModel, Integer> animalHealthReportModelBeanProperty_5 = BeanProperty.create("minBPM");
+		jTableBinding_1.addColumnBinding(animalHealthReportModelBeanProperty_5).setColumnName("BPM Min");
+		//
+		BeanProperty<AnimalHealthReportModel, Integer> animalHealthReportModelBeanProperty_6 = BeanProperty.create("maxBPM");
+		jTableBinding_1.addColumnBinding(animalHealthReportModelBeanProperty_6).setColumnName("BPM Max");
+		//
+		BeanProperty<AnimalHealthReportModel, Integer> animalHealthReportModelBeanProperty_7 = BeanProperty.create("avgBPM");
+		jTableBinding_1.addColumnBinding(animalHealthReportModelBeanProperty_7).setColumnName("BPM Avg");
+		//
+		BeanProperty<AnimalHealthReportModel, String> animalHealthReportModelBeanProperty_8 = BeanProperty.create("health");
+		jTableBinding_1.addColumnBinding(animalHealthReportModelBeanProperty_8).setColumnName("Overall");
+		//
+		jTableBinding_1.bind();
 	}
 }

@@ -27,14 +27,14 @@ public class LiveHeartRateModel extends AbstractModelObject  {
 	}
 
 	
-	private int animalType;
+	private String animalType;
 
-	public int getAnimalType() {
+	public String getAnimalType() {
 		return animalType;
 	}
 
-	public void setAnimalType(int animalType) {
-		int oldValue = this.animalType;
+	public void setAnimalType(String animalType) {
+		String oldValue = String.valueOf(this.animalType);
 		this.animalType = animalType;
 		firePropertyChange("animalType", oldValue, this.animalType);
 	}

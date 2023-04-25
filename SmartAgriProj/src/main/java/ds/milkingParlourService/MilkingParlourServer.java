@@ -150,10 +150,8 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 			
 			@Override
 			public void onNext(MachineReportDate machine) {
-				Machine mc;
 				for(Machine m : machines) {
 					if(m.getId() == machine.getMachineID().getId()) {
-						mc = m;
 						String reportDate = machine.getReportDate();
 						float volume = m.getMilkProduced(reportDate);
 						float tempHeated = m.getMilkTemperatureHeated();
@@ -271,8 +269,6 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 		 * milking machine for a given day*/
 		public float getMilkProduced(String day) {
 			
-			DateTimeFormatter df = DateTimeFormatter.ofPattern("d/MM/yyyy");
-			LocalDate from = LocalDate.parse(day, df);
 			Random rand = new Random();
 			return milkProductionRate * rand.nextFloat();
 		}
