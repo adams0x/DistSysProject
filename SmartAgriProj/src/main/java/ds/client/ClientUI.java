@@ -1102,13 +1102,13 @@ public class ClientUI {
 				//health report received, extract the data
 				System.out.println("Receiving report for animal health: " + report.getAnimal().getAnimalID().getId() );
 				System.out.println("Report date: " + report.getReportDate() );
-				System.out.println("Milk volume (L): " + report.getAnimal().getTypeOfAnimal() );
-				System.out.println("Heated Temperature (C): " + report.getAnimal().getDateOfBirth() );
-				System.out.println("Heated Duration (mins): " + report.getAnimal().getDateNextVaccine() );
-				System.out.println("Cooled Temperature (C): " + report.getMinBPM() );
-				System.out.println("Next service on: " + report.getMaxBPM() );
-				System.out.println("Next service on: " + report.getAvgBPM() );
-				System.out.println("Next service on: " + report.getHealthIndicator() );
+				System.out.println("Type of anmimal: " + report.getAnimal().getTypeOfAnimal() );
+				System.out.println("Animal date of birth: " + report.getAnimal().getDateOfBirth() );
+				System.out.println("Next vaccine due: " + report.getAnimal().getDateNextVaccine() );
+				System.out.println("Heartrate min BPM: " + report.getMinBPM() );
+				System.out.println("Heartrate max BPM: " + report.getMaxBPM() );
+				System.out.println("Heartrate avg BPM: " + report.getAvgBPM() );
+				System.out.println("Overall health: " + report.getHealthIndicator() );
 				System.out.println();
 				//invokeLater allows updates to the UI from this thread without issues
 				SwingUtilities.invokeLater(new Runnable() {
