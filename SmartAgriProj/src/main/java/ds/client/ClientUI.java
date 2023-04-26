@@ -39,6 +39,8 @@ import ds.milkingParlourService.MilkQuantity;
 import ds.milkingParlourService.MilkReport;
 import ds.milkingParlourService.MilkingParlourServiceGrpc;
 import ds.milkingParlourService.SetMachineDetailsReply;
+import ds.userService.UserServiceGrpc;
+import ds.userService.UserServiceGrpc.UserServiceBlockingStub;
 import ds.milkingParlourService.MilkingParlourServiceGrpc.MilkingParlourServiceBlockingStub;
 import ds.milkingParlourService.MilkingParlourServiceGrpc.MilkingParlourServiceStub;
 import io.grpc.Context;
@@ -121,9 +123,18 @@ public class ClientUI {
 	private ServiceInfo livestockActivityServiceInfo;
 	private ArrayList<Integer> animalIDs = new ArrayList<Integer>();
 	private LiveHeartRateModel liveHeartRateModel = new LiveHeartRateModel();
-	
-	
 	private CancellableContext withCancellation2;
+
+	/*
+	 * User Login/Out service members
+	 */
+	private jmDNSInfo jmDnsUser;
+	private UserServiceBlockingStub blockingStub3;
+	private ServiceInfo userServiceInfo;
+	
+	
+	
+	
 	
 	private JLabel lblNewLabel_1;
 	private JList list;
@@ -139,6 +150,7 @@ public class ClientUI {
 	private JLabel lblLiveHeartRateAnimalType;
 	private JLabel lblLiveHeartRateBpm;
 	private JTable tableHealthReports;
+	private JLabel lblNewLabel_1_2;
 
 
 	/**
@@ -172,6 +184,8 @@ public class ClientUI {
 		jmDnsMilkParlour.setDiscoveryStatus("Initialised");
 		jmDnsLivestock = new jmDNSInfo();
 		jmDnsLivestock.setDiscoveryStatus("Initialised");
+		jmDnsUser = new jmDNSInfo();
+		jmDnsUser.setDiscoveryStatus("Initialised");
 		mc = new MachineIdCollectionModel();
 		mcListReport = new MachineReportCollectionModel();
 		ac = new AnimalIdCollectionModel();
@@ -231,7 +245,22 @@ public class ClientUI {
 					} // important, allow time for all data transferred
 					getAnimalIDs();
 				});
-				
+
+				newCachedThreadPool.submit(() -> {
+					String userServiceType = "_user._tcp.local.";
+					discoverUserService(userServiceType);
+					String host = userServiceInfo.getHostAddresses()[0];
+					int port = userServiceInfo.getPort();
+
+					ManagedChannel channel = ManagedChannelBuilder
+							.forAddress(host, port)
+							.usePlaintext()
+							.build();
+					
+					blockingStub3 = UserServiceGrpc.newBlockingStub(channel);
+					
+				});
+
 				
 			}
 		});
@@ -481,6 +510,22 @@ public class ClientUI {
 		
 		tableHealthReports = new JTable();
 		scrollPane_2.setViewportView(tableHealthReports);
+		
+		JPanel panelUser = new JPanel();
+		tabbedPane.addTab("User", null, panelUser, null);
+		panelUser.setLayout(null);
+		
+		JLabel lblUserServiceDiscovery = new JLabel("User Service Discovery Status:");
+		lblUserServiceDiscovery.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblUserServiceDiscovery.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblUserServiceDiscovery.setBounds(12, 12, 277, 23);
+		panelUser.add(lblUserServiceDiscovery);
+		
+		lblNewLabel_1_2 = new JLabel("???");
+		lblNewLabel_1_2.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_1_2.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblNewLabel_1_2.setBounds(301, 15, 245, 23);
+		panelUser.add(lblNewLabel_1_2);
 		list.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if(list.getSelectedIndices().length==1) {
@@ -979,6 +1024,60 @@ public class ClientUI {
 		}
 
 	}
+	
+	
+	private void discoverUserService(String serviceType) {
+		try {
+			// Create a JmDNS instance
+			jmDnsUser.setDiscoveryStatus("Discovering...");
+			JmDNS jmdns = JmDNS.create(InetAddress.getLocalHost());
+			jmdns.addServiceListener(serviceType, new ServiceListener() {
+				
+				@Override
+				public void serviceResolved(ServiceEvent event) {
+					
+					System.out.println("User Service resolved: " + event.getInfo());
+					userServiceInfo = event.getInfo();
+					int port = userServiceInfo.getPort();
+					System.out.println("resolving " + serviceType + " with properties ...");
+					System.out.println("\t port: " + port);
+					System.out.println("\t type:"+ event.getType());
+					System.out.println("\t name: " + event.getName());
+					System.out.println("\t description/properties: " + userServiceInfo.getNiceTextString());
+					System.out.println("\t host: " + userServiceInfo.getHostAddresses()[0]);
+					jmDnsUser.setDiscoveryStatus("User service resolved");
+				}
+				
+				@Override
+				public void serviceRemoved(ServiceEvent event) {
+					System.out.println("User Service removed: " + event.getInfo());
+					jmDnsUser.setDiscoveryStatus("User service removed");
+				}
+				
+				@Override
+				public void serviceAdded(ServiceEvent event) {
+					System.out.println("User Service added: " + event.getInfo());
+					jmDnsUser.setDiscoveryStatus("User service added");
+				}
+			});
+			
+			// Wait a bit
+			Thread.sleep(2000);
+			if(userServiceInfo==null)
+				jmDnsUser.setDiscoveryStatus("User service not found");
+			jmdns.close();
+			
+		} catch (UnknownHostException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
 	protected void initDataBindings() {
 		BeanProperty<jmDNSInfo, String> jmDNSInfoBeanProperty = BeanProperty.create("discoveryStatus");
 		BeanProperty<JLabel, String> jLabelBeanProperty = BeanProperty.create("text");
@@ -1073,5 +1172,8 @@ public class ClientUI {
 		jTableBinding_1.addColumnBinding(animalHealthReportModelBeanProperty_8).setColumnName("Overall");
 		//
 		jTableBinding_1.bind();
+		//
+		AutoBinding<jmDNSInfo, String, JLabel, String> autoBinding_5 = Bindings.createAutoBinding(UpdateStrategy.READ, jmDnsUser, jmDNSInfoBeanProperty, lblNewLabel_1_2, jLabelBeanProperty);
+		autoBinding_5.bind();
 	}
 }
