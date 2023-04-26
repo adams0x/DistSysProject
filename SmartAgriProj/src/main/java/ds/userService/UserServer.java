@@ -16,8 +16,11 @@ import io.grpc.stub.StreamObserver;
 
 public class UserServer extends UserServiceImplBase{
 
+	/*
+	 * User service main method to create an instance of the server and register it 
+	 * using the jmDNS library
+	 */
 	public static void main(String[] args) throws InterruptedException, IOException {
-		// TODO Auto-generated method stub
 
 		UserServer service = new UserServer();
 		
@@ -31,7 +34,7 @@ public class UserServer extends UserServiceImplBase{
 				.build()
 				.start();
 
-		System.out.println("Milking Parlour Service started, listening on " + port);
+		System.out.println("User Service started, listening on " + port);
 
 		server.awaitTermination();		
 
@@ -39,6 +42,10 @@ public class UserServer extends UserServiceImplBase{
 	}
 
 	
+	/*
+	 * Read the properties from the .properties file to aid registration 
+	 * using the jmDNS library
+	 */
 	private Properties getProperties() {
 		Properties prop = null;		
 		 try (InputStream input = new FileInputStream("src/main/resources/user.properties")) {
@@ -60,6 +67,10 @@ public class UserServer extends UserServiceImplBase{
 
 
 	
+	/*
+	 * Register the service to allow for discovery by clients 
+	 * using the jmDNS library
+	 */
 	private  void registerService(Properties prop) {
 		 try {
 	            // Create a JmDNS instance
@@ -80,7 +91,6 @@ public class UserServer extends UserServiceImplBase{
 	        } catch (IOException e) {
 	            System.out.println(e.getMessage());
 	        } catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	    
@@ -89,6 +99,9 @@ public class UserServer extends UserServiceImplBase{
 	
 	
 	
+	/*
+	 * method implements the login unary grpc call
+	 */
 	@Override
 	public void login(LoginRequest request, StreamObserver<LoginResponse> responseObserver) {
 		String userName = request.getUsername();
@@ -117,6 +130,9 @@ public class UserServer extends UserServiceImplBase{
 		
 	}
 
+	/*
+	 * method implements the logout unary grpc call
+	 */
 	@Override
 	public void logout(LogoutRequest request, StreamObserver<LogoutResponse> responseObserver) {
 		

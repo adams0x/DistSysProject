@@ -22,8 +22,15 @@ import io.grpc.stub.StreamObserver;
 
 public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	
+	//an internal list of machines is held in the server.
+	//this list of machines is queried by the client and simulates data results
+	// the list is initially populated with mock data sent from the client
 	List<Machine> machines = new ArrayList<Machine>();
 
+	/*
+	 * Milk parlour service main method to create an instance of the server and register it 
+	 * using the jmDNS library
+	 */
 	public static void main(String[] args) throws InterruptedException, IOException{
 		
 		MilkingParlourServer service = new MilkingParlourServer();
@@ -45,6 +52,10 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	}
 
 	
+	/*
+	 * Read the properties from the .properties file to aid registration 
+	 * using the jmDNS library
+	 */
 	private Properties getProperties() {
 		Properties prop = null;		
 		 try (InputStream input = new FileInputStream("src/main/resources/milkingParlour.properties")) {
@@ -65,6 +76,10 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	}
 	
 	
+	/*
+	 * Register the service to allow for discovery by clients 
+	 * using the jmDNS library
+	 */
 	private  void registerService(Properties prop) {
 		 try {
 	            // Create a JmDNS instance
@@ -85,7 +100,6 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	        } catch (IOException e) {
 	            System.out.println(e.getMessage());
 	        } catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	    
@@ -93,9 +107,13 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	
 	
 	
+	/*
+	 * method implements the setMachineDetails client streaming grpc call
+	 */
 	@Override
 	public StreamObserver<MachineDetail> setMachineDetails(StreamObserver<SetMachineDetailsReply> responseObserver) {
-		//Client streaming: The client will supply a stream of details for multiple milking machines
+		//Client streaming: The client will supply a stream of mock details for multiple milking machines
+		//The data recieved is used to initialise a bunch of machine objects for simulation
 		return new StreamObserver<MachineDetail> () {
 			
 			@Override
@@ -128,9 +146,13 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	
 	
 	
+	/*
+	 * method implements the getMachineIds server streaming grpc call
+	 */
 	@Override
 	public void getMachineIds(Empty request, StreamObserver<MachineId> responseObserver) {
 		//Server streaming: this returns a stream of machine id's to the client
+		//the client can then use the id's in subsequent query's to the server
 		for(Machine mc : machines) {
 			MachineId mcid = MachineId.newBuilder().setId(mc.getId()).build();
 			responseObserver.onNext(mcid);
@@ -142,6 +164,9 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 
 
 
+	/*
+	 * method implements the getMilkReports bi-directional streaming grpc call
+	 */
 	@Override
 	public StreamObserver<MachineReportDate> getMilkReports(StreamObserver<MilkReport> responseObserver) {
 		// Bi-directional streaming: Client streams in a series of machine ID's (incl. date) and the service streams
@@ -189,6 +214,9 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	
 	
 	
+	/*
+	 * method implements the getMilkVolume unary grpc call
+	 */
 	@Override
 	public void getMilkVolume(MachineTimeSpan request, StreamObserver<MilkQuantity> responseObserver) {
 		//Unary: this returns the milk volume produced by the machine and time span chosen by the client

@@ -25,11 +25,15 @@ import io.grpc.stub.StreamObserver;
 
 public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 	
+	//an internal list of animals is held in the server.
+	//this list of animals is queried by the client and simulates data results
+	// the list is initially populated with mock data sent from the client
 	List<Animal> animals = new ArrayList<Animal>();
-
-
 	
-	
+	/*
+	 * Livestock activity service main method to create an instance of the server and register it 
+	 * using the jmDNS library
+	 */
 	public static void main(String[] args) throws InterruptedException, IOException {
 		
 		LivestockActivityServer service = new LivestockActivityServer();
@@ -50,6 +54,10 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 	}
 
 
+	/*
+	 * Read the properties from the .properties file to aid registration 
+	 * using the jmDNS library
+	 */
 	private Properties getProperties() {
 		Properties prop = null;		
 		 try (InputStream input = new FileInputStream("src/main/resources/livestockActivity.properties")) {
@@ -70,6 +78,10 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 	}
 	
 	
+	/*
+	 * Register the service to allow for discovery by clients 
+	 * using the jmDNS library
+	 */
 	private  void registerService(Properties prop) {
 		 try {
 	            // Create a JmDNS instance
@@ -90,7 +102,6 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 	        } catch (IOException e) {
 	            System.out.println(e.getMessage());
 	        } catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	    
@@ -98,9 +109,13 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 
 	
 	
+	/*
+	 * method implements the setAnimalDetails client streaming grpc call
+	 */
 	@Override
 	public StreamObserver<AnimalDetail> setAnimalDetails(StreamObserver<SetAnimalDetailsReply> responseObserver) {
-		// Client streaming: client sends a list of animal data for simulating
+		//Client streaming: The client will supply a stream of mock details for multiple animals
+		//The data recieved is used to initialise a bunch of animal objects for simulation
 		return new StreamObserver<AnimalDetail> () {
 			
 			@Override
@@ -131,10 +146,13 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 
 
 	
+	/*
+	 * method implements the getAnimalIds server streaming grpc call
+	 */
 	@Override
 	public void getAnimalIds(Empty request, StreamObserver<AnimalId> responseObserver) {
-		//Server streaming: this returns a stream of animal id's to the client so that
-		//the client knows what animals can be queried
+		//Server streaming: this returns a stream of animal id's to the client
+		//the client can then use the id's in subsequent query's to the server
 		for(Animal animal : animals) {
 			AnimalId aid = AnimalId.newBuilder().setId(animal.getId()).build();
 			responseObserver.onNext(aid);
@@ -142,23 +160,37 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 		responseObserver.onCompleted();
 	}
 
+
+	
+	/*
+	 * method implements the getLiveHeartRate server streaming grpc call
+	 * this method initiates a stream of bpm values with no predetermined
+	 * end. the client will cancel the stream. 
+	 */
 	@Override
 	public void getLiveHeartRate(AnimalId request, StreamObserver<LiveHeartRate> responseObserver) {
 		Timer timer = new Timer();
-		//Animal animal = animals.get(request.getId());
+		//use a periodic timer to stream a bpm every second
 		for(Animal animal:animals) {
 			if(animal.getId()==request.getId())
 				timer.schedule(new LiveHeartRateGenerator( responseObserver, animal ), 0, 1000);
 		}
-	    //timer.schedule(new LiveHeartRateGenerator( responseObserver, animal ), 0, 1000);
 	}
 
+
+	
+	/*
+	 * method implements the getHeartRateHistory server streaming grpc call
+	 * this method initiates a fixed stream of historical bpm values (randomly generated)
+	 * for a given time period to the client.
+	 */
 	@Override
 	public void getHeartRateHistory(AnimalTimeSpan request, StreamObserver<HeartRateHistory> responseObserver) {
 			for(Animal animal:animals) {
 				if(animal.getId()==request.getAnimalID().getId()) {
 					int[] heartRateHist = animal.getHeartRateHistory(request.getStartDate(), request.getEndDate());
 					if(heartRateHist == null) {
+						//error scenario: time range is too large!
 						responseObserver.onError(io.grpc.Status.INVALID_ARGUMENT.withDescription("The time range is too large")
 								.asRuntimeException());			
 					}
@@ -184,14 +216,23 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 					}
 				
 			}
+				//error scenario: couldnt find the requested animal id
 			responseObserver.onError(io.grpc.Status.INVALID_ARGUMENT.withDescription("The animal ID is not found")
 					.asRuntimeException());
 		}
 	}
 
+
+	
+	/*
+	 * method implements the getCurrentActivity unary grpc call
+	 * this method returns the activity of the requested animal id
+	 * to the client
+	 */
 	@Override
 	public void getCurrentActivity(AnimalId request, StreamObserver<CurrentActivity> responseObserver) {
-		// TODO Auto-generated method stub
+		//a unary call whereby the client sends an animal id and this sends back the randomly
+		//generated activity of the animal
 		for(Animal animal:animals) {
 			if(animal.getId()==request.getId()) {
 				DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -215,10 +256,18 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 				.asRuntimeException());
 	}
 
+
+	
+	
+	/*
+	 * method implements the getAnimalVitals bi-directional grpc call
+	 * this method returns health reports of the requested animal id's
+	 * to the client
+	 */
 	@Override
 	public StreamObserver<AnimalId> getAnimalVitals(StreamObserver<AnimalHealthInfo> responseObserver) {
-		// Bi-directional streaming: Client streams in a series of machine ID's (incl. date) and the service streams
-		// back some milk reports for each machine
+		// Bi-directional streaming: Client streams in a series of animal ID's and the service streams
+		// back some health reports for each animal
 		return new StreamObserver<AnimalId> () {
 			
 			@Override
@@ -269,7 +318,14 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 
 	
 	
+	/***************************************************
+	 * Animal class that simulates
+	 * and generates data to mimic an animal
+	 ***************************************************/
+	
 	private class Animal{
+		
+		//members of the animal class
 		 int id;
 		 LocalDate dateOfBirth;
 		 LocalDate dateNextVaccine;
@@ -280,10 +336,8 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 		 AnimalDetail.TypeOfAnimal animalType;
 		 CurrentActivity.Activity activity;
 		 AnimalHealthInfo.Health health;
-		
-		
 
-		
+		 
 		public AnimalHealthInfo.Health getHealth() {
 			return health;
 		}
@@ -325,7 +379,8 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 
 
 		/*
-		 * Livestock animal object construction
+		 * Livestock animal object construction based on mock data recieved from
+		 * the client and also lots of randomly generated data
 		 */
 		public Animal(int id, String dateOfBirth, String dateNextVaccine, AnimalDetail.TypeOfAnimal animalType) {
 			this.id = id;
@@ -377,7 +432,13 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 	
 	
 	
-	class LiveHeartRateGenerator extends TimerTask {
+	/***************************************************
+	 * LiveHeartRateGenerator class that simulates
+	 * and generates data to mimic an animal heart rate
+	 * at timed intervals
+	 ***************************************************/
+	
+	private class LiveHeartRateGenerator extends TimerTask {
 
 	    private final StreamObserver<LiveHeartRate> responseObserver;
 	    private final Animal animal;
@@ -394,7 +455,7 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 	    	= ((ServerCallStreamObserver<LiveHeartRate>)responseObserver);
 	    	if (scStreamObserver.isCancelled()) {
 	    		this.cancel();
-	    		System.out.println("live haert reate cancelled by client");
+	    		System.out.println("live heart rate cancelled by client");
 	    	}
 	    	else
 	    	{
@@ -409,7 +470,7 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 		    			.setBpm(animal.getHeartRate())
 		    			.setAnimal(animalDetail)
 		    			.build();
-		    	System.out.println("live haert rate " + lhr.getBpm() + " for animal id " + lhr.getAnimal().getAnimalID().getId());
+		    	System.out.println("live heart rate " + lhr.getBpm() + " for animal id " + lhr.getAnimal().getAnimalID().getId());
 		    	scStreamObserver.onNext(lhr);	    		
 	    	}
 	    	
