@@ -18,6 +18,7 @@ import ds.client.ModelsUI.MachineIdCollectionModel;
 import ds.client.ModelsUI.MachineIdModel;
 import ds.client.ModelsUI.MachineReportCollectionModel;
 import ds.client.ModelsUI.MachineReportModel;
+import ds.client.ModelsUI.jmDNSInfo;
 import ds.client.ModelsUI.LiveHeartRateModel;
 import ds.client.ModelsUI.AnimalHealthReportModel;
 import ds.client.ModelsUI.AnimalHealthReportCollectionModel;
@@ -105,20 +106,18 @@ import javax.swing.JPasswordField;
 public class ClientUI {
 
 	private JFrame frame;
-	private MachineIdCollectionModel mc;
-	private MachineReportCollectionModel mcListReport;
-	private MachineIdModel mm = new MachineIdModel();
-	private MachineReportModel mReport = new MachineReportModel();
-	private AnimalIdCollectionModel ac;
-	private AnimalIdModel am = new AnimalIdModel();
-	private AnimalHealthReportModel hm = new AnimalHealthReportModel();
-	private AnimalHealthReportCollectionModel hc;
-
+	/*
+	 * Milking parlour service members
+	 */
 	private jmDNSInfo jmDnsMilkParlour;
 	static ArrayList<Integer> machineIDs = new ArrayList<Integer>();
 	private MilkingParlourServiceBlockingStub blockingStub;
 	private MilkingParlourServiceStub asyncStub;
 	private ServiceInfo milkParlourServiceInfo;
+	private MachineIdCollectionModel mc;
+	private MachineReportCollectionModel mcListReport;
+	private MachineIdModel mm = new MachineIdModel();
+	private MachineReportModel mReport = new MachineReportModel();
 
 	/*
 	 * Livestock activity service members
@@ -130,6 +129,10 @@ public class ClientUI {
 	private ArrayList<Integer> animalIDs = new ArrayList<Integer>();
 	private LiveHeartRateModel liveHeartRateModel = new LiveHeartRateModel();
 	private CancellableContext withCancellation2;
+	private AnimalIdCollectionModel ac;
+	private AnimalIdModel am = new AnimalIdModel();
+	private AnimalHealthReportModel hm = new AnimalHealthReportModel();
+	private AnimalHealthReportCollectionModel hc;
 	private boolean isHeartRateMonitorActive = false;
 
 	/*
@@ -142,7 +145,9 @@ public class ClientUI {
 	
 	
 	
-	
+	/*
+	 * UI controls
+	 */	
 	private JLabel lblNewLabel_1;
 	private JList jlistAvailMachines;
 	private JDateChooser dateBeginMilkVolume;
@@ -203,10 +208,18 @@ public class ClientUI {
 		frame = new JFrame();
 		frame.setResizable(false);
 		frame.addWindowListener(new WindowAdapter() {
+			/**
+			 * Main window opened so begin service discovery and sending mock data to the servers
+			 */
 			@Override
 			public void windowOpened(WindowEvent e) {
+				//use threadpool to for executing service discovery in initialising so that
+				//the UI thread remains responsive
 				ExecutorService newCachedThreadPool = Executors.newCachedThreadPool();
-
+				/**
+				 * Launch discovery of Milking parlour service and create channels then send some mock data from csv file
+				 * After that read back the list of milking machine id's that were created by the service
+				 */
 				newCachedThreadPool.submit(() -> {
 					String milkParlourServiceType = "_milkingParlour._tcp.local.";
 					discoverMilkParlourService(milkParlourServiceType);
@@ -221,16 +234,18 @@ public class ClientUI {
 					blockingStub = MilkingParlourServiceGrpc.newBlockingStub(channel);
 					asyncStub = MilkingParlourServiceGrpc.newStub(channel);
 					
-					setMachineDetails();
+					setMachineDetails();//send the mock data to the service via client stream
 					try {
-						Thread.sleep(2000);
+						Thread.sleep(2000);// important, allow time for all data transferred
 					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
-					} // important, allow time for all data transferred
-					getMachineIDs();
+					} 
+					getMachineIDs();//Read machine id's created in the service via server stream
 				});
-
+				/**
+				 * Launch discovery of livestock activity service and create channels then send some mock data from csv file
+				 * After that read back the list of animal id's that were created by the service
+				 */
 				newCachedThreadPool.submit(() -> {
 					String livestockActivityServiceType = "_livestockActivity._tcp.local.";
 					discoverLivestockActivityService(livestockActivityServiceType);
@@ -245,16 +260,17 @@ public class ClientUI {
 					blockingStub2 = LivestockActivityServiceGrpc.newBlockingStub(channel);
 					asyncStub2 = LivestockActivityServiceGrpc.newStub(channel);
 					
-					setAnimalDetails();
+					setAnimalDetails();//send the mock data to the service via client stream
 					try {
-						Thread.sleep(2000);
+						Thread.sleep(2000);// important, allow time for all data transferred
 					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
-					} // important, allow time for all data transferred
-					getAnimalIDs();
+					} 
+					getAnimalIDs();//Read animal id's created in the service via server stream
 				});
-
+				/**
+				 * Launch discovery of user service and create a channel
+				 */
 				newCachedThreadPool.submit(() -> {
 					String userServiceType = "_user._tcp.local.";
 					discoverUserService(userServiceType);
@@ -273,6 +289,9 @@ public class ClientUI {
 				
 			}
 		});
+		/**
+		 * A lot of windowbuilder generated code follows for UI layout
+		 */
 		frame.setBounds(100, 100, 1259, 748);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -679,7 +698,9 @@ public class ClientUI {
 	}
 	
 	
-	
+	/**
+	 * Discover milking parlour service using jmDNS
+	 */	
 	private void discoverMilkParlourService(String serviceType) {
 		try {
 			// Create a JmDNS instance
@@ -726,7 +747,6 @@ public class ClientUI {
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -734,7 +754,10 @@ public class ClientUI {
 	}
 
 	
-	
+	/**
+	 * Send mock data to the server from a csv file, the server will
+	 * create a list of machines for simulation
+	 */		
 	private void setMachineDetails() {
 		//This method client streams machine details for multiple machines to the server.
 		//The service will use this data for simulating milking machines
@@ -786,7 +809,14 @@ public class ClientUI {
 
 	
 	
+	/**
+	 * Read the machine Id's that are available for the machines
+	 * that are available in the server
+	 */		
 	private void getMachineIDs() {
+		//This method server streams machine id's for multiple machines to this client.
+		//We use these id's in subsequent query's to the service
+
 		Empty emp = Empty.newBuilder().build();
 		try {
 			Iterator<MachineId> it = blockingStub.getMachineIds(emp);
@@ -813,7 +843,12 @@ public class ClientUI {
 	
 	
 	
+	/**
+	 * Read the volume of milk produced by a specified machine id
+	 */		
 	private void getMilkQuantity(int machineId, String from, String to) {
+		//This method uses a unary blocking call to the server to obtain
+		//the volume of milk produced by a given machine for a given time span
 		MachineId mcId = MachineId.newBuilder().setId(machineId).build();
 		MachineTimeSpan mc = MachineTimeSpan.newBuilder()
 				.setMachineID(mcId)
@@ -824,12 +859,17 @@ public class ClientUI {
 		System.out.println("Milk volume at machine id=" + machineId +" is " + reply.getVolumeLitres() + " litres");
 		JLabel resultLabel = new JLabel("Milk volume at machine id=" + machineId +" is " + reply.getVolumeLitres() + " litres from " + from + " to " + to);
 		resultLabel.setFont(new Font("Arial", Font.BOLD, 18));
-		JOptionPane.showMessageDialog(frame,resultLabel);
+		JOptionPane.showMessageDialog(frame,resultLabel); //show the result in a pop up window
 	}
 	
 	
 	
+	/**
+	 * Read the reports for one or more  machine id's
+	 */		
 	private void getMilkReports(List<Integer> mids, String reportDate) {
+		//This method uses bi-directonal streaming to get reports from the service for
+		//a specified group of machine id's
 		
 		//Create a StreamObserver that receives the stream of milk reports
 		StreamObserver<MilkReport> responseObserver = new StreamObserver<MilkReport>() {
@@ -880,22 +920,20 @@ public class ClientUI {
 						.setMachineID(MachineId.newBuilder().setId((int)mids.get(i)).build())
 						.setReportDate(reportDate)
 						.build());
-					//Thread.sleep(500);
 			}
 
 			// Mark the end of requests
 			requestObserver.onCompleted();
-			//Thread.sleep(2000);
 			
 		} catch (RuntimeException e) {
 			e.printStackTrace();
-		} //catch (InterruptedException e) {			
-			//e.printStackTrace();
-		//}
-
+		}
 	}
 
 	
+	/**
+	 * Discover livestock activity service using jmDNS
+	 */		
 	private void discoverLivestockActivityService(String serviceType) {
 		try {
 			// Create a JmDNS instance
@@ -942,7 +980,6 @@ public class ClientUI {
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -951,9 +988,13 @@ public class ClientUI {
 
 	
 
+	/**
+	 * Send mock data to the server from a csv file, the server will
+	 * create a list of animals for simulation
+	 */		
 	private void setAnimalDetails() {
-		//This method client streams machine details for multiple machines to the server.
-		//The service will use this data for simulating milking machines
+		//This method client streams animal details for multiple animals to the server.
+		//The service will use this data for simulating activities of many animals
 
 		StreamObserver<SetAnimalDetailsReply> responseObserver = new StreamObserver<SetAnimalDetailsReply>() {
 			@Override
@@ -1002,6 +1043,10 @@ public class ClientUI {
 	}
 
 	
+	/**
+	 * Read the animal Id's that are available for the animals
+	 * that are available in the server
+	 */		
 	private void getAnimalIDs() {
 		ds.livestockActivityService.Empty emp = ds.livestockActivityService.Empty.newBuilder().build();
 		try {
@@ -1027,6 +1072,9 @@ public class ClientUI {
 	
 
 	
+	/**
+	 * Get the current activity of the specified animal id
+	 */		
 	private void getAnimalActivity(int animalId) {
 		AnimalId aId = AnimalId.newBuilder().setId(animalId).build();
 
@@ -1038,14 +1086,20 @@ public class ClientUI {
 	}
 
 
+	/**
+	 * Get a series of animal health reports for the specified
+	 * group of animal id's
+	 */		
 	private void getAnimalVitals(List<Integer> mids) {
-		
-		//Create a StreamObserver that receives the stream of milk reports
+		//This method uses bi-directonal streaming to get health reports from the service for
+		//a specified group of animal id's
+				
+		//Create a StreamObserver that receives the stream of health reports
 		StreamObserver<AnimalHealthInfo> responseObserver = new StreamObserver<AnimalHealthInfo>() {
 
 			@Override
 			public void onNext(AnimalHealthInfo report) {
-				//MilkReport received, extract the data
+				//health report received, extract the data
 				System.out.println("Receiving report for animal health: " + report.getAnimal().getAnimalID().getId() );
 				System.out.println("Report date: " + report.getReportDate() );
 				System.out.println("Milk volume (L): " + report.getAnimal().getTypeOfAnimal() );
@@ -1056,6 +1110,7 @@ public class ClientUI {
 				System.out.println("Next service on: " + report.getAvgBPM() );
 				System.out.println("Next service on: " + report.getHealthIndicator() );
 				System.out.println();
+				//invokeLater allows updates to the UI from this thread without issues
 				SwingUtilities.invokeLater(new Runnable() {
 					 public void run() {
 							hm = new AnimalHealthReportModel();
@@ -1101,11 +1156,15 @@ public class ClientUI {
 			e.printStackTrace();
 		}
 	}
-
 	
 	
-	
+	/**
+	 * Begin getting a series of heart rates for the specified
+	 * animal id
+	 */		
 	private void getLiveHeartRateBegin(int animalID) {
+		//This method starts a server stream (with no particualar ending) of
+		//animal heart rate values. The stream is cancelled elsewhere by the user.
 		
 		StreamObserver<LiveHeartRate> streamHeartRateRecvd = new StreamObserver<LiveHeartRate>() {
 			@Override
@@ -1136,6 +1195,8 @@ public class ClientUI {
 				.setId(animalID)
 				.build();
 		try {
+			//using the cancellation object to start the stream so it can be 
+			//cancelled later at an unspecified time
 			withCancellation2 = Context.current().withCancellation();
 			withCancellation2.run(() -> {
 				asyncStub2.getLiveHeartRate(id, streamHeartRateRecvd);
@@ -1149,6 +1210,9 @@ public class ClientUI {
 	}
 	
 	
+	/**
+	 * Discover user service using jmDNS
+	 */		
 	private void discoverUserService(String serviceType) {
 		try {
 			// Create a JmDNS instance
@@ -1195,14 +1259,18 @@ public class ClientUI {
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		
 	}
 	
+
+	/**
+	 * very basic login method of the user service
+	 */		
 	private void login(String user, String pass) {
+		//simple unary call to demonstrate logging in
 
 		LoginRequest loginRequest = LoginRequest.newBuilder()
 				.setUsername(user)
@@ -1218,7 +1286,11 @@ public class ClientUI {
 	}
 
 	
+	/**
+	 * very basic logout method of the user service
+	 */		
 	private void logout(String user) {
+		//simple unary call to demonstrate logging out
 
 		LogoutRequest logoutRequest = LogoutRequest.newBuilder()
 				.setUsername(user)
@@ -1232,7 +1304,7 @@ public class ClientUI {
 
 	}
 
-	
+	//auto generated code for ui<->data model bindings
 	protected void initDataBindings() {
 		BeanProperty<jmDNSInfo, String> jmDNSInfoBeanProperty = BeanProperty.create("discoveryStatus");
 		BeanProperty<JLabel, String> jLabelBeanProperty = BeanProperty.create("text");

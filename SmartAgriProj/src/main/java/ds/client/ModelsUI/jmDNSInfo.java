@@ -1,4 +1,4 @@
-package ds.client;
+package ds.client.ModelsUI;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
