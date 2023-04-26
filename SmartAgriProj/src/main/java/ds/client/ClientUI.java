@@ -554,7 +554,7 @@ public class ClientUI {
 		panel.add(btnGetHealthReports);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(12, 50, 691, 521);
+		scrollPane_2.setBounds(22, 50, 691, 521);
 		panel.add(scrollPane_2);
 
 		
