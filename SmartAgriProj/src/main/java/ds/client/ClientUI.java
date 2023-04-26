@@ -39,6 +39,10 @@ import ds.milkingParlourService.MilkQuantity;
 import ds.milkingParlourService.MilkReport;
 import ds.milkingParlourService.MilkingParlourServiceGrpc;
 import ds.milkingParlourService.SetMachineDetailsReply;
+import ds.userService.LoginRequest;
+import ds.userService.LoginResponse;
+import ds.userService.LogoutRequest;
+import ds.userService.LogoutResponse;
 import ds.userService.UserServiceGrpc;
 import ds.userService.UserServiceGrpc.UserServiceBlockingStub;
 import ds.milkingParlourService.MilkingParlourServiceGrpc.MilkingParlourServiceBlockingStub;
@@ -92,9 +96,11 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import org.jdesktop.beansbinding.ObjectProperty; 
+//import java.awt.event.ActionListener;
+//import java.awt.event.ActionEvent;
+//import org.jdesktop.beansbinding.ObjectProperty;
+import javax.swing.JTextField;
+import javax.swing.JPasswordField; 
 
 public class ClientUI {
 
@@ -124,6 +130,7 @@ public class ClientUI {
 	private ArrayList<Integer> animalIDs = new ArrayList<Integer>();
 	private LiveHeartRateModel liveHeartRateModel = new LiveHeartRateModel();
 	private CancellableContext withCancellation2;
+	private boolean isHeartRateMonitorActive = false;
 
 	/*
 	 * User Login/Out service members
@@ -137,20 +144,22 @@ public class ClientUI {
 	
 	
 	private JLabel lblNewLabel_1;
-	private JList list;
+	private JList jlistAvailMachines;
 	private JDateChooser dateBeginMilkVolume;
 	private JDateChooser dateEndMilkVolume;
 	private JDateChooser dateOfReport;
 	private JButton btnGetMilkVolume;
 	private JButton btnGetMachineReports;
-	private JTable table;
+	private JTable jtableReports;
 	private JLabel lblNewLabel_1_1;
-	private JList listAnimalIds;
+	private JList jlistAnimalIds;
 	private JLabel lblLiveHeartRateAnimalId;
 	private JLabel lblLiveHeartRateAnimalType;
 	private JLabel lblLiveHeartRateBpm;
-	private JTable tableHealthReports;
+	private JTable jtableHealthReports;
 	private JLabel lblNewLabel_1_2;
+	private JTextField textFieldUserName;
+	private JPasswordField passwordField;
 
 
 	/**
@@ -289,12 +298,12 @@ public class ClientUI {
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		
-		list = new JList();
-		list.setBorder(new LineBorder(new Color(128, 128, 128)));
-		list.setBounds(34, 47, 168, 338);
-		panelMilkMachines.add(list);
-		list.setMaximumSize(new Dimension(100, 100));
-		list.setOpaque(false);
+		jlistAvailMachines = new JList<>();
+		jlistAvailMachines.setBorder(new LineBorder(new Color(128, 128, 128)));
+		jlistAvailMachines.setBounds(34, 47, 168, 338);
+		panelMilkMachines.add(jlistAvailMachines);
+		jlistAvailMachines.setMaximumSize(new Dimension(100, 100));
+		jlistAvailMachines.setOpaque(false);
 		
 		JLabel lblNewLabel_2 = new JLabel("Available Machines:");
 		lblNewLabel_2.setBounds(44, 30, 143, 17);
@@ -344,7 +353,7 @@ public class ClientUI {
 				DateFormat dateFormat = new SimpleDateFormat("d/MM/yyyy");
 				String dateFrom = dateFormat.format(dateBeginMilkVolume.getDate());
 				String dateTo = dateFormat.format(dateEndMilkVolume.getDate());
-				getMilkQuantity((int)list.getSelectedValue(), dateFrom, dateTo);
+				getMilkQuantity((int)jlistAvailMachines.getSelectedValue(), dateFrom, dateTo);
 			}
 		});
 		btnGetMilkVolume.setEnabled(false);
@@ -374,7 +383,7 @@ public class ClientUI {
 			public void mouseClicked(MouseEvent e) {
 				DateFormat dateFormat = new SimpleDateFormat("d/MM/yyyy");
 				String dateReport = dateFormat.format(dateOfReport.getDate());
-				getMilkReports(list.getSelectedValuesList(), dateReport);
+				getMilkReports(jlistAvailMachines.getSelectedValuesList(), dateReport);
 			}
 		});
 		btnGetMachineReports.setEnabled(false);
@@ -388,16 +397,16 @@ public class ClientUI {
 		scrollPane.setBounds(401, 47, 790, 583);
 		panelMilkMachines.add(scrollPane);
 		
-		table = new JTable();
-		table.setModel(new DefaultTableModel(
+		jtableReports = new JTable();
+		jtableReports.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
 			new String[] {
 				"Id", "Date", "Volume", "Heated (\u00B0C)", "Heated Time", "Chilled (\u00B0C)", "Service"
 			}
 		));
-		scrollPane.setViewportView(table);
-		table.setRowSelectionAllowed(false);
+		scrollPane.setViewportView(jtableReports);
+		jtableReports.setRowSelectionAllowed(false);
 		
 		JPanel panelLivestock = new JPanel();
 		tabbedPane.addTab("Livestock Activity", null, panelLivestock, null);
@@ -419,8 +428,6 @@ public class ClientUI {
 		scrollPane_1.setBounds(48, 39, 214, 346);
 		panelLivestock.add(scrollPane_1);
 		
-		listAnimalIds = new JList();
-		scrollPane_1.setViewportView(listAnimalIds);
 		
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(new LineBorder(new Color(128, 128, 128)));
@@ -429,40 +436,61 @@ public class ClientUI {
 		panel_4.setLayout(null);
 		
 		lblLiveHeartRateAnimalId = new JLabel("animal id");
-		lblLiveHeartRateAnimalId.setBounds(12, 12, 143, 26);
+		lblLiveHeartRateAnimalId.setBounds(91, 17, 64, 16);
 		panel_4.add(lblLiveHeartRateAnimalId);
 		
 		lblLiveHeartRateAnimalType = new JLabel("animal type");
-		lblLiveHeartRateAnimalType.setBounds(12, 50, 143, 16);
+		lblLiveHeartRateAnimalType.setBounds(91, 45, 64, 16);
 		panel_4.add(lblLiveHeartRateAnimalType);
 		
 		lblLiveHeartRateBpm = new JLabel("heart rate");
-		lblLiveHeartRateBpm.setBounds(12, 78, 55, 16);
+		lblLiveHeartRateBpm.setBounds(91, 73, 64, 16);
 		panel_4.add(lblLiveHeartRateBpm);
-		
-		JButton btnNewButton = new JButton("start monitor");
-		btnNewButton.addMouseListener(new MouseAdapter() {
+
+		JButton btnStopMonitor = new JButton("stop monitor");
+		btnStopMonitor.setEnabled(false);
+		btnStopMonitor.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(listAnimalIds.getSelectedValue()==null)
+				if(isHeartRateMonitorActive)
+					withCancellation2.cancel(null);
+				isHeartRateMonitorActive = false;
+			}
+		});
+		btnStopMonitor.setBounds(22, 142, 114, 26);
+		panel_4.add(btnStopMonitor);
+
+		
+		JButton btnStartMonitor = new JButton("start monitor");
+		btnStartMonitor.setEnabled(false);
+		btnStartMonitor.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(jlistAnimalIds.getSelectedValue()==null)
 					return;
 				else {
-					getLiveHeartRateBegin((int)listAnimalIds.getSelectedValue());
+					if(!isHeartRateMonitorActive) {
+						getLiveHeartRateBegin((int)jlistAnimalIds.getSelectedValue());
+						btnStopMonitor.setEnabled(true);											
+					}
 				}
 			}
 		});
-		btnNewButton.setBounds(22, 106, 114, 26);
-		panel_4.add(btnNewButton);
+		btnStartMonitor.setBounds(22, 106, 114, 26);
+		panel_4.add(btnStartMonitor);
 		
-		JButton btnNewButton_1 = new JButton("stop monitor");
-		btnNewButton_1.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				withCancellation2.cancel(null);
-			}
-		});
-		btnNewButton_1.setBounds(22, 142, 114, 26);
-		panel_4.add(btnNewButton_1);
+		JLabel lblNewLabel_8 = new JLabel("ID:");
+		lblNewLabel_8.setBounds(12, 17, 67, 16);
+		panel_4.add(lblNewLabel_8);
+		
+		JLabel lblNewLabel_9 = new JLabel("Type:");
+		lblNewLabel_9.setBounds(12, 45, 67, 16);
+		panel_4.add(lblNewLabel_9);
+		
+		JLabel lblNewLabel_10 = new JLabel("Live BPM:");
+		lblNewLabel_10.setBounds(12, 73, 67, 16);
+		panel_4.add(lblNewLabel_10);
+		
 		
 		JPanel panel_5 = new JPanel();
 		panel_5.setBorder(new LineBorder(new Color(128, 128, 128)));
@@ -474,19 +502,20 @@ public class ClientUI {
 		lblNewLabel_7.setBounds(12, 28, 143, 16);
 		panel_5.add(lblNewLabel_7);
 		
-		JButton btnNewButton_2 = new JButton("Get Activity");
-		btnNewButton_2.addMouseListener(new MouseAdapter() {
+		JButton btnGetActivity = new JButton("Get Activity");
+		btnGetActivity.setEnabled(false);
+		btnGetActivity.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(listAnimalIds.getSelectedValue()==null)
+				if(jlistAnimalIds.getSelectedValue()==null)
 					return;
 				else {
-					getAnimalActivity((int)listAnimalIds.getSelectedValue());
+					getAnimalActivity((int)jlistAnimalIds.getSelectedValue());
 				}
 			}
 		});
-		btnNewButton_2.setBounds(25, 56, 113, 26);
-		panel_5.add(btnNewButton_2);
+		btnGetActivity.setBounds(25, 56, 113, 26);
+		panel_5.add(btnGetActivity);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(128, 128, 128)));
@@ -495,10 +524,11 @@ public class ClientUI {
 		panel.setLayout(null);
 		
 		JButton btnGetHealthReports = new JButton("Get Health Reports");
+		btnGetHealthReports.setEnabled(false);
 		btnGetHealthReports.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				getAnimalVitals(listAnimalIds.getSelectedValuesList());
+				getAnimalVitals(jlistAnimalIds.getSelectedValuesList());
 			}
 		});
 		btnGetHealthReports.setBounds(12, 12, 152, 26);
@@ -507,9 +537,42 @@ public class ClientUI {
 		JScrollPane scrollPane_2 = new JScrollPane();
 		scrollPane_2.setBounds(12, 50, 691, 521);
 		panel.add(scrollPane_2);
+
 		
-		tableHealthReports = new JTable();
-		scrollPane_2.setViewportView(tableHealthReports);
+		jlistAnimalIds = new JList<int[]>();
+		jlistAnimalIds.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if(jlistAnimalIds.getSelectedIndices().length==1) {
+					btnStartMonitor.setEnabled(true);
+					if(!isHeartRateMonitorActive)
+						btnStopMonitor.setEnabled(false);
+					btnGetActivity.setEnabled(true);
+					btnGetHealthReports.setEnabled(true);
+				}
+
+				else if(jlistAnimalIds.getSelectedIndices().length>1) {
+					btnStartMonitor.setEnabled(false);
+					if(!isHeartRateMonitorActive)
+						btnStopMonitor.setEnabled(false);
+					btnGetActivity.setEnabled(false);
+					btnGetHealthReports.setEnabled(true);
+				}
+
+				else {
+					btnStartMonitor.setEnabled(false);
+					if(!isHeartRateMonitorActive)
+						btnStopMonitor.setEnabled(false);
+					btnGetActivity.setEnabled(false);
+					btnGetHealthReports.setEnabled(false);
+				}
+			}
+		});
+		scrollPane_1.setViewportView(jlistAnimalIds);
+		
+		
+		
+		jtableHealthReports = new JTable();
+		scrollPane_2.setViewportView(jtableHealthReports);
 		
 		JPanel panelUser = new JPanel();
 		tabbedPane.addTab("User", null, panelUser, null);
@@ -526,9 +589,68 @@ public class ClientUI {
 		lblNewLabel_1_2.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblNewLabel_1_2.setBounds(301, 15, 245, 23);
 		panelUser.add(lblNewLabel_1_2);
-		list.addListSelectionListener(new ListSelectionListener() {
+		
+		JPanel panel_3 = new JPanel();
+		panel_3.setBorder(new LineBorder(new Color(128, 128, 128)));
+		panel_3.setBounds(416, 174, 382, 271);
+		panelUser.add(panel_3);
+		panel_3.setLayout(null);
+		
+		JLabel lblNewLabel_11 = new JLabel("User Name:");
+		lblNewLabel_11.setFont(new Font("Dialog", Font.BOLD, 16));
+		lblNewLabel_11.setBounds(26, 66, 94, 16);
+		panel_3.add(lblNewLabel_11);
+		
+		JLabel lblNewLabel_12 = new JLabel("Password:");
+		lblNewLabel_12.setFont(new Font("Dialog", Font.BOLD, 16));
+		lblNewLabel_12.setBounds(26, 127, 94, 16);
+		panel_3.add(lblNewLabel_12);
+		
+		textFieldUserName = new JTextField();
+		textFieldUserName.setBounds(193, 66, 104, 20);
+		panel_3.add(textFieldUserName);
+		textFieldUserName.setColumns(10);
+		
+		passwordField = new JPasswordField();
+		passwordField.setBounds(193, 127, 104, 20);
+		panel_3.add(passwordField);
+		
+		JButton btnLogIn = new JButton("Log In");
+		btnLogIn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String user = textFieldUserName.getText();
+				String pass = new String(passwordField.getPassword());
+				if(!user.equals("") && !pass.equals(""))
+					login(user, pass);
+			}
+		});
+		btnLogIn.setBounds(229, 203, 99, 26);
+		panel_3.add(btnLogIn);
+		
+		JLabel lblNewLabel_13 = new JLabel("Enter user name and password then log in/out");
+		lblNewLabel_13.setFont(new Font("Dialog", Font.BOLD, 16));
+		lblNewLabel_13.setBounds(12, 12, 358, 26);
+		panel_3.add(lblNewLabel_13);
+		
+		JButton btnNewButton = new JButton("Log Out");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String user = textFieldUserName.getText();
+				if(!user.equals(""))
+					logout(user);
+			}
+		});
+		btnNewButton.setBounds(71, 203, 99, 26);
+		panel_3.add(btnNewButton);
+		
+		JLabel lblNewLabel_14 = new JLabel("Hint: try 'user' and 'password'");
+		lblNewLabel_14.setBounds(115, 243, 182, 16);
+		panel_3.add(lblNewLabel_14);
+		jlistAvailMachines.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
-				if(list.getSelectedIndices().length==1) {
+				if(jlistAvailMachines.getSelectedIndices().length==1) {
 					dateBeginMilkVolume.setEnabled(true);
 					dateEndMilkVolume.setEnabled(true);
 					dateOfReport.setEnabled(true);
@@ -536,7 +658,7 @@ public class ClientUI {
 					btnGetMachineReports.setEnabled(true);
 				}
 
-				else if(list.getSelectedIndices().length>1) {
+				else if(jlistAvailMachines.getSelectedIndices().length>1) {
 					dateBeginMilkVolume.setEnabled(false);
 					dateEndMilkVolume.setEnabled(false);
 					dateOfReport.setEnabled(true);
@@ -1017,6 +1139,7 @@ public class ClientUI {
 			withCancellation2 = Context.current().withCancellation();
 			withCancellation2.run(() -> {
 				asyncStub2.getLiveHeartRate(id, streamHeartRateRecvd);
+				isHeartRateMonitorActive = true;
 			});
 
 		} catch (StatusRuntimeException e) {
@@ -1078,6 +1201,38 @@ public class ClientUI {
 		
 		
 	}
+	
+	private void login(String user, String pass) {
+
+		LoginRequest loginRequest = LoginRequest.newBuilder()
+				.setUsername(user)
+				.setPassword(pass)
+				.build();
+
+		LoginResponse response = blockingStub3.login(loginRequest);
+		System.out.println("User service responded: " + response);
+		JLabel resultLabel = new JLabel(response.getResponseMessage());
+		resultLabel.setFont(new Font("Arial", Font.BOLD, 18));
+		JOptionPane.showMessageDialog(frame,resultLabel);
+
+	}
+
+	
+	private void logout(String user) {
+
+		LogoutRequest logoutRequest = LogoutRequest.newBuilder()
+				.setUsername(user)
+				.build();
+
+		LogoutResponse response = blockingStub3.logout(logoutRequest);
+		System.out.println("User service responded: " + response);
+		JLabel resultLabel = new JLabel(response.getResponseMessage());
+		resultLabel.setFont(new Font("Arial", Font.BOLD, 18));
+		JOptionPane.showMessageDialog(frame,resultLabel);
+
+	}
+
+	
 	protected void initDataBindings() {
 		BeanProperty<jmDNSInfo, String> jmDNSInfoBeanProperty = BeanProperty.create("discoveryStatus");
 		BeanProperty<JLabel, String> jLabelBeanProperty = BeanProperty.create("text");
@@ -1085,7 +1240,7 @@ public class ClientUI {
 		autoBinding.bind();
 		//
 		BeanProperty<MachineIdCollectionModel, List<MachineIdModel>> machineIdCollectionModelBeanProperty = BeanProperty.create("machines");
-		JListBinding<MachineIdModel, MachineIdCollectionModel, JList> jListBinding = SwingBindings.createJListBinding(UpdateStrategy.READ, mc, machineIdCollectionModelBeanProperty, list);
+		JListBinding<MachineIdModel, MachineIdCollectionModel, JList> jListBinding = SwingBindings.createJListBinding(UpdateStrategy.READ, mc, machineIdCollectionModelBeanProperty, jlistAvailMachines);
 		//
 		BeanProperty<MachineIdModel, Integer> machineIdModelBeanProperty = BeanProperty.create("id");
 		jListBinding.setDetailBinding(machineIdModelBeanProperty, "b123");
@@ -1093,7 +1248,7 @@ public class ClientUI {
 		jListBinding.bind();
 		//
 		BeanProperty<MachineReportCollectionModel, List<MachineReportModel>> machineReportCollectionModelBeanProperty = BeanProperty.create("machines");
-		JTableBinding<MachineReportModel, MachineReportCollectionModel, JTable> jTableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ, mcListReport, machineReportCollectionModelBeanProperty, table);
+		JTableBinding<MachineReportModel, MachineReportCollectionModel, JTable> jTableBinding = SwingBindings.createJTableBinding(UpdateStrategy.READ, mcListReport, machineReportCollectionModelBeanProperty, jtableReports);
 		//
 		BeanProperty<MachineReportModel, Integer> machineReportModelBeanProperty = BeanProperty.create("id");
 		jTableBinding.addColumnBinding(machineReportModelBeanProperty).setColumnName("Machine Id");
@@ -1122,7 +1277,7 @@ public class ClientUI {
 		autoBinding_1.bind();
 		//
 		BeanProperty<AnimalIdCollectionModel, List<AnimalIdModel>> animalIdCollectionModelBeanProperty = BeanProperty.create("animals");
-		JListBinding<AnimalIdModel, AnimalIdCollectionModel, JList> jListBinding_1 = SwingBindings.createJListBinding(UpdateStrategy.READ, ac, animalIdCollectionModelBeanProperty, listAnimalIds);
+		JListBinding<AnimalIdModel, AnimalIdCollectionModel, JList> jListBinding_1 = SwingBindings.createJListBinding(UpdateStrategy.READ, ac, animalIdCollectionModelBeanProperty, jlistAnimalIds);
 		//
 		BeanProperty<AnimalIdModel, Integer> animalIdModelBeanProperty = BeanProperty.create("id");
 		jListBinding_1.setDetailBinding(animalIdModelBeanProperty);
@@ -1142,7 +1297,7 @@ public class ClientUI {
 		autoBinding_3.bind();
 		//
 		BeanProperty<AnimalHealthReportCollectionModel, List<AnimalHealthReportModel>> animalHealthReportCollectionModelBeanProperty = BeanProperty.create("healthReports");
-		JTableBinding<AnimalHealthReportModel, AnimalHealthReportCollectionModel, JTable> jTableBinding_1 = SwingBindings.createJTableBinding(UpdateStrategy.READ, hc, animalHealthReportCollectionModelBeanProperty, tableHealthReports);
+		JTableBinding<AnimalHealthReportModel, AnimalHealthReportCollectionModel, JTable> jTableBinding_1 = SwingBindings.createJTableBinding(UpdateStrategy.READ, hc, animalHealthReportCollectionModelBeanProperty, jtableHealthReports);
 		//
 		BeanProperty<AnimalHealthReportModel, Integer> animalHealthReportModelBeanProperty = BeanProperty.create("id");
 		jTableBinding_1.addColumnBinding(animalHealthReportModelBeanProperty).setColumnName("Animal Id");

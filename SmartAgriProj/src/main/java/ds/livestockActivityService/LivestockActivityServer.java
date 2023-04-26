@@ -336,7 +336,7 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 			heartRate = rand.nextInt(71) +50; //range from 50 ~ 120 bpm
 			minBPM = rand.nextInt(11) +40; //range from 40 ~ 50 bpm
 			maxBPM = rand.nextInt(11) +120; //range from 120 ~ 130 bpm
-			avgBPM = (maxBPM - minBPM) / 2 ;
+			avgBPM = ((maxBPM - minBPM) / 2) + minBPM ;
 			this.activity = CurrentActivity.Activity.values()[rand.nextInt(4)];
 			this.health = AnimalHealthInfo.Health.values()[rand.nextInt(4)];
 			this.animalType = animalType;
