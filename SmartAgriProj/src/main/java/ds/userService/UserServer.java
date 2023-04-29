@@ -1,5 +1,6 @@
 package ds.userService;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,9 +32,12 @@ public class UserServer extends UserServiceImplBase{
 
 		Server server = ServerBuilder.forPort(port)
 				.addService(service)
+				.useTransportSecurity(new File("ssl/server.crt"), new File("ssl/server.pem"))
 				.build()
 				.start();
 
+		
+		
 		System.out.println("User Service started, listening on " + port);
 
 		server.awaitTermination();		
