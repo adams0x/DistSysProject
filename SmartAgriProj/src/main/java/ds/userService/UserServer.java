@@ -6,20 +6,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.Properties;
-
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
-
 import ds.userService.UserServiceGrpc.UserServiceImplBase;
+import io.grpc.Grpc;
 import io.grpc.Server;
-import io.grpc.ServerBuilder;
+import io.grpc.ServerCredentials;
+import io.grpc.TlsServerCredentials;
 import io.grpc.stub.StreamObserver;
+
+
 
 public class UserServer extends UserServiceImplBase{
 
 	/*
 	 * User service main method to create an instance of the server and register it 
 	 * using the jmDNS library
+	 * This service uses TLS encryption and server athentication
 	 */
 	public static void main(String[] args) throws InterruptedException, IOException {
 
@@ -28,15 +31,12 @@ public class UserServer extends UserServiceImplBase{
 		Properties prop = service.getProperties();
 		service.registerService(prop);
 		int port = Integer.valueOf( prop.getProperty("service_port") );// #.50051;
-
-
-		Server server = ServerBuilder.forPort(port)
-				.addService(service)
-				.useTransportSecurity(new File("ssl/server.crt"), new File("ssl/server.pem"))
-				.build()
-				.start();
-
 		
+		ServerCredentials creds = TlsServerCredentials.create(new File("src//main//resources//ssl//publickeycert.pem"), new File("src//main//resources//ssl//privatekey.pem"));
+		Server server = Grpc.newServerBuilderForPort(port, creds)
+			    .addService(service)
+			    .build()
+			    .start();
 		
 		System.out.println("User Service started, listening on " + port);
 

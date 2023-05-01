@@ -1,25 +1,13 @@
 package ds.livestockActivityService;
 
 import static io.grpc.MethodDescriptor.generateFullMethodName;
-import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncUnaryCall;
-import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
-import static io.grpc.stub.ClientCalls.blockingUnaryCall;
-import static io.grpc.stub.ClientCalls.futureUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
 /**
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.15.0)",
+    value = "by gRPC proto compiler (version 1.54.1)",
     comments = "Source: LivestockActivityService.proto")
+@io.grpc.stub.annotations.GrpcGenerated
 public final class LivestockActivityServiceGrpc {
 
   private LivestockActivityServiceGrpc() {}
@@ -41,22 +29,21 @@ public final class LivestockActivityServiceGrpc {
     if ((getSetAnimalDetailsMethod = LivestockActivityServiceGrpc.getSetAnimalDetailsMethod) == null) {
       synchronized (LivestockActivityServiceGrpc.class) {
         if ((getSetAnimalDetailsMethod = LivestockActivityServiceGrpc.getSetAnimalDetailsMethod) == null) {
-          LivestockActivityServiceGrpc.getSetAnimalDetailsMethod = getSetAnimalDetailsMethod = 
+          LivestockActivityServiceGrpc.getSetAnimalDetailsMethod = getSetAnimalDetailsMethod =
               io.grpc.MethodDescriptor.<ds.livestockActivityService.AnimalDetail, ds.livestockActivityService.SetAnimalDetailsReply>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
-              .setFullMethodName(generateFullMethodName(
-                  "livestockActivityService.LivestockActivityService", "SetAnimalDetails"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SetAnimalDetails"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   ds.livestockActivityService.AnimalDetail.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   ds.livestockActivityService.SetAnimalDetailsReply.getDefaultInstance()))
-                  .setSchemaDescriptor(new LivestockActivityServiceMethodDescriptorSupplier("SetAnimalDetails"))
-                  .build();
-          }
+              .setSchemaDescriptor(new LivestockActivityServiceMethodDescriptorSupplier("SetAnimalDetails"))
+              .build();
         }
-     }
-     return getSetAnimalDetailsMethod;
+      }
+    }
+    return getSetAnimalDetailsMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<ds.livestockActivityService.Empty,
@@ -73,22 +60,21 @@ public final class LivestockActivityServiceGrpc {
     if ((getGetAnimalIdsMethod = LivestockActivityServiceGrpc.getGetAnimalIdsMethod) == null) {
       synchronized (LivestockActivityServiceGrpc.class) {
         if ((getGetAnimalIdsMethod = LivestockActivityServiceGrpc.getGetAnimalIdsMethod) == null) {
-          LivestockActivityServiceGrpc.getGetAnimalIdsMethod = getGetAnimalIdsMethod = 
+          LivestockActivityServiceGrpc.getGetAnimalIdsMethod = getGetAnimalIdsMethod =
               io.grpc.MethodDescriptor.<ds.livestockActivityService.Empty, ds.livestockActivityService.AnimalId>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
-              .setFullMethodName(generateFullMethodName(
-                  "livestockActivityService.LivestockActivityService", "GetAnimalIds"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetAnimalIds"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   ds.livestockActivityService.Empty.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   ds.livestockActivityService.AnimalId.getDefaultInstance()))
-                  .setSchemaDescriptor(new LivestockActivityServiceMethodDescriptorSupplier("GetAnimalIds"))
-                  .build();
-          }
+              .setSchemaDescriptor(new LivestockActivityServiceMethodDescriptorSupplier("GetAnimalIds"))
+              .build();
         }
-     }
-     return getGetAnimalIdsMethod;
+      }
+    }
+    return getGetAnimalIdsMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<ds.livestockActivityService.AnimalId,
@@ -105,22 +91,21 @@ public final class LivestockActivityServiceGrpc {
     if ((getGetLiveHeartRateMethod = LivestockActivityServiceGrpc.getGetLiveHeartRateMethod) == null) {
       synchronized (LivestockActivityServiceGrpc.class) {
         if ((getGetLiveHeartRateMethod = LivestockActivityServiceGrpc.getGetLiveHeartRateMethod) == null) {
-          LivestockActivityServiceGrpc.getGetLiveHeartRateMethod = getGetLiveHeartRateMethod = 
+          LivestockActivityServiceGrpc.getGetLiveHeartRateMethod = getGetLiveHeartRateMethod =
               io.grpc.MethodDescriptor.<ds.livestockActivityService.AnimalId, ds.livestockActivityService.LiveHeartRate>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
-              .setFullMethodName(generateFullMethodName(
-                  "livestockActivityService.LivestockActivityService", "GetLiveHeartRate"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetLiveHeartRate"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   ds.livestockActivityService.AnimalId.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   ds.livestockActivityService.LiveHeartRate.getDefaultInstance()))
-                  .setSchemaDescriptor(new LivestockActivityServiceMethodDescriptorSupplier("GetLiveHeartRate"))
-                  .build();
-          }
+              .setSchemaDescriptor(new LivestockActivityServiceMethodDescriptorSupplier("GetLiveHeartRate"))
+              .build();
         }
-     }
-     return getGetLiveHeartRateMethod;
+      }
+    }
+    return getGetLiveHeartRateMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<ds.livestockActivityService.AnimalTimeSpan,
@@ -137,22 +122,21 @@ public final class LivestockActivityServiceGrpc {
     if ((getGetHeartRateHistoryMethod = LivestockActivityServiceGrpc.getGetHeartRateHistoryMethod) == null) {
       synchronized (LivestockActivityServiceGrpc.class) {
         if ((getGetHeartRateHistoryMethod = LivestockActivityServiceGrpc.getGetHeartRateHistoryMethod) == null) {
-          LivestockActivityServiceGrpc.getGetHeartRateHistoryMethod = getGetHeartRateHistoryMethod = 
+          LivestockActivityServiceGrpc.getGetHeartRateHistoryMethod = getGetHeartRateHistoryMethod =
               io.grpc.MethodDescriptor.<ds.livestockActivityService.AnimalTimeSpan, ds.livestockActivityService.HeartRateHistory>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
-              .setFullMethodName(generateFullMethodName(
-                  "livestockActivityService.LivestockActivityService", "GetHeartRateHistory"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetHeartRateHistory"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   ds.livestockActivityService.AnimalTimeSpan.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   ds.livestockActivityService.HeartRateHistory.getDefaultInstance()))
-                  .setSchemaDescriptor(new LivestockActivityServiceMethodDescriptorSupplier("GetHeartRateHistory"))
-                  .build();
-          }
+              .setSchemaDescriptor(new LivestockActivityServiceMethodDescriptorSupplier("GetHeartRateHistory"))
+              .build();
         }
-     }
-     return getGetHeartRateHistoryMethod;
+      }
+    }
+    return getGetHeartRateHistoryMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<ds.livestockActivityService.AnimalId,
@@ -169,22 +153,21 @@ public final class LivestockActivityServiceGrpc {
     if ((getGetCurrentActivityMethod = LivestockActivityServiceGrpc.getGetCurrentActivityMethod) == null) {
       synchronized (LivestockActivityServiceGrpc.class) {
         if ((getGetCurrentActivityMethod = LivestockActivityServiceGrpc.getGetCurrentActivityMethod) == null) {
-          LivestockActivityServiceGrpc.getGetCurrentActivityMethod = getGetCurrentActivityMethod = 
+          LivestockActivityServiceGrpc.getGetCurrentActivityMethod = getGetCurrentActivityMethod =
               io.grpc.MethodDescriptor.<ds.livestockActivityService.AnimalId, ds.livestockActivityService.CurrentActivity>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(
-                  "livestockActivityService.LivestockActivityService", "GetCurrentActivity"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetCurrentActivity"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   ds.livestockActivityService.AnimalId.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   ds.livestockActivityService.CurrentActivity.getDefaultInstance()))
-                  .setSchemaDescriptor(new LivestockActivityServiceMethodDescriptorSupplier("GetCurrentActivity"))
-                  .build();
-          }
+              .setSchemaDescriptor(new LivestockActivityServiceMethodDescriptorSupplier("GetCurrentActivity"))
+              .build();
         }
-     }
-     return getGetCurrentActivityMethod;
+      }
+    }
+    return getGetCurrentActivityMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<ds.livestockActivityService.AnimalId,
@@ -201,29 +184,35 @@ public final class LivestockActivityServiceGrpc {
     if ((getGetAnimalVitalsMethod = LivestockActivityServiceGrpc.getGetAnimalVitalsMethod) == null) {
       synchronized (LivestockActivityServiceGrpc.class) {
         if ((getGetAnimalVitalsMethod = LivestockActivityServiceGrpc.getGetAnimalVitalsMethod) == null) {
-          LivestockActivityServiceGrpc.getGetAnimalVitalsMethod = getGetAnimalVitalsMethod = 
+          LivestockActivityServiceGrpc.getGetAnimalVitalsMethod = getGetAnimalVitalsMethod =
               io.grpc.MethodDescriptor.<ds.livestockActivityService.AnimalId, ds.livestockActivityService.AnimalHealthInfo>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
-              .setFullMethodName(generateFullMethodName(
-                  "livestockActivityService.LivestockActivityService", "GetAnimalVitals"))
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetAnimalVitals"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   ds.livestockActivityService.AnimalId.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   ds.livestockActivityService.AnimalHealthInfo.getDefaultInstance()))
-                  .setSchemaDescriptor(new LivestockActivityServiceMethodDescriptorSupplier("GetAnimalVitals"))
-                  .build();
-          }
+              .setSchemaDescriptor(new LivestockActivityServiceMethodDescriptorSupplier("GetAnimalVitals"))
+              .build();
         }
-     }
-     return getGetAnimalVitalsMethod;
+      }
+    }
+    return getGetAnimalVitalsMethod;
   }
 
   /**
    * Creates a new async stub that supports all call types for the service
    */
   public static LivestockActivityServiceStub newStub(io.grpc.Channel channel) {
-    return new LivestockActivityServiceStub(channel);
+    io.grpc.stub.AbstractStub.StubFactory<LivestockActivityServiceStub> factory =
+      new io.grpc.stub.AbstractStub.StubFactory<LivestockActivityServiceStub>() {
+        @java.lang.Override
+        public LivestockActivityServiceStub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+          return new LivestockActivityServiceStub(channel, callOptions);
+        }
+      };
+    return LivestockActivityServiceStub.newStub(factory, channel);
   }
 
   /**
@@ -231,7 +220,14 @@ public final class LivestockActivityServiceGrpc {
    */
   public static LivestockActivityServiceBlockingStub newBlockingStub(
       io.grpc.Channel channel) {
-    return new LivestockActivityServiceBlockingStub(channel);
+    io.grpc.stub.AbstractStub.StubFactory<LivestockActivityServiceBlockingStub> factory =
+      new io.grpc.stub.AbstractStub.StubFactory<LivestockActivityServiceBlockingStub>() {
+        @java.lang.Override
+        public LivestockActivityServiceBlockingStub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+          return new LivestockActivityServiceBlockingStub(channel, callOptions);
+        }
+      };
+    return LivestockActivityServiceBlockingStub.newStub(factory, channel);
   }
 
   /**
@@ -239,118 +235,87 @@ public final class LivestockActivityServiceGrpc {
    */
   public static LivestockActivityServiceFutureStub newFutureStub(
       io.grpc.Channel channel) {
-    return new LivestockActivityServiceFutureStub(channel);
+    io.grpc.stub.AbstractStub.StubFactory<LivestockActivityServiceFutureStub> factory =
+      new io.grpc.stub.AbstractStub.StubFactory<LivestockActivityServiceFutureStub>() {
+        @java.lang.Override
+        public LivestockActivityServiceFutureStub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+          return new LivestockActivityServiceFutureStub(channel, callOptions);
+        }
+      };
+    return LivestockActivityServiceFutureStub.newStub(factory, channel);
   }
 
   /**
    */
-  public static abstract class LivestockActivityServiceImplBase implements io.grpc.BindableService {
+  public interface AsyncService {
 
     /**
      */
-    public io.grpc.stub.StreamObserver<ds.livestockActivityService.AnimalDetail> setAnimalDetails(
+    default io.grpc.stub.StreamObserver<ds.livestockActivityService.AnimalDetail> setAnimalDetails(
         io.grpc.stub.StreamObserver<ds.livestockActivityService.SetAnimalDetailsReply> responseObserver) {
-      return asyncUnimplementedStreamingCall(getSetAnimalDetailsMethod(), responseObserver);
+      return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getSetAnimalDetailsMethod(), responseObserver);
     }
 
     /**
      */
-    public void getAnimalIds(ds.livestockActivityService.Empty request,
+    default void getAnimalIds(ds.livestockActivityService.Empty request,
         io.grpc.stub.StreamObserver<ds.livestockActivityService.AnimalId> responseObserver) {
-      asyncUnimplementedUnaryCall(getGetAnimalIdsMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetAnimalIdsMethod(), responseObserver);
     }
 
     /**
      */
-    public void getLiveHeartRate(ds.livestockActivityService.AnimalId request,
+    default void getLiveHeartRate(ds.livestockActivityService.AnimalId request,
         io.grpc.stub.StreamObserver<ds.livestockActivityService.LiveHeartRate> responseObserver) {
-      asyncUnimplementedUnaryCall(getGetLiveHeartRateMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetLiveHeartRateMethod(), responseObserver);
     }
 
     /**
      */
-    public void getHeartRateHistory(ds.livestockActivityService.AnimalTimeSpan request,
+    default void getHeartRateHistory(ds.livestockActivityService.AnimalTimeSpan request,
         io.grpc.stub.StreamObserver<ds.livestockActivityService.HeartRateHistory> responseObserver) {
-      asyncUnimplementedUnaryCall(getGetHeartRateHistoryMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetHeartRateHistoryMethod(), responseObserver);
     }
 
     /**
      */
-    public void getCurrentActivity(ds.livestockActivityService.AnimalId request,
+    default void getCurrentActivity(ds.livestockActivityService.AnimalId request,
         io.grpc.stub.StreamObserver<ds.livestockActivityService.CurrentActivity> responseObserver) {
-      asyncUnimplementedUnaryCall(getGetCurrentActivityMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetCurrentActivityMethod(), responseObserver);
     }
 
     /**
      */
-    public io.grpc.stub.StreamObserver<ds.livestockActivityService.AnimalId> getAnimalVitals(
+    default io.grpc.stub.StreamObserver<ds.livestockActivityService.AnimalId> getAnimalVitals(
         io.grpc.stub.StreamObserver<ds.livestockActivityService.AnimalHealthInfo> responseObserver) {
-      return asyncUnimplementedStreamingCall(getGetAnimalVitalsMethod(), responseObserver);
+      return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getGetAnimalVitalsMethod(), responseObserver);
     }
+  }
+
+  /**
+   * Base class for the server implementation of the service LivestockActivityService.
+   */
+  public static abstract class LivestockActivityServiceImplBase
+      implements io.grpc.BindableService, AsyncService {
 
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
-      return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
-          .addMethod(
-            getSetAnimalDetailsMethod(),
-            asyncClientStreamingCall(
-              new MethodHandlers<
-                ds.livestockActivityService.AnimalDetail,
-                ds.livestockActivityService.SetAnimalDetailsReply>(
-                  this, METHODID_SET_ANIMAL_DETAILS)))
-          .addMethod(
-            getGetAnimalIdsMethod(),
-            asyncServerStreamingCall(
-              new MethodHandlers<
-                ds.livestockActivityService.Empty,
-                ds.livestockActivityService.AnimalId>(
-                  this, METHODID_GET_ANIMAL_IDS)))
-          .addMethod(
-            getGetLiveHeartRateMethod(),
-            asyncServerStreamingCall(
-              new MethodHandlers<
-                ds.livestockActivityService.AnimalId,
-                ds.livestockActivityService.LiveHeartRate>(
-                  this, METHODID_GET_LIVE_HEART_RATE)))
-          .addMethod(
-            getGetHeartRateHistoryMethod(),
-            asyncServerStreamingCall(
-              new MethodHandlers<
-                ds.livestockActivityService.AnimalTimeSpan,
-                ds.livestockActivityService.HeartRateHistory>(
-                  this, METHODID_GET_HEART_RATE_HISTORY)))
-          .addMethod(
-            getGetCurrentActivityMethod(),
-            asyncUnaryCall(
-              new MethodHandlers<
-                ds.livestockActivityService.AnimalId,
-                ds.livestockActivityService.CurrentActivity>(
-                  this, METHODID_GET_CURRENT_ACTIVITY)))
-          .addMethod(
-            getGetAnimalVitalsMethod(),
-            asyncBidiStreamingCall(
-              new MethodHandlers<
-                ds.livestockActivityService.AnimalId,
-                ds.livestockActivityService.AnimalHealthInfo>(
-                  this, METHODID_GET_ANIMAL_VITALS)))
-          .build();
+      return LivestockActivityServiceGrpc.bindService(this);
     }
   }
 
   /**
+   * A stub to allow clients to do asynchronous rpc calls to service LivestockActivityService.
    */
-  public static final class LivestockActivityServiceStub extends io.grpc.stub.AbstractStub<LivestockActivityServiceStub> {
-    private LivestockActivityServiceStub(io.grpc.Channel channel) {
-      super(channel);
-    }
-
-    private LivestockActivityServiceStub(io.grpc.Channel channel,
-        io.grpc.CallOptions callOptions) {
+  public static final class LivestockActivityServiceStub
+      extends io.grpc.stub.AbstractAsyncStub<LivestockActivityServiceStub> {
+    private LivestockActivityServiceStub(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
     }
 
     @java.lang.Override
-    protected LivestockActivityServiceStub build(io.grpc.Channel channel,
-        io.grpc.CallOptions callOptions) {
+    protected LivestockActivityServiceStub build(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       return new LivestockActivityServiceStub(channel, callOptions);
     }
 
@@ -358,7 +323,7 @@ public final class LivestockActivityServiceGrpc {
      */
     public io.grpc.stub.StreamObserver<ds.livestockActivityService.AnimalDetail> setAnimalDetails(
         io.grpc.stub.StreamObserver<ds.livestockActivityService.SetAnimalDetailsReply> responseObserver) {
-      return asyncClientStreamingCall(
+      return io.grpc.stub.ClientCalls.asyncClientStreamingCall(
           getChannel().newCall(getSetAnimalDetailsMethod(), getCallOptions()), responseObserver);
     }
 
@@ -366,7 +331,7 @@ public final class LivestockActivityServiceGrpc {
      */
     public void getAnimalIds(ds.livestockActivityService.Empty request,
         io.grpc.stub.StreamObserver<ds.livestockActivityService.AnimalId> responseObserver) {
-      asyncServerStreamingCall(
+      io.grpc.stub.ClientCalls.asyncServerStreamingCall(
           getChannel().newCall(getGetAnimalIdsMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -374,7 +339,7 @@ public final class LivestockActivityServiceGrpc {
      */
     public void getLiveHeartRate(ds.livestockActivityService.AnimalId request,
         io.grpc.stub.StreamObserver<ds.livestockActivityService.LiveHeartRate> responseObserver) {
-      asyncServerStreamingCall(
+      io.grpc.stub.ClientCalls.asyncServerStreamingCall(
           getChannel().newCall(getGetLiveHeartRateMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -382,7 +347,7 @@ public final class LivestockActivityServiceGrpc {
      */
     public void getHeartRateHistory(ds.livestockActivityService.AnimalTimeSpan request,
         io.grpc.stub.StreamObserver<ds.livestockActivityService.HeartRateHistory> responseObserver) {
-      asyncServerStreamingCall(
+      io.grpc.stub.ClientCalls.asyncServerStreamingCall(
           getChannel().newCall(getGetHeartRateHistoryMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -390,7 +355,7 @@ public final class LivestockActivityServiceGrpc {
      */
     public void getCurrentActivity(ds.livestockActivityService.AnimalId request,
         io.grpc.stub.StreamObserver<ds.livestockActivityService.CurrentActivity> responseObserver) {
-      asyncUnaryCall(
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetCurrentActivityMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -398,26 +363,24 @@ public final class LivestockActivityServiceGrpc {
      */
     public io.grpc.stub.StreamObserver<ds.livestockActivityService.AnimalId> getAnimalVitals(
         io.grpc.stub.StreamObserver<ds.livestockActivityService.AnimalHealthInfo> responseObserver) {
-      return asyncBidiStreamingCall(
+      return io.grpc.stub.ClientCalls.asyncBidiStreamingCall(
           getChannel().newCall(getGetAnimalVitalsMethod(), getCallOptions()), responseObserver);
     }
   }
 
   /**
+   * A stub to allow clients to do synchronous rpc calls to service LivestockActivityService.
    */
-  public static final class LivestockActivityServiceBlockingStub extends io.grpc.stub.AbstractStub<LivestockActivityServiceBlockingStub> {
-    private LivestockActivityServiceBlockingStub(io.grpc.Channel channel) {
-      super(channel);
-    }
-
-    private LivestockActivityServiceBlockingStub(io.grpc.Channel channel,
-        io.grpc.CallOptions callOptions) {
+  public static final class LivestockActivityServiceBlockingStub
+      extends io.grpc.stub.AbstractBlockingStub<LivestockActivityServiceBlockingStub> {
+    private LivestockActivityServiceBlockingStub(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
     }
 
     @java.lang.Override
-    protected LivestockActivityServiceBlockingStub build(io.grpc.Channel channel,
-        io.grpc.CallOptions callOptions) {
+    protected LivestockActivityServiceBlockingStub build(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       return new LivestockActivityServiceBlockingStub(channel, callOptions);
     }
 
@@ -425,7 +388,7 @@ public final class LivestockActivityServiceGrpc {
      */
     public java.util.Iterator<ds.livestockActivityService.AnimalId> getAnimalIds(
         ds.livestockActivityService.Empty request) {
-      return blockingServerStreamingCall(
+      return io.grpc.stub.ClientCalls.blockingServerStreamingCall(
           getChannel(), getGetAnimalIdsMethod(), getCallOptions(), request);
     }
 
@@ -433,7 +396,7 @@ public final class LivestockActivityServiceGrpc {
      */
     public java.util.Iterator<ds.livestockActivityService.LiveHeartRate> getLiveHeartRate(
         ds.livestockActivityService.AnimalId request) {
-      return blockingServerStreamingCall(
+      return io.grpc.stub.ClientCalls.blockingServerStreamingCall(
           getChannel(), getGetLiveHeartRateMethod(), getCallOptions(), request);
     }
 
@@ -441,33 +404,31 @@ public final class LivestockActivityServiceGrpc {
      */
     public java.util.Iterator<ds.livestockActivityService.HeartRateHistory> getHeartRateHistory(
         ds.livestockActivityService.AnimalTimeSpan request) {
-      return blockingServerStreamingCall(
+      return io.grpc.stub.ClientCalls.blockingServerStreamingCall(
           getChannel(), getGetHeartRateHistoryMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public ds.livestockActivityService.CurrentActivity getCurrentActivity(ds.livestockActivityService.AnimalId request) {
-      return blockingUnaryCall(
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetCurrentActivityMethod(), getCallOptions(), request);
     }
   }
 
   /**
+   * A stub to allow clients to do ListenableFuture-style rpc calls to service LivestockActivityService.
    */
-  public static final class LivestockActivityServiceFutureStub extends io.grpc.stub.AbstractStub<LivestockActivityServiceFutureStub> {
-    private LivestockActivityServiceFutureStub(io.grpc.Channel channel) {
-      super(channel);
-    }
-
-    private LivestockActivityServiceFutureStub(io.grpc.Channel channel,
-        io.grpc.CallOptions callOptions) {
+  public static final class LivestockActivityServiceFutureStub
+      extends io.grpc.stub.AbstractFutureStub<LivestockActivityServiceFutureStub> {
+    private LivestockActivityServiceFutureStub(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
     }
 
     @java.lang.Override
-    protected LivestockActivityServiceFutureStub build(io.grpc.Channel channel,
-        io.grpc.CallOptions callOptions) {
+    protected LivestockActivityServiceFutureStub build(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       return new LivestockActivityServiceFutureStub(channel, callOptions);
     }
 
@@ -475,7 +436,7 @@ public final class LivestockActivityServiceGrpc {
      */
     public com.google.common.util.concurrent.ListenableFuture<ds.livestockActivityService.CurrentActivity> getCurrentActivity(
         ds.livestockActivityService.AnimalId request) {
-      return futureUnaryCall(
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetCurrentActivityMethod(), getCallOptions()), request);
     }
   }
@@ -492,10 +453,10 @@ public final class LivestockActivityServiceGrpc {
       io.grpc.stub.ServerCalls.ServerStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.BidiStreamingMethod<Req, Resp> {
-    private final LivestockActivityServiceImplBase serviceImpl;
+    private final AsyncService serviceImpl;
     private final int methodId;
 
-    MethodHandlers(LivestockActivityServiceImplBase serviceImpl, int methodId) {
+    MethodHandlers(AsyncService serviceImpl, int methodId) {
       this.serviceImpl = serviceImpl;
       this.methodId = methodId;
     }
@@ -540,6 +501,53 @@ public final class LivestockActivityServiceGrpc {
           throw new AssertionError();
       }
     }
+  }
+
+  public static final io.grpc.ServerServiceDefinition bindService(AsyncService service) {
+    return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
+        .addMethod(
+          getSetAnimalDetailsMethod(),
+          io.grpc.stub.ServerCalls.asyncClientStreamingCall(
+            new MethodHandlers<
+              ds.livestockActivityService.AnimalDetail,
+              ds.livestockActivityService.SetAnimalDetailsReply>(
+                service, METHODID_SET_ANIMAL_DETAILS)))
+        .addMethod(
+          getGetAnimalIdsMethod(),
+          io.grpc.stub.ServerCalls.asyncServerStreamingCall(
+            new MethodHandlers<
+              ds.livestockActivityService.Empty,
+              ds.livestockActivityService.AnimalId>(
+                service, METHODID_GET_ANIMAL_IDS)))
+        .addMethod(
+          getGetLiveHeartRateMethod(),
+          io.grpc.stub.ServerCalls.asyncServerStreamingCall(
+            new MethodHandlers<
+              ds.livestockActivityService.AnimalId,
+              ds.livestockActivityService.LiveHeartRate>(
+                service, METHODID_GET_LIVE_HEART_RATE)))
+        .addMethod(
+          getGetHeartRateHistoryMethod(),
+          io.grpc.stub.ServerCalls.asyncServerStreamingCall(
+            new MethodHandlers<
+              ds.livestockActivityService.AnimalTimeSpan,
+              ds.livestockActivityService.HeartRateHistory>(
+                service, METHODID_GET_HEART_RATE_HISTORY)))
+        .addMethod(
+          getGetCurrentActivityMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              ds.livestockActivityService.AnimalId,
+              ds.livestockActivityService.CurrentActivity>(
+                service, METHODID_GET_CURRENT_ACTIVITY)))
+        .addMethod(
+          getGetAnimalVitalsMethod(),
+          io.grpc.stub.ServerCalls.asyncBidiStreamingCall(
+            new MethodHandlers<
+              ds.livestockActivityService.AnimalId,
+              ds.livestockActivityService.AnimalHealthInfo>(
+                service, METHODID_GET_ANIMAL_VITALS)))
+        .build();
   }
 
   private static abstract class LivestockActivityServiceBaseDescriptorSupplier

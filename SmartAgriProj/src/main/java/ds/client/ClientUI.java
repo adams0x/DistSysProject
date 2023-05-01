@@ -48,11 +48,14 @@ import ds.userService.UserServiceGrpc;
 import ds.userService.UserServiceGrpc.UserServiceBlockingStub;
 import ds.milkingParlourService.MilkingParlourServiceGrpc.MilkingParlourServiceBlockingStub;
 import ds.milkingParlourService.MilkingParlourServiceGrpc.MilkingParlourServiceStub;
+import io.grpc.ChannelCredentials;
 import io.grpc.Context;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
+import io.grpc.TlsChannelCredentials;
 import io.grpc.Context.CancellableContext;
+import io.grpc.Grpc;
 import io.grpc.stub.StreamObserver;
 
 import java.awt.event.WindowAdapter;
@@ -97,9 +100,6 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.Dimension;
-//import java.awt.event.ActionListener;
-//import java.awt.event.ActionEvent;
-//import org.jdesktop.beansbinding.ObjectProperty;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField; 
 
@@ -141,9 +141,6 @@ public class ClientUI {
 	private jmDNSInfo jmDnsUser;
 	private UserServiceBlockingStub blockingStub3;
 	private ServiceInfo userServiceInfo;
-	
-	
-	
 	
 	/*
 	 * UI controls
@@ -270,19 +267,27 @@ public class ClientUI {
 				});
 				/**
 				 * Launch discovery of user service and create a channel
+				 * This channel uses ssl/tls server authentication
 				 */
 				newCachedThreadPool.submit(() -> {
 					String userServiceType = "_user._tcp.local.";
 					discoverUserService(userServiceType);
-					String host = userServiceInfo.getHostAddresses()[0];
+					//String host = userServiceInfo.getHostAddresses()[0];
+					String host = "localhost";
 					int port = userServiceInfo.getPort();
 
-					ManagedChannel channel = ManagedChannelBuilder
-							.forAddress(host, port)
-							.usePlaintext()
-							.build();
-					
-					blockingStub3 = UserServiceGrpc.newBlockingStub(channel);
+					try {
+						ChannelCredentials creds;
+						creds = TlsChannelCredentials.newBuilder()
+							    .trustManager(new File("src//main//resources//ssl//publickeycert.pem"))
+							    .build();
+						ManagedChannel channel = Grpc.newChannelBuilderForAddress(host, port, creds)
+								.build();
+						blockingStub3 = UserServiceGrpc.newBlockingStub(channel);
+
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 					
 				});
 
@@ -754,6 +759,7 @@ public class ClientUI {
 	}
 
 	
+		
 	/**
 	 * Send mock data to the server from a csv file, the server will
 	 * create a list of machines for simulation
