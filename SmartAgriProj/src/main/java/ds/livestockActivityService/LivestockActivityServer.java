@@ -18,6 +18,7 @@ import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 
 import ds.livestockActivityService.LivestockActivityServiceGrpc.LivestockActivityServiceImplBase;
+import io.grpc.Context;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.ServerCallStreamObserver;
@@ -451,9 +452,8 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 	    }
 
 	    public void run() {
-	    	ServerCallStreamObserver<LiveHeartRate> scStreamObserver
-	    	= ((ServerCallStreamObserver<LiveHeartRate>)responseObserver);
-	    	if (scStreamObserver.isCancelled()) {
+	    	Context cxt = Context.current();
+	    	if (cxt.isCancelled()) {
 	    		this.cancel();
 	    		System.out.println("live heart rate cancelled by client");
 	    	}
@@ -471,7 +471,7 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 		    			.setAnimal(animalDetail)
 		    			.build();
 		    	System.out.println("live heart rate " + lhr.getBpm() + " for animal id " + lhr.getAnimal().getAnimalID().getId());
-		    	scStreamObserver.onNext(lhr);	    		
+		    	responseObserver.onNext(lhr);	    		
 	    	}
 	    	
 	    }
