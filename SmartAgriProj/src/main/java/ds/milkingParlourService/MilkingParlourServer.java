@@ -15,9 +15,12 @@ import java.util.ArrayList;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
+import ds.constants.Constants;
 import ds.milkingParlourService.MilkingParlourServiceGrpc.MilkingParlourServiceImplBase;
+import io.grpc.Context;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
 public class MilkingParlourServer extends MilkingParlourServiceImplBase{
@@ -221,6 +224,16 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 	@Override
 	public void getMilkVolume(MachineTimeSpan request, StreamObserver<MilkQuantity> responseObserver) {
 		//Unary: this returns the milk volume produced by the machine and time span chosen by the client
+
+		//Context ctx =Context.current();
+		String clientId;
+		clientId = Constants.CLIENT_ID_CONTEXT_KEY.get();
+		if(clientId == null) {
+			responseObserver.onError(Status.UNAUTHENTICATED.withDescription("User not logged in for access to milk volumes").asRuntimeException());
+			return;
+		}
+		System.out.println("getMilkVolume invoked by user: " + clientId);
+		
 		int mcId = request.getMachineID().getId();
 		
 		for(Machine m : machines) {

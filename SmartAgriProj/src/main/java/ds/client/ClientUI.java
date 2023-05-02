@@ -855,15 +855,20 @@ public class ClientUI {
 	private void getMilkQuantity(int machineId, String from, String to) {
 		//This method uses a unary blocking call to the server to obtain
 		//the volume of milk produced by a given machine for a given time span
+		JLabel resultLabel;
 		MachineId mcId = MachineId.newBuilder().setId(machineId).build();
 		MachineTimeSpan mc = MachineTimeSpan.newBuilder()
 				.setMachineID(mcId)
 				.setStartDate(from)
 				.setEndDate(to)
 				.build();
-		MilkQuantity reply = blockingStub.getMilkVolume(mc);
-		System.out.println("Milk volume at machine id=" + machineId +" is " + reply.getVolumeLitres() + " litres");
-		JLabel resultLabel = new JLabel("Milk volume at machine id=" + machineId +" is " + reply.getVolumeLitres() + " litres from " + from + " to " + to);
+		try {
+			MilkQuantity reply = blockingStub.getMilkVolume(mc);
+			System.out.println("Milk volume at machine id=" + machineId +" is " + reply.getVolumeLitres() + " litres");
+			resultLabel = new JLabel("Milk volume at machine id=" + machineId +" is " + reply.getVolumeLitres() + " litres from " + from + " to " + to);			
+		} catch (StatusRuntimeException e) {
+			resultLabel = new JLabel(e.getStatus().getDescription());			
+		}
 		resultLabel.setFont(new Font("Arial", Font.BOLD, 18));
 		JOptionPane.showMessageDialog(frame,resultLabel); //show the result in a pop up window
 	}
