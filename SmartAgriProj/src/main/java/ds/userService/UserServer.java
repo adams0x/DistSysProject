@@ -15,6 +15,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
+
+import ds.milkingParlourService.AuthorisationServerInterceptor;
 import ds.userService.UserServiceGrpc.UserServiceImplBase;
 import io.grpc.Grpc;
 import io.grpc.Server;
@@ -38,7 +40,7 @@ public class UserServer extends UserServiceImplBase{
 	public static void main(String[] args) throws InterruptedException, IOException {
 
 		UserServer service = new UserServer();
-		setJwtSecret();
+		//setJwtSecret(); //this is a once off call to create a secret signing key into a properties file
 		
 		Properties prop = service.getProperties();
 		service.registerService(prop);

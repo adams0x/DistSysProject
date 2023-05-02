@@ -42,6 +42,7 @@ public class MilkingParlourServer extends MilkingParlourServiceImplBase{
 
 		Server server = ServerBuilder.forPort(port)
 				.addService(service)
+			    .intercept(new AuthorisationServerInterceptor())				
 				.build()
 				.start();
 
