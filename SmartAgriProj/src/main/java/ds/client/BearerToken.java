@@ -7,6 +7,10 @@ import io.grpc.CallCredentials;
 import io.grpc.Status;
 import io.grpc.Metadata;
 
+/**
+ * This class stores the jwt token and implements CallCredentials so that
+ * it can add the token to the metadata before sending requests to the server
+ */	
 public class BearerToken extends CallCredentials {
 
 	private String value;

@@ -46,6 +46,8 @@ public class UserServer extends UserServiceImplBase{
 		service.registerService(prop);
 		int port = Integer.valueOf( prop.getProperty("service_port") );// #.50051;
 		
+		//build the server using tls server authentication
+		//the self signed cert and private key are saved in the sss folder
 		ServerCredentials creds = TlsServerCredentials.create(new File("src//main//resources//ssl//publickeycert.pem"), new File("src//main//resources//ssl//privatekey.pem"));
 		Server server = Grpc.newServerBuilderForPort(port, creds)
 			    .addService(service)
@@ -115,7 +117,10 @@ public class UserServer extends UserServiceImplBase{
 	}
 
 
-	
+	/*
+	 * a method that generates a random secret key for signing and verifying
+	 * java web tokens (jwt's)
+	 */	
 	static void setJwtSecret() {
 		Properties prop = new Properties();
 		SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
@@ -142,6 +147,8 @@ public class UserServer extends UserServiceImplBase{
 		String userName = request.getUsername();
 		String password = request.getPassword();
 		
+		//check the user and password and if a match then respond with success
+		// and more importantly create a signed jwt and include it in the reply
 		if(userName.equals("user") && password.equals("password")) {
 			LoginResponse response = LoginResponse.newBuilder()
 					.setResponseCode(1)
@@ -199,13 +206,16 @@ public class UserServer extends UserServiceImplBase{
 	}
 
 	
-	
+	/*
+	 * method creates a jwt and adds the user to the claims
+	 */	
 	private String getJwt(String user) {
 		Properties prop = null;		
 		 try (InputStream input = new FileInputStream("src/main/resources/jwt/secret.properties")) {
 	            prop = new Properties();
 	            // load a properties file
 	            prop.load(input);
+	            //retreive the secret code from the file
 	            String secretKey = prop.getProperty("secretKey");
 	            byte[] decodedKey = Base64.getDecoder().decode(secretKey);
 	            SecretKey originalKey = new SecretKeySpec(decodedKey, SignatureAlgorithm.HS256.getJcaName());

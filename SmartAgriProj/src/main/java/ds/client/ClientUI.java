@@ -275,10 +275,13 @@ public class ClientUI {
 					String userServiceType = "_user._tcp.local.";
 					discoverUserService(userServiceType);
 					//String host = userServiceInfo.getHostAddresses()[0];
-					String host = "localhost";
+					String host = "localhost";//must be localhost for public ca cert to work
 					int port = userServiceInfo.getPort();
 
 					try {
+						//create this channel using TLS authentication as the user name
+						//and password will be sent, the data will be encrypted  after the
+						//server is verified
 						ChannelCredentials creds;
 						creds = TlsChannelCredentials.newBuilder()
 							    .trustManager(new File("src//main//resources//ssl//publickeycert.pem"))
