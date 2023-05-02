@@ -71,6 +71,7 @@ import java.util.Iterator;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -370,6 +371,7 @@ public class ClientUI {
 		dateEndMilkVolume.setDate(new Date());
 		
 		btnGetMilkVolume = new JButton("Get Milk Volume");
+		btnGetMilkVolume.setToolTipText("A user must be logged in for this function!");
 		btnGetMilkVolume.setBounds(10, 164, 157, 32);
 		panel_1.add(btnGetMilkVolume);
 		btnGetMilkVolume.addMouseListener(new MouseAdapter() {
@@ -528,6 +530,7 @@ public class ClientUI {
 		panel_5.add(lblNewLabel_7);
 		
 		JButton btnGetActivity = new JButton("Get Activity");
+		btnGetActivity.setToolTipText("animals with id >=1000 will exceed time deadline !!");
 		btnGetActivity.setEnabled(false);
 		btnGetActivity.addMouseListener(new MouseAdapter() {
 			@Override
@@ -1093,10 +1096,17 @@ public class ClientUI {
 	 */		
 	private void getAnimalActivity(int animalId) {
 		AnimalId aId = AnimalId.newBuilder().setId(animalId).build();
+		JLabel resultLabelActivity;
+		try {
+			CurrentActivity reply = blockingStub2.withDeadlineAfter(1000, TimeUnit.MILLISECONDS).getCurrentActivity(aId);
+			System.out.println("Activity of "+ reply.getAnimal().getTypeOfAnimal() + " with id=" + animalId +" is " + reply.getActivity());
+			resultLabelActivity = new JLabel("Activity of "+ reply.getAnimal().getTypeOfAnimal() + " with id=" + animalId +" is " + reply.getActivity());
+			
+		}
+		catch (StatusRuntimeException e) {
+			resultLabelActivity = new JLabel(e.getStatus().getDescription());			
+		}
 
-		CurrentActivity reply = blockingStub2.getCurrentActivity(aId);
-		System.out.println("Activity of "+ reply.getAnimal().getTypeOfAnimal() + " with id=" + animalId +" is " + reply.getActivity());
-		JLabel resultLabelActivity = new JLabel("Activity of "+ reply.getAnimal().getTypeOfAnimal() + " with id=" + animalId +" is " + reply.getActivity());
 		resultLabelActivity.setFont(new Font("Arial", Font.BOLD, 18));
 		JOptionPane.showMessageDialog(frame,resultLabelActivity);
 	}

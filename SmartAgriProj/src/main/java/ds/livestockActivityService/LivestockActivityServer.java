@@ -21,6 +21,7 @@ import ds.livestockActivityService.LivestockActivityServiceGrpc.LivestockActivit
 import io.grpc.Context;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.Status;
 import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 
@@ -247,6 +248,17 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 						.setActivity(animal.getActivity())
 						.setAnimal(animalDetail)
 						.build();
+				if(animal.getId()>=1000)
+					try {
+						Thread.sleep(1500);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				if(Context.current().isCancelled()) {
+					responseObserver.onError(Status.CANCELLED.withDescription("deadline time exceeded").asRuntimeException());
+					return;
+				}
 				responseObserver.onNext(activity);
 				responseObserver.onCompleted();
 				return;
@@ -452,8 +464,9 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 	    }
 
 	    public void run() {
-	    	Context cxt = Context.current();
-	    	if (cxt.isCancelled()) {
+	    	ServerCallStreamObserver<LiveHeartRate> scStreamObserver
+	    	= ((ServerCallStreamObserver<LiveHeartRate>)responseObserver);
+	    	if (scStreamObserver.isCancelled()) {
 	    		this.cancel();
 	    		System.out.println("live heart rate cancelled by client");
 	    	}
@@ -471,7 +484,7 @@ public class LivestockActivityServer extends LivestockActivityServiceImplBase {
 		    			.setAnimal(animalDetail)
 		    			.build();
 		    	System.out.println("live heart rate " + lhr.getBpm() + " for animal id " + lhr.getAnimal().getAnimalID().getId());
-		    	responseObserver.onNext(lhr);	    		
+		    	scStreamObserver.onNext(lhr);	    		
 	    	}
 	    	
 	    }
