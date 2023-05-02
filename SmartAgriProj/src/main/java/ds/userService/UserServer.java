@@ -2,10 +2,17 @@ package ds.userService;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Properties;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 import ds.userService.UserServiceGrpc.UserServiceImplBase;
@@ -14,6 +21,10 @@ import io.grpc.Server;
 import io.grpc.ServerCredentials;
 import io.grpc.TlsServerCredentials;
 import io.grpc.stub.StreamObserver;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+
 
 
 
@@ -27,6 +38,7 @@ public class UserServer extends UserServiceImplBase{
 	public static void main(String[] args) throws InterruptedException, IOException {
 
 		UserServer service = new UserServer();
+		setJwtSecret();
 		
 		Properties prop = service.getProperties();
 		service.registerService(prop);
@@ -100,7 +112,24 @@ public class UserServer extends UserServiceImplBase{
 	    
 	}
 
+
 	
+	static void setJwtSecret() {
+		Properties prop = new Properties();
+		SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+	    String encodedKey = Base64.getEncoder().encodeToString(key.getEncoded());
+		
+		prop.setProperty("secretKey", encodedKey);
+		try {
+			prop.store(new FileOutputStream("src/main/resources/jwt/secret.properties"), null);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	
 	/*
@@ -166,6 +195,31 @@ public class UserServer extends UserServiceImplBase{
 		
 	}
 
+	
+	
+	private String getJwt(String user) {
+		Properties prop = null;		
+		 try (InputStream input = new FileInputStream("src/main/resources/jwt/secret.properties")) {
+	            prop = new Properties();
+	            // load a properties file
+	            prop.load(input);
+	            String secretKey = prop.getProperty("secretKey");
+	            byte[] decodedKey = Base64.getDecoder().decode(secretKey);
+	            SecretKey originalKey = new SecretKeySpec(decodedKey, SignatureAlgorithm.HS256.getJcaName());
+	            // get the property value and print it out
+	            System.out.println("User Service Getting Secret Signing Key ...");
+	            System.out.println("\t secret key: " + secretKey);
+	            return Jwts.builder()
+	            .setSubject(user)
+	            .signWith(originalKey)
+	            .compact();
+	        } catch (IOException ex) {
+	            ex.printStackTrace();
+	        }
+		 return "";
+	    
+	}	
+	
 	
 	
 }
