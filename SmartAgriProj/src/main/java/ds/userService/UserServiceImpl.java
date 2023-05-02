@@ -45,16 +45,16 @@ public final class UserServiceImpl {
     java.lang.String[] descriptorData = {
       "\n\021UserService.proto\022\013userService\"2\n\014Logi" +
       "nRequest\022\020\n\010username\030\001 \001(\t\022\020\n\010password\030\002" +
-      " \001(\t\">\n\rLoginResponse\022\027\n\017responseMessage" +
-      "\030\001 \001(\t\022\024\n\014responseCode\030\002 \001(\005\"!\n\rLogoutRe" +
-      "quest\022\020\n\010username\030\001 \001(\t\"?\n\016LogoutRespons" +
-      "e\022\027\n\017responseMessage\030\001 \001(\t\022\024\n\014responseCo" +
-      "de\030\002 \001(\0052\224\001\n\013UserService\022@\n\005login\022\031.user" +
-      "Service.LoginRequest\032\032.userService.Login" +
-      "Response\"\000\022C\n\006logout\022\032.userService.Logou" +
-      "tRequest\032\033.userService.LogoutResponse\"\000B" +
-      "#\n\016ds.userServiceB\017UserServiceImplP\001b\006pr" +
-      "oto3"
+      " \001(\t\"P\n\rLoginResponse\022\027\n\017responseMessage" +
+      "\030\001 \001(\t\022\024\n\014responseCode\030\002 \001(\005\022\020\n\010jwtToken" +
+      "\030\003 \001(\t\"!\n\rLogoutRequest\022\020\n\010username\030\001 \001(" +
+      "\t\"?\n\016LogoutResponse\022\027\n\017responseMessage\030\001" +
+      " \001(\t\022\024\n\014responseCode\030\002 \001(\0052\224\001\n\013UserServi" +
+      "ce\022@\n\005login\022\031.userService.LoginRequest\032\032" +
+      ".userService.LoginResponse\"\000\022C\n\006logout\022\032" +
+      ".userService.LogoutRequest\032\033.userService" +
+      ".LogoutResponse\"\000B#\n\016ds.userServiceB\017Use" +
+      "rServiceImplP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -79,7 +79,7 @@ public final class UserServiceImpl {
     internal_static_userService_LoginResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_userService_LoginResponse_descriptor,
-        new java.lang.String[] { "ResponseMessage", "ResponseCode", });
+        new java.lang.String[] { "ResponseMessage", "ResponseCode", "JwtToken", });
     internal_static_userService_LogoutRequest_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_userService_LogoutRequest_fieldAccessorTable = new

@@ -144,6 +144,7 @@ public class UserServer extends UserServiceImplBase{
 			LoginResponse response = LoginResponse.newBuilder()
 					.setResponseCode(1)
 					.setResponseMessage(userName +" log in success !")
+					.setJwtToken(getJwt(userName))
 					.build();
 			
 			responseObserver.onNext(response);

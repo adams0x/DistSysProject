@@ -18,6 +18,7 @@ private static final long serialVersionUID = 0L;
   private LoginResponse() {
     responseMessage_ = "";
     responseCode_ = 0;
+    jwtToken_ = "";
   }
 
   @java.lang.Override
@@ -53,6 +54,12 @@ private static final long serialVersionUID = 0L;
           case 16: {
 
             responseCode_ = input.readInt32();
+            break;
+          }
+          case 26: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            jwtToken_ = s;
             break;
           }
           default: {
@@ -130,6 +137,40 @@ private static final long serialVersionUID = 0L;
     return responseCode_;
   }
 
+  public static final int JWTTOKEN_FIELD_NUMBER = 3;
+  private volatile java.lang.Object jwtToken_;
+  /**
+   * <code>string jwtToken = 3;</code>
+   */
+  public java.lang.String getJwtToken() {
+    java.lang.Object ref = jwtToken_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      jwtToken_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string jwtToken = 3;</code>
+   */
+  public com.google.protobuf.ByteString
+      getJwtTokenBytes() {
+    java.lang.Object ref = jwtToken_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      jwtToken_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -150,6 +191,9 @@ private static final long serialVersionUID = 0L;
     if (responseCode_ != 0) {
       output.writeInt32(2, responseCode_);
     }
+    if (!getJwtTokenBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, jwtToken_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -165,6 +209,9 @@ private static final long serialVersionUID = 0L;
     if (responseCode_ != 0) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, responseCode_);
+    }
+    if (!getJwtTokenBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, jwtToken_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -186,6 +233,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getResponseMessage());
     result = result && (getResponseCode()
         == other.getResponseCode());
+    result = result && getJwtToken()
+        .equals(other.getJwtToken());
     result = result && unknownFields.equals(other.unknownFields);
     return result;
   }
@@ -201,6 +250,8 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getResponseMessage().hashCode();
     hash = (37 * hash) + RESPONSECODE_FIELD_NUMBER;
     hash = (53 * hash) + getResponseCode();
+    hash = (37 * hash) + JWTTOKEN_FIELD_NUMBER;
+    hash = (53 * hash) + getJwtToken().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -338,6 +389,8 @@ private static final long serialVersionUID = 0L;
 
       responseCode_ = 0;
 
+      jwtToken_ = "";
+
       return this;
     }
 
@@ -366,6 +419,7 @@ private static final long serialVersionUID = 0L;
       ds.userService.LoginResponse result = new ds.userService.LoginResponse(this);
       result.responseMessage_ = responseMessage_;
       result.responseCode_ = responseCode_;
+      result.jwtToken_ = jwtToken_;
       onBuilt();
       return result;
     }
@@ -420,6 +474,10 @@ private static final long serialVersionUID = 0L;
       }
       if (other.getResponseCode() != 0) {
         setResponseCode(other.getResponseCode());
+      }
+      if (!other.getJwtToken().isEmpty()) {
+        jwtToken_ = other.jwtToken_;
+        onChanged();
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -541,6 +599,75 @@ private static final long serialVersionUID = 0L;
     public Builder clearResponseCode() {
       
       responseCode_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object jwtToken_ = "";
+    /**
+     * <code>string jwtToken = 3;</code>
+     */
+    public java.lang.String getJwtToken() {
+      java.lang.Object ref = jwtToken_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        jwtToken_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string jwtToken = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getJwtTokenBytes() {
+      java.lang.Object ref = jwtToken_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        jwtToken_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string jwtToken = 3;</code>
+     */
+    public Builder setJwtToken(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      jwtToken_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string jwtToken = 3;</code>
+     */
+    public Builder clearJwtToken() {
+      
+      jwtToken_ = getDefaultInstance().getJwtToken();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string jwtToken = 3;</code>
+     */
+    public Builder setJwtTokenBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      jwtToken_ = value;
       onChanged();
       return this;
     }

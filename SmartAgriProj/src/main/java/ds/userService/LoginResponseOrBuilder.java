@@ -21,4 +21,14 @@ public interface LoginResponseOrBuilder extends
    * <code>int32 responseCode = 2;</code>
    */
   int getResponseCode();
+
+  /**
+   * <code>string jwtToken = 3;</code>
+   */
+  java.lang.String getJwtToken();
+  /**
+   * <code>string jwtToken = 3;</code>
+   */
+  com.google.protobuf.ByteString
+      getJwtTokenBytes();
 }

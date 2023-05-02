@@ -20,6 +20,7 @@ message LoginRequest{
 message LoginResponse{
 	string responseMessage = 1;
 	int32 responseCode = 2;
+	string jwtToken = 3;
 }
 
 message LogoutRequest{
