@@ -141,6 +141,7 @@ public class ClientUI {
 	private jmDNSInfo jmDnsUser;
 	private UserServiceBlockingStub blockingStub3;
 	private ServiceInfo userServiceInfo;
+	private String jwtSignedToken = "invalid user";
 	
 	/*
 	 * UI controls
@@ -863,7 +864,7 @@ public class ClientUI {
 				.setEndDate(to)
 				.build();
 		try {
-			MilkQuantity reply = blockingStub.getMilkVolume(mc);
+			MilkQuantity reply = blockingStub.withCallCredentials(new BearerToken(jwtSignedToken)).getMilkVolume(mc);
 			System.out.println("Milk volume at machine id=" + machineId +" is " + reply.getVolumeLitres() + " litres");
 			resultLabel = new JLabel("Milk volume at machine id=" + machineId +" is " + reply.getVolumeLitres() + " litres from " + from + " to " + to);			
 		} catch (StatusRuntimeException e) {
@@ -1293,6 +1294,11 @@ public class ClientUI {
 		JLabel resultLabel = new JLabel(response.getResponseMessage());
 		resultLabel.setFont(new Font("Arial", Font.BOLD, 18));
 		JOptionPane.showMessageDialog(frame,resultLabel);
+		if(response.getResponseCode() == 1) {
+			jwtSignedToken = response.getJwtToken();
+		}else {
+			jwtSignedToken = "invalid user";
+		}
 
 	}
 
@@ -1312,6 +1318,7 @@ public class ClientUI {
 		JLabel resultLabel = new JLabel(response.getResponseMessage());
 		resultLabel.setFont(new Font("Arial", Font.BOLD, 18));
 		JOptionPane.showMessageDialog(frame,resultLabel);
+		jwtSignedToken = "invalid user";
 
 	}
 
